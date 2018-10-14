@@ -5,9 +5,9 @@
 ## What's this? ##
 
 'Moany' ... me moaning about money.
-* What? A money tracking webapp, using imported statements, w/ nice views on past, present and future trends.
-* Why? To track personal accounts, transactions, and do away with pesky spreadsheets.
-* It's a pet project allowing me to try out different things, and hopefully get a basically functioning app.
+ * What? A money tracking webapp, using imported statements, w/ nice views on past, present and future trends.
+ * Why? To track personal accounts, transactions, and do away with pesky spreadsheets.
+ * It's a pet project allowing me to try out different things, and hopefully get a basically functioning app.
 
 ----
 
