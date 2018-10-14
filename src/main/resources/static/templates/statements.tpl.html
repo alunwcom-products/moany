@@ -1,0 +1,59 @@
+<br>
+<div>
+  <h2>Statements</h2>
+  
+  <br><hr><br>
+  
+  <!-- Statement upload form -->
+  <div id="editForm">
+  <form method="POST" enctype="multipart/form-data" action="{{ postAction }}">
+    <table>
+      <tr><td>File to upload:</td><td><input type="file" name="file" stmt-model="file" data-ng-model="stmt.file" /></td></tr>
+      <tr>
+        <td>Statement importer to use:</td>
+        <td>
+          <select name="importer" data-ng-model="stmt.importer">
+            <option data-ng-repeat="i in importers" value="{{ i.displayName }}">{{ i.displayName }}</option>
+          </select>
+        </td>
+      </tr>
+      
+      <tr><td>Automatically create accounts from statement:</td><td><input type="checkbox" name="autoacc" value="true" checked="checked" data-ng-model="stmt.autoacc" /></td></tr>
+      <tr><td>Fail on duplicate transaction:</td><td><input type="checkbox" name="nodup" value="true" checked="checked" data-ng-model="stmt.nodup" /></td></tr>
+      <tr><td></td><td><input type="button" value="Upload" ng-click="stmtSubmit()" data-ng-disabled="stmt.importer === undefined" /></td></tr>
+    </table>
+  </form>
+  </div>
+  
+  <br><hr><br>
+  
+  <!-- Statement listing -->
+  <table class="ng-cloak">
+    <tr>
+      <th>Tr. Date</th>
+      <th>Account</th>
+      <th class="desc">Desc</th>
+      <th>Statement Amount</th>
+      <th>Statement Balance</th>
+      <th>Account Balance</th>
+      <th>Category</th>
+      <th>Source Name</th>
+    </tr>
+    
+    <div><p data-ng-bind="message"></p></div>
+    
+    <tr ng-repeat="t in transactions" id="{{t.id}}" class="resultRow" style="cursor: pointer;" 
+      ng-class="{'hover':hovering}" ng-mouseenter="hovering=true" ng-mouseleave="hovering=false"
+      ng-click="trClick(t.id)">
+      <td data-ng-bind="t.transactionDate" class="t150"></td>
+      <td data-ng-bind="t.account.accNum" class="t150"></td>
+      <td data-ng-bind="t.description" class="t100"></td>
+      <td data-ng-bind="t.statementAmount | currency : '£' : 2" class="t100 right"></td>
+      <td data-ng-bind="t.stmtBalance | currency : '£' : 2" class="t100 right"></td>
+      <td data-ng-bind="t.accBalance | currency : '£' : 2" class="t100 right"></td>
+      <td data-ng-bind="t.category.fullName" class="t100"></td>
+      <td data-ng-bind="t.sourceName" class="t100"></td>
+    </tr>
+  </tbody></table>
+
+</div>

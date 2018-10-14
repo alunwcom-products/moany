@@ -1,0 +1,69 @@
+<br>
+<div>
+  <h2>Month View</h2>
+  
+  <form>
+    <select size="5" multiple data-ng-model="selectedAccounts">
+      <option data-ng-repeat="i in accounts" value="{{ i.id }}">{{ i.name }} [{{ i.accNum }}]</option>
+    </select>
+    Month:<md-datepicker data-ng-model="startDate" md-open-on-focus></md-datepicker>
+    
+    <input type="button" value="Reset" data-ng-click="ctrl.filterReset()"/>
+    <input type="button" value="Update" data-ng-click="ctrl.filterUpdate()" />
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="button" value="Back" data-ng-click="ctrl.monthBackward()" />
+    <input type="button" value="Now" data-ng-click="ctrl.monthNow()" />
+    <input type="button" value="Forward" data-ng-click="ctrl.monthForward()" />
+    
+  </form>
+  
+  <br><hr><br>
+  
+  <!-- 
+  <form>
+    
+    <table>
+    <tr>
+      <td data-ng-bind="tr.transactionDate" class="t150"></td>
+      <td data-ng-bind="tr.account.name" class="t150"></td>
+      <td data-ng-bind="tr.sourceType.charAt(0)" class=""></td>
+      <td data-ng-bind="tr.description" class="t100"></td>
+      <td data-ng-bind="tr.netAmount | currency : '£' : 2" class="t100 right"></td>
+      <td><input type="button" value="Mark As Reconciled" data-ng-click="ctrl.reconcile(tr)" data-ng-disabled="tr.sourceType !== 'BUDGETING'" /></td>
+    </tr>
+    </table>
+    
+    
+  </form>
+  
+  <br><hr><br>
+  -->
+  
+  <table class="ng-cloak">
+    <tr>
+      <th>Tr. Date</th>
+      <th>Account</th>
+      <th>Src.</th>
+      <th class="desc">Desc</th>
+      <th>Amount</th>
+      <th>Account Balance</th>
+      <th>Category</th>
+      <th>Clear</th>
+   </tr>
+    
+    <tr ng-repeat="row in transactions" id="{{row.id}}" class="resultRow" style="cursor: pointer;" 
+        ng-init="($index == 0) ? row.uiTotal = startingBalance + row.netAmount : row.uiTotal = transactions[$index - 1].uiTotal + row.netAmount"
+        ng-class="{'hover': hovering, 'budget' : row.sourceType === 'BUDGETING'}" ng-mouseenter="hovering=true" ng-mouseleave="hovering=false"
+        ng-click="ctrl.rowClicked(row)">
+      <td data-ng-bind="row.transactionDate" class="t150"></td>
+      <td data-ng-bind="row.account.name" class="t150"></td>
+      <td data-ng-bind="row.sourceType.charAt(0)" class=""></td>
+      <td data-ng-bind="row.description" class="t100"></td>
+      <td data-ng-bind="row.netAmount | currency : '£' : 2" class="t100 right"></td>
+      <!-- <td data-ng-bind="row.accBalance | currency : '£' : 2" class="t100 right" ng-class="{'recerr': ctrl.recError(row)}"></td> -->
+      <td data-ng-bind="row.uiTotal | currency : '£' : 2" class="t100 right" ng-class="{'recerr': row.uiTotal < 0}"></td>
+      <td data-ng-bind="row.category.fullName" class="t100"></td>
+      <td><input style="font-size: 10px;" type="button" value="Clear" data-ng-click="ctrl.reconcile(row)" data-ng-show="row.sourceType === 'BUDGETING'" /></td>
+    </tr>
+  </tbody></table>
+</div>

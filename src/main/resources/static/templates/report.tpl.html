@@ -1,0 +1,102 @@
+<br>
+<div>
+  <h2>Category Report</h2>
+  
+  <form>
+    <select id="accList" name="accList" size="5" multiple data-ng-model="selectedAccounts">
+      <option data-ng-repeat="a in accounts" value="{{ a.id }}">{{ a.name }} [{{ a.accNum }}]</option>
+    </select>
+    Date from:<md-datepicker data-ng-model="startDate" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+    <!--
+    Date from only - display 12 months. *whole* months
+    Date to:<md-datepicker data-ng-model="endDate" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+    -->
+    
+    <input type="button" value="Reset" data-ng-click="accReset()"/>
+    <input type="button" value="Update" data-ng-click="accUpdate()" />
+  </form>
+  
+  <br><hr><br>
+  
+  <table class="ng-cloak">
+    <tbody>
+      <tr>
+        <th>Category</th>
+        <th data-ng-repeat="(key, value) in headings">{{ key }}</th>
+        <th>Total</th>
+      </tr>
+    </tbody>
+    <tbody data-ng-repeat="cat in categorySummary | filter:filterCats | orderBy: 'fullName'">
+      <tr class="amountRow" ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
+        <td class="t150">{{ cat.fullName }} [Planned Amount]</td>
+        <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.plannedAmount[key] | currency : '£' : 2 " class="t150" style=""></td>
+        <td style=""></td>
+      </tr>
+      <tr class="paleBalanceRow" ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
+        <td class="t150">{{ cat.fullName }} [Planned Balance]</td>
+        <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.plannedBalance[key] | currency : '£' : 2 " class="t150" style=""></td>
+        <td style=""></td>
+      </tr>
+      <tr class="amountRow" ng-click="ctrl.toggleCompact()">
+        <td class="t150">{{ cat.fullName }} [Actual Amount]</td>
+        <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.actualAmount[key] | currency : '£' : 2 " class="t150" style=""></td>
+        <td style=""></td>
+      </tr>
+      <tr class="paleBalanceRow" ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
+        <td class="t150">{{ cat.fullName }} [Actual Balance]</td>
+        <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.actualBalance[key] | currency : '£' : 2 " class="t150" style=""></td>
+        <td style=""></td>
+      </tr>
+      <tr ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
+        <td class="t150">{{ cat.fullName }} [Surplus Amount]</td>
+        <td style="{{ ctrl.amountStatus(cat.surplusAmount[key]) }}" data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.surplusAmount[key] | currency : '£' : 2 " class="t150" style=""></td>
+        <td style=""></td>
+      </tr>
+      <tr class="balanceRow" ng-click="ctrl.toggleCompact()">
+        <td class="t150">{{ cat.fullName }} [Surplus Balance]</td>
+        <td style="{{ ctrl.amountStatus(cat.surplusBalance[key]) }}" data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.surplusBalance[key] | currency : '£' : 2 " class="t150" style=""></td>
+        <td style=""></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  
+  
+  
+  
+  <!-- <table class="ng-cloak">
+  
+    <tr>
+      <th>Category</th>
+      <th data-ng-repeat="(key, value) in headings">{{ key }}</th>
+      <th>Running Budget</th>
+      <th>Budget Total</th>
+    </tr>
+    
+    <tr data-ng-repeat="cat in categorySummary | filter:filterCats | orderBy: 'category.fullName'">
+      <td data-ng-bind="cat.category.fullName" class="t150"></td>
+      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.months[key] | currency : '£' : 2 " class="t150" style="{{ ctrl.budgetStatus(cat.months[key], cat.category.monthlyBudget) }}"></td>
+      <td style="{{ ctrl.totalStatus(cat) }}">{{ ctrl.total(cat) | currency : '£' : 2 }} (of {{ ctrl.budget(cat) | currency : '£' : 2 }})</td>
+      <td>{{ ctrl.budget(cat) | currency : '£' : 2 }}</td>
+    </tr>
+    
+    <tr data-ng-repeat="cat in categorySummary | filter: 'Uncategorized' ">
+      <td data-ng-bind="cat.category.fullName" class="t150"></td>
+      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.months[key] | currency : '£' : 2 " class="t150"></td>
+      <td style="{{ ctrl.totalStatus(cat) }}">{{ ctrl.total(cat) | currency : '£' : 2 }} (of {{ ctrl.budget(cat) | currency : '£' : 2 }})</td>
+      <td>TODO</td>
+    </tr>
+    
+    <tr data-ng-repeat="cat in categorySummary | filter: 'All Categories' ">
+      <td data-ng-bind="cat.category.fullName" class="t150"></td>
+      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.months[key] | currency : '£' : 2 " class="t150"></td>
+      <td style="{{ ctrl.totalStatus(cat) }}">{{ ctrl.total(cat) | currency : '£' : 2 }} (of {{ ctrl.budget(cat) | currency : '£' : 2 }})</td>
+      <td>TODO</td>
+    </tr>
+    
+  </table>
+  -->
+  
+  
+</div>

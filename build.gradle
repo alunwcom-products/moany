@@ -1,0 +1,64 @@
+plugins {
+    id 'org.springframework.boot' version '2.0.1.RELEASE'
+    id 'java'
+    id 'eclipse'
+    id 'war'
+    id 'checkstyle'
+}
+
+repositories {
+	jcenter()
+}
+
+checkstyle { 
+	configFile = 'src/test/resources/checkstyle.xml' as File
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter-web:2.0.4.RELEASE")
+	compile("org.springframework.boot:spring-boot-starter-freemarker:2.0.4.RELEASE")
+	compile("org.springframework.boot:spring-boot-starter-actuator:2.0.4.RELEASE")
+	compile('org.springframework.boot:spring-boot-starter-data-jpa:2.0.4.RELEASE')
+	compile('mysql:mysql-connector-java:8.0.12')
+	compile("com.h2database:h2:1.4.197")
+	compile ('org.apache.poi:poi-ooxml:4.0.0')
+	
+	testCompile("org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE")
+	
+	compile("org.springframework.security:spring-security-web:5.0.8.RELEASE")
+	compile("org.springframework.security:spring-security-config:5.0.8.RELEASE")
+	compile("org.springframework.security:spring-security-test:5.0.8.RELEASE")
+	
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8'
+	
+	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
+	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.6'
+	//compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
+	//compile group: 'no.api.freemarker', name: 'freemarker-java8', version: '1.2.0'
+	//compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.11.Final'
+	//compile group: 'org.hibernate', name: 'hibernate-java8', version: '5.2.11.Final'
+	//compile group: 'org.hibernate', name: 'hibernate-c3p0', version: '5.2.11.Final'
+	compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	
+	//testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// Build distribution - war file plus runnable zip package
+
+def distFolder = file("$buildDir/distribution")
+def distAssemblyFolder = file("$distFolder/$project.name")
+def webappsFolder = file("$distAssemblyFolder/webapps/$project.name")
+
+//println "BUILD FOLDER -> $buildDir"
+//println "DIST ASSEMBLY FOLDER -> $distAssemblyFolder"
+
+if ( ! version.equalsIgnoreCase("unspecified") ) { 
+	println "VERSION -> ${version}"
+} else { 
+	project.version = "SNAPSHOT"
+	println "NO VERSION DEFINED - CREATING SNAPSHOT"
+}
+

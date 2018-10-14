@@ -1,0 +1,13 @@
+/bin/
+/build/
+/.classpath
+/.gradle
+/.project
+/.settings
+/moany.log*
+
+/*.upload
+/*.loaded
+
+/work/
+/WEB-INF/

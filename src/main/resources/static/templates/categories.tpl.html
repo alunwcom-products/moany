@@ -1,0 +1,69 @@
+<br>
+  <h2>Categories</h2>
+  
+  <form data-ng-submit="ctrl.cSave()" name="catForm" class="t500">
+    <table>
+      <tr>
+        <td>UUID</td>
+        <td><input type="text" class="tr" data-ng-model="c.id" data-ng-disabled="true" /></td>
+        <td>Full Name</td>
+        <td><input type="text" class="tr" data-ng-model="c.fullName" data-ng-disabled="true" /></td>
+      </tr>
+      <tr>
+        <td>Category Name</td>
+        <td><input type="text" class="tr" data-ng-model="c.name" /></td>
+        <td>Parent Category</td>
+        <td>
+          <select data-ng-model="c.parent" data-ng-options="cat.fullName disable when c.id == cat.id for cat in categories | orderBy: 'fullName' track by cat.id ">
+            <option value="">&lt;top-level&gt;</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+    <input type="button" value="Clear" data-ng-click="ctrl.cClear()"/>
+    <input type="submit" value="Submit" data-ng-disabled=""/>
+    &nbsp;&nbsp;&nbsp;
+    <input type="button" value="Delete" data-ng-click="ctrl.cDelete()"/>
+  </form>
+  <br/>
+  <p>Budget Values</p>
+  <form data-ng-submit="ctrl.catAddBudget(c.id, budget)">
+    <table>
+      <tr>
+        <th>Start Month</th>
+        <th>End Month</th>
+        <th>Monthly Amount</th>
+        <th></th>
+      </tr>
+      <tr>
+        <td><input type="text" data-ng-model="budget.startDate" /></td>
+        <td><input type="text" data-ng-model="budget.endDate" /></td>
+        <td><input type="text" data-ng-model="budget.monthlyBudget" /></td>
+        <td><input type="submit" value="Add" data-ng-disabled="c.id == ''" /></td>
+      </tr>
+      <tr ng-repeat="b in c.categoryBudgets" id="{{b.id}}">
+        <td data-ng-bind="b.startDate" class="t100"></td>
+        <td data-ng-bind="b.endDate" class="t100"></td>
+        <td data-ng-bind="b.monthlyBudget | currency : '£' : 2" class="t100 right"></td>
+        <td><input type="button" value="Remove" data-ng-click="ctrl.catRemoveBudget(b.id)"/></td>
+      </tr>
+    </table>
+  </form>
+  
+  <md-list ng-cloak>
+  
+  <md-divider></md-divider>
+  
+  <md-subheader>All Categories</md-subheader>
+  <md-list-item ng-repeat="cat in categories | orderBy: 'fullName' track by cat.id " ng-click="ctrl.catSelect(cat)">
+    <p>{{cat.fullName}}</p>
+    <p>{{cat.monthlyBudget}}</p>
+  </md-list-item>
+  
+  <md-divider></md-divider>
+  
+  </md-list>
+  
+  
+  
+</div>

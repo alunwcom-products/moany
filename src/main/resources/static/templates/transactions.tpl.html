@@ -1,0 +1,126 @@
+<br>
+<div>
+  <h2>Accounts</h2>
+  
+  <form>
+    <select id="accList" name="accList" size="5" multiple data-ng-model="selectedAccounts">
+      <option data-ng-repeat="a in accounts" value="{{ a.id }}">{{ a.name }} [{{ a.accNum }}]</option>
+    </select>
+    Date from:<md-datepicker data-ng-model="startDate" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+    Date to:<md-datepicker data-ng-model="endDate" md-placeholder="Enter date" md-open-on-focus></md-datepicker>
+    
+    <input type="button" value="Reset" data-ng-click="accReset()"/>
+    <input type="button" value="Update" data-ng-click="accUpdate()" />
+  </form>
+  
+  <br><hr><br>
+  
+  
+  <div>
+    <form data-ng-submit="ctrl.trSave()" name="trForm">
+      <table>
+        <tr>
+          <td>UUID</td>
+          <td><input type="text" class="tr" data-ng-model="tr.id" data-ng-disabled="true" /></td>
+          <td>Entry Date</td>
+          <td><input type="text" class="tr" data-ng-model="tr.entryDate" data-ng-disabled="true" /></td>
+        </tr>
+        <tr>
+          <td>Source</td>
+          <td>
+            <select data-ng-model="tr.sourceType" data-ng-options="tranType disable when (tranType !== 'MANUAL') for tranType in transactionTypes" data-ng-disabled="tr.sourceType === 'STATEMENT' || tr.sourceType === 'BUDGETING'" data-ng-required="true"></select>
+          </td>
+          <td>Trans. Date</td>
+          <td><input type="text" class="tr" data-ng-model="tr.transactionDate" data-ng-disabled="tr.sourceType !== 'MANUAL'" data-ng-required="tr.sourceType !== 'BUDGETING'" /></td>
+        </tr>
+        <tr>
+          <td>Account</td>
+          <td>
+            <select data-ng-model="tr.account" data-ng-options="a.name for a in accounts | orderBy: 'accNum' track by a.id " data-ng-disabled="tr.sourceType === 'STATEMENT'" data-ng-required="true"></select>
+          </td>
+          <td>Category</td>
+          <td>
+            <select data-ng-model="tr.category" data-ng-options="cat.fullName for cat in categories | orderBy: 'fullName' track by cat.id ">
+              <option value="">uncategorized</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Net Amount</td>
+          <td><input type="text" class="tr" data-ng-model="tr.netAmount" data-ng-disabled="tr.sourceType === 'STATEMENT'" data-ng-required="tr.sourceType != 'STATEMENT'"/></td>
+          <td>Stmt. Amount</td>
+          <td><input type="text" class="tr" data-ng-model="tr.statementAmount" data-ng-disabled="true"/></td>
+        </tr>
+        <tr>
+          <td>Net Balance</td>
+          <td><input type="text" class="tr" data-ng-model="tr.accBalance" data-ng-disabled="true" /></td>
+          <td>Stmt. Balance</td>
+          <td><input type="text" class="tr" data-ng-model="tr.stmtBalance" data-ng-disabled="true" /></td>
+        </tr>
+        <tr>
+          <td>Source Name</td>
+          <td><input type="text" class="tr" data-ng-model="tr.sourceName" data-ng-disabled="true" /></td>
+          <td>Source Row</td>
+          <td><input type="text" class="tr" data-ng-model="tr.sourceRow" data-ng-disabled="true" /></td>
+        </tr>
+        <tr>
+          <td>Type</td>
+          <td><input type="text" class="tr" data-ng-model="tr.type" data-ng-disabled="tr.sourceType === 'STATEMENT'" /></td>
+          <td>Description</td>
+          <td><input type="text" class="tr" data-ng-model="tr.description" data-ng-disabled="tr.sourceType === 'STATEMENT'" /></td>
+        </tr>
+        <tr>
+          <td>Comment</td>
+          <td colspan="3"><input type="text" class="tr" data-ng-model="tr.comment" /></td>
+        </tr>
+        <tr>
+          <td>Budget Start Date</td>
+          <td><input type="text" class="tr" data-ng-model="tr.budgetItem.startDate" data-ng-disabled="tr.sourceType !== 'BUDGETING'" data-ng-required="tr.sourceType === 'BUDGETING'" /></td>
+          <td>Budget End Date</td>
+          <td><input type="text" class="tr" data-ng-model="tr.budgetItem.endDate" data-ng-disabled="tr.sourceType !== 'BUDGETING'" data-ng-required="tr.sourceType === 'BUDGETING'" /></td>
+        </tr>
+      </table>
+      
+      <input type="button" value="Clear" data-ng-click="ctrl.trClear()"/>
+      <input type="submit" value="Submit" data-ng-disabled="trForm.$invalid"/>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="button" value="Delete" data-ng-click="ctrl.trDelete(tr)" data-ng-disabled="tr.sourceType === 'STATEMENT'" />
+      <input type="button" value="Re-Balance from Transaction" data-ng-click="ctrl.trReBal(tr)" data-ng-disabled="tr.stmtBalance == ''" />
+      
+    </form>
+  </div>
+  
+  <br><hr><br>
+  
+  
+  <table class="ng-cloak">
+    <tr>
+      <th>Tr. Date</th>
+      <th>Account</th>
+      <th>Src.</th>
+      <th class="desc">Desc</th>
+      <th>Amount</th>
+      <!-- <th>Statement Balance</th> -->
+      <th>Account Balance</th>
+      <th>Category</th>
+      <!-- <th>Source Name</th> -->
+    </tr>
+    
+    <tr ng-repeat="t in transactions" id="{{t.id}}" class="resultRow" style="cursor: pointer;" 
+      ng-class="{'hover':hovering}" ng-mouseenter="hovering=true" ng-mouseleave="hovering=false"
+      ng-click="trClick(t)">
+      <td data-ng-bind="t.transactionDate" class="t150"></td>
+      <td data-ng-bind="t.account.name" class="t150"></td>
+      <td data-ng-bind="t.sourceType.charAt(0)" class=""></td>
+      <td data-ng-bind="t.description" class="t100"></td>
+      <td data-ng-bind="t.netAmount | currency : '£' : 2" class="t100 right"></td>
+      <!-- <td data-ng-bind="t.stmtBalance | currency : '£' : 2" class="t100 right"></td> -->
+      <td data-ng-bind="t.accBalance | currency : '£' : 2" class="t100 right" ng-class="{'recerr': ctrl.trRecError(t)}"></td>
+      <td data-ng-bind="t.category.fullName" class="t100"></td>
+      <!-- <td data-ng-bind="t.sourceName" class="t100"></td> -->
+    </tr>
+  </tbody></table>
+  
+  
+  
+</div>

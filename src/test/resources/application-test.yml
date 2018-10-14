@@ -1,0 +1,16 @@
+---
+server.port: 9080
+
+moany.homeFolder: ""
+moany.admin.username: test
+moany.admin.password: password
+
+spring.jpa.hibernate.ddl-auto: create
+
+spring.freemarker.template-loader-path: classpath:/freemarker
+spring.freemarker.suffix: .ftl
+spring.freemarker.requestContextAttribute: rc
+
+spring.http.multipart.max-file-size: 128KB
+spring.http.multipart.max-request-size: 128KB
+

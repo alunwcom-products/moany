@@ -1,0 +1,64 @@
+<br>
+<div>
+  <h2>Accounts</h2>
+  
+  <br><hr><br>
+  
+  <div id="editForm">
+  <form data-ng-submit="ctrl.accSubmit(acc)" name="accForm">
+    <table>
+      <tr>
+        <td>UUID</td>
+        <td><input type="text" id="id" name="id" class="acc" data-ng-model="acc.id" readonly /></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Account Name</td>
+        <td><input type="text" id="name" name="name" class="acc" data-ng-model="acc.name" data-ng-required="true" /></td>
+        <td>Pristine = {{ accForm.name.$pristine }}, Valid = {{ accForm.name.$valid }}</td>
+      </tr>
+      <tr>
+        <td>Account Number</td>
+        <td><input type="text" id="accNum" name="accNum" class="acc" data-ng-model="acc.accNum" data-ng-required="true" /></td>
+        <td>Pristine = {{ accForm.accNum.$pristine }}, Valid = {{ accForm.accNum.$valid }}</td>
+      </tr>
+      <tr>
+        <td>Account Type</td>
+        <td>
+          <select data-ng-model="acc.type" data-ng-options="accType for accType in accountTypes" data-ng-required="true"></select>
+        </td>
+        <td>Pristine = {{ accForm.type.$pristine }}, Valid = {{ accForm.type.$valid }}</td>
+      </tr>
+      <tr>
+        <td>Start Balance</td>
+        <td><input type="text" id="startBalance" name="startBalance" class="acc" data-ng-model="acc.startBalance" data-ng-required="true" /></td>
+        <td>Pristine = {{ accForm.startBalance.$pristine }}, Valid = {{ accForm.startBalance.$valid }}</td>
+      </tr>
+    </table>
+    
+    <div id="messages"></div>
+    
+    <input type="button" id="clearForm" value="Clear" data-ng-click="ctrl.accClear()" />
+    <input type="submit" value="Submit" data-ng-disabled="accForm.$invalid" />
+    <input type="button" value="Delete Account" data-ng-click="ctrl.accDelete(acc)" data-ng-disabled="accForm.$invalid" />
+    
+  </form>
+  </div>
+  
+  <br><hr><br>
+  
+  
+  <table class="acc ng-cloak">
+    <tbody><tr><th>Account Name</th><th>Account Number</th><th>Account Type</th><th>Start Balance</th></tr>
+    
+    <tr data-ng-repeat="a in accounts track by a.id" id="{{a.id}}" class="resultRow" style="cursor: pointer;" 
+      data-ng-class="{'hover':hovering}" data-ng-mouseenter="hovering=true" data-ng-mouseleave="hovering=false"
+      data-ng-click="ctrl.accClick(a.id)">
+      <td data-ng-bind="a.name" class="t250"></td>
+      <td data-ng-bind="a.accNum" class="t150"></td>
+      <td data-ng-bind="a.type" class="t100"></td>
+      <td data-ng-bind="a.startBalance | currency : '£' : 2" class="t100 right"></td>
+    </tr>
+  </tbody></table>
+
+</div>

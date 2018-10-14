@@ -1,0 +1,1 @@
+-- No rollback for early versions
