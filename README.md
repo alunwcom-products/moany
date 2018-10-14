@@ -5,9 +5,10 @@
 ## What's this? ##
 
 'Moany' ... me moaning about money.
- * What? A money tracking webapp, using imported statements, w/ nice views on past, present and future trends.
- * Why? To track personal accounts, transactions, and do away with pesky spreadsheets.
- * It's a pet project allowing me to try out different things, and hopefully get a basically functioning app.
+
+* What? A money tracking webapp, using imported statements, w/ nice views on past, present and future trends.
+* Why? To track personal accounts, transactions, and do away with pesky spreadsheets.
+* It's a pet project allowing me to try out different things, and hopefully get a basically functioning app.
 
 ----
 
@@ -24,6 +25,7 @@ NEXT RELEASE: v7.0.0
 - Try out database migration
 
 BACKLOG
+
 - FEATURE: Complete (separate) Angular UI, and remove older AngularJS UI.
 - TECH DEBT: Need to clarify responsibility of different layers (esp. web/service) for validation/parsing data etc.
   Also need consistent response format (ResponseEntity?) to allow error handling
