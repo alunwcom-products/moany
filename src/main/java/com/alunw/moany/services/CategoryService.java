@@ -196,6 +196,30 @@ public class CategoryService {
 		boolean firstMonth = true;
 		for (YearMonth month : months) {
 			
+			// TODO factor out
+			for (Map<String, Object> category : categoryData) {
+				
+				BigDecimal plannedAmount = (BigDecimal) ((Map<String, Object>) category.get("plannedAmount")).get(month.toString()); // TODO Ugh!
+				if (plannedAmount != null) {
+					if (totalPlannedAmount.get(month.toString()) == null) {
+						totalPlannedAmount.put(month.toString(), plannedAmount);
+					} else {
+						BigDecimal newTotal = totalPlannedAmount.get(month.toString()).add(plannedAmount);
+						totalPlannedAmount.put(month.toString(), newTotal);
+					}
+				}
+				
+				BigDecimal actualAmount = (BigDecimal) ((Map<String, Object>) category.get("actualAmount")).get(month.toString()); // TODO Ugh!
+				if (actualAmount != null) {
+					if (totalActualAmount.get(month.toString()) == null) {
+						totalActualAmount.put(month.toString(), actualAmount);
+					} else {
+						BigDecimal newTotal = totalActualAmount.get(month.toString()).add(actualAmount);
+						totalActualAmount.put(month.toString(), newTotal);
+					}
+				}
+			}
+			
 			// TODO planned brought forward value?
 			BigDecimal planned = totalPlannedAmount.get(month.toString());
 			if (planned == null) {
