@@ -259,13 +259,13 @@ public class CategoryService {
 		return categoryMap;
 	}
 	
-	/**
+	/*
 	 * TODO re-factor method processing - to make clearer/simplify
 	 * 
 	 * @param accounts
 	 * @param startMonth
 	 * @return
-	 */
+	 *
 	public List<Map<String, Object>> getCategorySummary_1(List<Account> accounts, YearMonth startMonth) {
 		
 		logger.info("getCategorySummary({}, {})", accounts, startMonth);
@@ -427,7 +427,7 @@ public class CategoryService {
 		results.add(categoryMap);
 		
 		return results;
-	}
+	} */
 	
 	/**
 	 * Returns a list of transactions for the specified category, accounts, and start and end dates (inclusive).
