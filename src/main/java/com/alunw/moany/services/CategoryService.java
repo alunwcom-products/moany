@@ -32,6 +32,13 @@ public class CategoryService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CategoryService.class);
 	
+	public static final String PLANNED_AMOUNT_KEY = "plannedAmount";
+	public static final String PLANNED_BALANCE_KEY = "plannedBalance";
+	public static final String ACTUAL_AMOUNT_KEY = "actualAmount";
+	public static final String ACTUAL_BALANCE_KEY = "actualBalance";
+	public static final String SURPLUS_AMOUNT_KEY = "surplusAmount";
+	public static final String SURPLUS_BALANCE_KEY = "surplusBalance";
+	
 	@Autowired
 	private CategoryRepository categoryRepo;
 	
@@ -48,13 +55,7 @@ public class CategoryService {
 			return results;
 		}
 		
-		// Create list of months for specified year
-		List<YearMonth> months = new ArrayList<>();
-		YearMonth yearMonth = startMonth;
-		for (int i = 0; i < 12; i++) {
-			months.add(yearMonth);
-			yearMonth = yearMonth.plusMonths(1);
-		}
+		List<YearMonth> months = getMonths(startMonth, 12);
 		
 		// Get transactions for each month for each category 
 		List<Category> categories = categoryRepo.findAll();
@@ -68,21 +69,79 @@ public class CategoryService {
 		// TODO process totals
 		results.add(processTotals(results, months));
 		
-		
-		
-		
-		// Initialize total amounts
-//		TreeMap<String, BigDecimal> totalPlannedAmount = new TreeMap<>();
-//		TreeMap<String, BigDecimal> totalActualAmount = new TreeMap<>();
-//		TreeMap<String, BigDecimal> totalPlannedBalance = new TreeMap<>();
-//		TreeMap<String, BigDecimal> totalActualBalance = new TreeMap<>();
-//		TreeMap<String, BigDecimal> totalSurplusAmount = new TreeMap<>();
-//		TreeMap<String, BigDecimal> totalSurplusBalance = new TreeMap<>();
-		
-		
-		
-		
 		return results;
+	}
+	
+	private List<YearMonth> getMonths(YearMonth startMonth, int numberOfMonths) {
+		List<YearMonth> months = new ArrayList<>();
+		YearMonth yearMonth = startMonth;
+		for (int i = 0; i < numberOfMonths; i++) {
+			months.add(yearMonth);
+			yearMonth = yearMonth.plusMonths(1);
+		}
+		return months;
+	}
+	
+	private void addPlannedAmountForMonths(Category category, List<YearMonth> months, Map<String, Object> categoryMap) {
+		Map<YearMonth, BigDecimal> resultMap = new TreeMap<>();
+		BigDecimal amount = null;
+		for (YearMonth month : months) {
+			if (category != Category.NULL_CATEGORY) {
+				amount = category.getCategoryBudget(month);
+				if (amount != null) {
+					resultMap.put(month, amount);
+				}
+			}
+		}
+		categoryMap.put(PLANNED_AMOUNT_KEY, resultMap);
+	}
+	
+	private void addPlannedBalanceForMonths(Category category, List<YearMonth> months, Map<String, Object> categoryMap) {
+		Map<YearMonth, Object> resultMap = new TreeMap<>();
+		BigDecimal total = BigDecimal.ZERO; 
+		BigDecimal amount = null;
+		for (YearMonth month : months) {
+			amount = ((Map<YearMonth, BigDecimal>) categoryMap.get(PLANNED_AMOUNT_KEY)).get(month);
+			if (amount != null) {
+				total = total.add(amount);
+				resultMap.put(month, total);
+			}
+		}
+		categoryMap.put(PLANNED_BALANCE_KEY, resultMap);
+	}
+	
+	private Map<String, Object> getActualAmountForMonths(Category category, List<YearMonth> months, List<Account> accounts) {
+		Map<String, Object> resultMap = new TreeMap<>();
+		for (YearMonth month : months) {
+			BigDecimal transactionsTotal = BigDecimal.ZERO;
+			List<Transaction> transactions = Collections.emptyList();
+			transactions = findByCategory(category, accounts, month.atDay(1), month.atEndOfMonth(), false); // TODO exclude child categories for now
+			if (!transactions.isEmpty()) {
+				for (Transaction transaction : transactions) {
+					if (transaction.getNetAmount() != null) {
+						transactionsTotal = transactionsTotal.add(transaction.getNetAmount());
+					}
+				}
+				resultMap.put(month.toString(), transactionsTotal);
+			}
+		}
+		return resultMap;
+	}
+	
+	private Map<String, Object> getActualBalanceForMonths(Category category, List<YearMonth> months) {
+		Map<String, Object> resultMap = new TreeMap<>();
+		BigDecimal total = BigDecimal.ZERO; 
+		BigDecimal amount = null;
+		for (YearMonth month : months) {
+			if (category != Category.NULL_CATEGORY) {
+				amount = category.getCategoryBudget(month);
+				if (amount != null) {
+					total = total.add(amount);
+					resultMap.put(month.toString(), total);
+				}
+			}
+		}
+		return resultMap;
 	}
 	
 	private Map<String, Object> processCategory(Category category, List<Account> accounts, List<YearMonth> months) {
@@ -92,6 +151,20 @@ public class CategoryService {
 		categoryMap.put("id", category.getId());
 		categoryMap.put("name", category.getName());
 		categoryMap.put("fullName", category.getFullName());
+		
+		categoryMap.put("test", months.iterator().next());
+		
+		addPlannedAmountForMonths(category, months, categoryMap);
+		addPlannedBalanceForMonths(category, months, categoryMap);
+//		categoryMap.put("actualAmount", getActualAmountForMonths(category, months, accounts));
+//		categoryMap.put("actualBalance", actualBalance);
+//		categoryMap.put("surplusAmount", surplusAmount);
+//		categoryMap.put("surplusBalance", surplusBalance);
+		
+		
+		
+		
+		
 		
 		TreeMap<String, Object> plannedAmount = new TreeMap<>();
 		TreeMap<String, Object> plannedBalance = new TreeMap<>();
@@ -504,5 +577,12 @@ public class CategoryService {
 		for (Category c : children) {
 			getCategoryChildren(results, c);
 		}
+	}
+	
+	public static class CategorySummary {
+		
+		private String fullName;
+		private Map<YearMonth, BigDecimal> plannedAmount;
+		
 	}
 }

@@ -188,7 +188,7 @@ public class TransactionService {
 	 * 
 	 * Work through all accounts - starting from start date, and also update net_amount
 	 * 
-	 * @param account (Optional) account to rebalance from starting balance. If null, then all accounts are rebalanced.
+	 * @param acc (Optional) account to rebalance from starting balance. If null, then all accounts are rebalanced.
 	 */
 	@Transactional // TODO check workings of this
 	public void recalculateBalances(Account acc) {
