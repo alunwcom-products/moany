@@ -26,7 +26,7 @@
         <th>Total</th>
       </tr>
     </tbody>
-    <tbody data-ng-repeat="cat in categorySummary | filter:filterCats | orderBy: 'fullName'">
+    <tbody data-ng-repeat="cat in categorySummary">
       <tr class="amountRow" ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
         <td class="t150">{{ cat.fullName }} [Planned Amount]</td>
         <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.plannedAmount[key] | currency : '£' : 2 " class="t150" style=""></td>
