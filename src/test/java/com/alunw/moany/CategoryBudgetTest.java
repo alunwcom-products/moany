@@ -87,7 +87,8 @@ public class CategoryBudgetTest {
 			logger.debug("retrieved budget: {}", cb);
 		}
 		
-		assertEquals(5, catStored.getCategoryBudgets().size());
+		// TODO Note that only 4 budgets are stored as the fourth and fifth have the same start date
+		assertEquals(4, catStored.getCategoryBudgets().size());
 		
 		assertEquals(null, catStored.getCategoryBudget(YearMonth.parse("2018-04")));
 		assertEquals(new BigDecimal("2.00"), catStored.getCategoryBudget(YearMonth.parse("2018-05")));

@@ -5,7 +5,7 @@ moany.homeFolder: ""
 moany.admin.username: test
 moany.admin.password: password
 
-spring.jpa.hibernate.ddl-auto: create
+spring.jpa.hibernate.ddl-auto: create-drop
 
 spring.freemarker.template-loader-path: classpath:/freemarker
 spring.freemarker.suffix: .ftl
