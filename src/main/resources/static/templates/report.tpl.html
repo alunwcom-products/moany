@@ -23,39 +23,39 @@
       <tr>
         <th>Category</th>
         <th data-ng-repeat="(key, value) in headings">{{ key }}</th>
-        <th>Total</th>
+        <!-- <th>Total</th> -->
       </tr>
     </tbody>
     <tbody data-ng-repeat="cat in categorySummary">
       <tr class="amountRow" ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
         <td class="t150">{{ cat.fullName }} [Planned Amount]</td>
         <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.plannedAmount[key] | currency : '£' : 2 " class="t150" style=""></td>
-        <td style=""></td>
+        <!-- <td style=""></td> -->
       </tr>
       <tr class="paleBalanceRow" ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
         <td class="t150">{{ cat.fullName }} [Planned Balance]</td>
         <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.plannedBalance[key] | currency : '£' : 2 " class="t150" style=""></td>
-        <td style=""></td>
+        <!-- <td style=""></td> -->
       </tr>
       <tr class="amountRow" ng-click="ctrl.toggleCompact()">
         <td class="t150">{{ cat.fullName }} [Actual Amount]</td>
         <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.actualAmount[key] | currency : '£' : 2 " class="t150" style=""></td>
-        <td style=""></td>
+        <!-- <td style=""></td> -->
       </tr>
       <tr class="paleBalanceRow" ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
         <td class="t150">{{ cat.fullName }} [Actual Balance]</td>
         <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.actualBalance[key] | currency : '£' : 2 " class="t150" style=""></td>
-        <td style=""></td>
+        <!-- <td style=""></td> -->
       </tr>
       <tr ng-show="ctrl.compact" ng-click="ctrl.toggleCompact()">
         <td class="t150">{{ cat.fullName }} [Surplus Amount]</td>
         <td style="{{ ctrl.amountStatus(cat.surplusAmount[key]) }}" data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.surplusAmount[key] | currency : '£' : 2 " class="t150" style=""></td>
-        <td style=""></td>
+        <!-- <td style=""></td> -->
       </tr>
       <tr class="balanceRow" ng-click="ctrl.toggleCompact()">
         <td class="t150">{{ cat.fullName }} [Surplus Balance]</td>
         <td style="{{ ctrl.amountStatus(cat.surplusBalance[key]) }}" data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.surplusBalance[key] | currency : '£' : 2 " class="t150" style=""></td>
-        <td style=""></td>
+        <!-- <td style=""></td> -->
       </tr>
     </tbody>
   </table>
