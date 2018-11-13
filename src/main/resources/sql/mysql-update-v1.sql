@@ -18,8 +18,7 @@ CREATE TABLE moany.categories (
   name varchar(255) NOT NULL,
   parent_id varchar(255) DEFAULT NULL,
   PRIMARY KEY ( uuid ),
-  KEY parent_id_key ( parent_id ),
-  CONSTRAINT parent_id_key FOREIGN KEY ( parent_id ) REFERENCES moany.categories ( uuid )
+  KEY parent_id_key ( parent_id )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE moany.transactions (
@@ -39,9 +38,7 @@ CREATE TABLE moany.transactions (
   category varchar(255) DEFAULT NULL,
   PRIMARY KEY ( uuid ),
   KEY account_key ( account ),
-  KEY category_key ( category ),
-  CONSTRAINT account_key FOREIGN KEY ( account ) REFERENCES moany.accounts ( uuid ),
-  CONSTRAINT category_key FOREIGN KEY ( category ) REFERENCES moany.categories ( uuid )
+  KEY category_key ( category )
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE moany.system_info (
