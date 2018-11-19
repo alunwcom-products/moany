@@ -46,8 +46,8 @@ pipeline {
 		}
 		stage('publish-artifacts') {
 			steps {
-				//junit 'build/**/TEST*.xml'
-				archiveArtifacts artifacts: 'build/libs/*.jar',
+				junit 'build/**/TEST*.xml'
+				archiveArtifacts artifacts: 'build/libs/*.war',
 					fingerprint: true,
 					allowEmptyArchive: true
 			}
