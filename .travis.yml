@@ -1,2 +1,2 @@
 language: java
-script: sh gradlew build
+install: true
