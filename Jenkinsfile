@@ -50,6 +50,19 @@ pipeline {
 				archiveArtifacts artifacts: 'build/libs/*.war',
 					fingerprint: true,
 					allowEmptyArchive: true
+				
+				rtUpload (
+					serverId: "artifactory",
+					spec:
+					"""{
+						"files": [
+							{
+								"pattern": "build/libs/*.war",
+								"target": "moany-public/"
+							}
+						]
+					}"""
+				)
 			}
 		}
 	}
