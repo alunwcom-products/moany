@@ -58,7 +58,7 @@ pipeline {
 						"files": [
 							{
 								"pattern": "build/libs/*.war",
-								"target": "moany-public/"
+								"target": "generic-local/moany-public/"
 							}
 						]
 					}"""
