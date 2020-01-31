@@ -31,15 +31,6 @@ public class DefaultController implements ErrorController {
 	}
 	
 	/**
-	 * TODO app status page??
-	 */
-	@RequestMapping(path = "/status", method = RequestMethod.GET)
-	public ModelAndView status(Principal principal, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("status() [user={}, remote={}]", getPrincipalName(principal), request.getRemoteAddr());
-		return new ModelAndView("status");
-	}
-	
-	/**
 	 * Application home/index page.
 	 * 
 	 * @param request
