@@ -17,6 +17,7 @@ spring.resources.static-locations: classpath:/META-INF/resources/,classpath:/res
 #spring.datasource.url: jdbc:mysql://localhost:3306/moany?verifyServerCertificate=false&useSSL=true
 #spring.datasource.username: moany
 #spring.datasource.password: password
+#spring.jpa.database-platform: MySQL8
 
 server.error.whitelabel.enabled: false
 

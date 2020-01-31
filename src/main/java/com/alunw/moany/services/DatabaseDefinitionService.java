@@ -48,8 +48,10 @@ import com.alunw.moany.repository.UserRepository;
 @Component
 public class DatabaseDefinitionService {
 	
-	public static final String HIBERNATE_DIALECT = "hibernate.dialect";
-	public static final String HIBERNATE_AUTO = "hibernate.hbm2ddl.auto";
+	public static final String HIBERNATE_DIALECT_KEY = "hibernate.dialect";
+	public static final String HIBERNATE_DIALECT_MYSQL_8 = "MySQL8";
+	public static final String HIBERNATE_DIALECT_H2 = "H2";
+	public static final String HIBERNATE_AUTO_KEY = "hibernate.hbm2ddl.auto";
 	public static final String CREATE_DROP = "create-drop";
 	
 	private static Logger logger = LoggerFactory.getLogger(DatabaseDefinitionService.class);
@@ -75,6 +77,13 @@ public class DatabaseDefinitionService {
 	@Autowired
 	private UserAuthorityRepository authorityRepo;
 	
+	/**
+	 * Since Spring Boot 2.2 have needed to revise the identification of the 
+	 * database dialect. If not set in application.yml, HIBERNATE_DIALECT appears
+	 * as null - so if this value is null we will treat as (local) H2 database.
+	 * 
+	 * @throws SQLException
+	 */
 	@PostConstruct
 	public void initializeDatabase() throws SQLException {
 		
@@ -83,10 +92,16 @@ public class DatabaseDefinitionService {
 		EntityManagerFactory emf = em.getEntityManagerFactory();
 		Map<String, Object> properties = emf.getProperties();
 		
-		String hibernateDialect = (String) properties.get(HIBERNATE_DIALECT);
-		logger.debug(HIBERNATE_DIALECT + " = " + hibernateDialect);
-		String hibernateAuto = (String) properties.get(HIBERNATE_AUTO);
-		logger.debug(HIBERNATE_AUTO + " = " + hibernateAuto);
+		String hibernateDialect = (String) properties.get(HIBERNATE_DIALECT_KEY);
+		if (hibernateDialect == null) {
+			hibernateDialect = HIBERNATE_DIALECT_H2;
+			logger.debug(HIBERNATE_DIALECT_KEY + " is null. Assuming " + hibernateDialect + ".");
+		} else {
+			logger.debug(HIBERNATE_DIALECT_KEY + " = " + hibernateDialect);
+		}
+		
+		String hibernateAuto = (String) properties.get(HIBERNATE_AUTO_KEY);
+		logger.debug(HIBERNATE_AUTO_KEY + " = " + hibernateAuto);
 		
 		// TODO factor out vendor specific code - and check for valid dialects
 		try {
@@ -181,7 +196,7 @@ public class DatabaseDefinitionService {
 		logger.info("Using H2 database...");
 		
 		if (hibernateAuto == null || !CREATE_DROP.equals(hibernateAuto)) {
-			throw new Exception("H2 database can only be used with " + HIBERNATE_AUTO + "=" + CREATE_DROP);
+			throw new Exception("H2 database can only be used with " + HIBERNATE_AUTO_KEY + "=" + CREATE_DROP);
 		}
 		// Don't need to create/update H2 database
 	}
@@ -199,7 +214,7 @@ public class DatabaseDefinitionService {
 		
 		// MySQL dialect can be used with any auto value, but if not set check if database exists, and create/update if required
 		if (hibernateAuto != null && !hibernateAuto.isEmpty()) {
-			throw new Exception("MySQL database can only be used without " + HIBERNATE_AUTO + " set.");
+			throw new Exception("MySQL database can only be used without " + HIBERNATE_AUTO_KEY + " set.");
 		}
 		
 		int currentDbVersion = mysqlDbVersion();
