@@ -1,5 +1,7 @@
 # README #
 
+[![Build Status](https://travis-ci.com/alunwcom/moany-public.svg?branch=master)](https://travis-ci.com/alunwcom/moany-public)
+
 ----
 
 ## What's this? ##
