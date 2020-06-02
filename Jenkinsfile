@@ -2,7 +2,13 @@
 // Jenkins declarative pipeline
 
 pipeline {
-	agent { dockerfile true }
+	agent {
+		dockerfile {
+			filename 'Dockerfile'
+			label 'moany-public'
+			args '-v $HOME/.gradle:/root/.gradle'
+		}
+	}
 	triggers {
 		pollSCM('H/5 * * * *')
 	}
