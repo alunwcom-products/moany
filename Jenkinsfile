@@ -4,8 +4,8 @@
 pipeline {
 	agent {
 		dockerfile {
-			filename 'Dockerfile'
-			label 'moany-public'
+			//filename 'Dockerfile'
+			//label 'moany-public'
 			args '-v $HOME/.gradle:/root/.gradle'
 		}
 	}
