@@ -2,10 +2,7 @@
 // Jenkins declarative pipeline
 
 pipeline {
-	agent any
-	tools {
-		jdk 'OpenJDK 8'
-	}
+	agent { dockerfile true }
 	triggers {
 		pollSCM('H/5 * * * *')
 	}
@@ -32,24 +29,11 @@ pipeline {
 			}
 			steps {
 				echo "Git commit = ${GIT_COMMIT}"
-				sh "sh gradlew build -Pversion=SNAPSHOT-${GIT_COMMIT}"
-			}
-		}
-		stage('build-release') {
-			when {
-				tag 'v*.*.*'
-			}
-			steps {
-				echo "Git tag = ${TAG_NAME}"
-				sh "sh gradlew build -Pversion=${TAG_NAME}"
 			}
 		}
 		stage('publish-artifacts') {
 			steps {
-				junit 'build/**/TEST*.xml'
-				archiveArtifacts artifacts: 'build/libs/*.war',
-					fingerprint: true,
-					allowEmptyArchive: true
+				echo "TODO"
 			}
 		}
 	}
