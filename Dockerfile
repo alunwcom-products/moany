@@ -15,4 +15,4 @@ FROM openjdk:8-jre-alpine
 
 RUN mkdir -p /opt/software/
 COPY --from=build /workspace/build/libs/moany-SNAPSHOT.war /opt/software/moany.war
-ENTRYPOINT ["java","-jar","/opt/software/moany.war"]
+CMD ["java","-jar","/opt/software/moany.war"]
