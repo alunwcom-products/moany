@@ -6,7 +6,8 @@ pipeline {
 		dockerfile {
 			//filename 'Dockerfile'
 			//label 'moany-public'
-			args ' --entrypoint /bin/bash'
+			additionalBuildArgs  '-v $HOME/.gradle:/root/.gradle'
+			args ' --entrypoint /bin/sh'
 		}
 	}
 	triggers {

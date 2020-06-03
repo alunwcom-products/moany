@@ -3,7 +3,6 @@
 #
 
 FROM openjdk:8-jdk-alpine as build
-VOLUME ["/root/.gradle"]
 WORKDIR /workspace
 COPY . /workspace
 RUN sh gradlew build
