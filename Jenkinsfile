@@ -6,7 +6,7 @@ pipeline {
 		dockerfile {
 			//filename 'Dockerfile'
 			//label 'moany-public'
-			args '-v $HOME/.gradle:/root/.gradle'
+			args ' --it --entrypoint /bin/bash'
 		}
 	}
 	triggers {
@@ -30,6 +30,7 @@ pipeline {
 			}
 			steps {
 				echo "Git commit = ${GIT_COMMIT}"
+				sh 'java -version'
 			}
 		}
 		stage('publish-artifacts') {
