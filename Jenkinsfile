@@ -6,7 +6,7 @@ pipeline {
 		dockerfile {
 			//filename 'Dockerfile'
 			//label 'moany-public'
-			args ' --it --entrypoint /bin/bash'
+			args ' --entrypoint /bin/bash'
 		}
 	}
 	triggers {
