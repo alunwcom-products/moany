@@ -7,7 +7,7 @@ pipeline {
 			//filename 'Dockerfile'
 			//label 'moany-public'
 			additionalBuildArgs  ' -t alunwcom/moany-public '
-			args ' --entrypoint /bin/sh'
+			//args ' --entrypoint /bin/sh'
 		}
 	}
 	triggers {
