@@ -1,9 +1,13 @@
+
+// Jenkins declarative pipeline
+
 pipeline {
 	agent {
 		dockerfile {
-			filename 'Dockerfile.build'
-			additionalBuildArgs  ' -t alunwcom/moany-public-build '
-			args '-v workspace:/workspace'
+			//filename 'Dockerfile'
+			//label 'moany-public'
+			additionalBuildArgs  ' -t alunwcom/moany-public '
+			//args ' --entrypoint /bin/sh'
 		}
 	}
 	triggers {
@@ -27,7 +31,7 @@ pipeline {
 			}
 			steps {
 				echo "Git commit = ${GIT_COMMIT}"
-				sh 'ls -l workspace'
+				sh 'java -version'
 			}
 		}
 		stage('publish-artifacts') {
