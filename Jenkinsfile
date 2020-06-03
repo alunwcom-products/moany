@@ -22,11 +22,6 @@ pipeline {
 				deleteDir() // clear workspace
 			}
 		}
-		stage('checkout') {
-			steps {
-				checkout scm
-			}
-		}
 		stage('build-snapshot') {
 			when {
 				not {
