@@ -6,7 +6,7 @@ pipeline {
 		dockerfile {
 			//filename 'Dockerfile'
 			//label 'moany-public'
-			additionalBuildArgs  '-v $HOME/.gradle:/root/.gradle'
+			additionalBuildArgs  ' -t alunwcom/moany-public '
 			args ' --entrypoint /bin/sh'
 		}
 	}
