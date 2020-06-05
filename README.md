@@ -58,5 +58,6 @@ BACKLOG
 
 ----
 
+|||
 |---|---|
 | people | person 1<br>person 2 |
