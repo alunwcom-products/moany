@@ -60,5 +60,4 @@ BACKLOG
 
 | table | test |
 |---|---|
-| people | person 1   
-person 2 |
+| people | person 1<br>person 2 |
