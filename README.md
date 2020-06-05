@@ -57,3 +57,7 @@ BACKLOG
 - Allow mass selection/change of categories + filtering transactions.
 
 ----
+
+| table | test |
+| people | person 1 
+person 2 |
