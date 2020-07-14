@@ -4,7 +4,7 @@ pipeline {
 			filename 'Dockerfile.build'
 			additionalBuildArgs  ' -t alunwcom/moany-public-build '
 			//args '-v workspace:/workspace'
-			args '-v $HOME/.gradle:/root/.gradle'
+			args '-v ~/.gradle:/root/.gradle'
 		}
 	}
 	triggers {
@@ -31,6 +31,7 @@ pipeline {
 				sh '''
 					pwd
 					echo $HOME
+					ls -la
 				'''
 			}
 		}
