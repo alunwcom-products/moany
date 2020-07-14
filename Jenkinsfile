@@ -3,7 +3,8 @@ pipeline {
 		dockerfile {
 			filename 'Dockerfile.build'
 			additionalBuildArgs  ' -t alunwcom/moany-public-build '
-			args '-v workspace:/workspace'
+			//args '-v workspace:/workspace'
+			args '-v $HOME/.gradle:/root/.gradle'
 		}
 	}
 	triggers {
@@ -16,7 +17,7 @@ pipeline {
 		stage('init') {
 			steps {
 				echo "Using workspace [${WORKSPACE}]"
-				deleteDir() // clear workspace
+				//deleteDir() // clear workspace
 			}
 		}
 		stage('build-snapshot') {
@@ -27,7 +28,10 @@ pipeline {
 			}
 			steps {
 				echo "Git commit = ${GIT_COMMIT}"
-				sh 'ls -l workspace'
+				sh '''
+					pwd
+					echo $HOME
+				'''
 			}
 		}
 		stage('publish-artifacts') {
