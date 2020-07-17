@@ -1,9 +1,9 @@
 package com.alunw.moany.services;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,8 +14,6 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
@@ -53,6 +51,7 @@ public class DatabaseDefinitionService {
 	public static final String HIBERNATE_DIALECT_H2 = "H2";
 	public static final String HIBERNATE_AUTO_KEY = "hibernate.hbm2ddl.auto";
 	public static final String CREATE_DROP = "create-drop";
+	public static final String MYSQL_SCRIPT_PATH = "sql/";
 	
 	private static Logger logger = LoggerFactory.getLogger(DatabaseDefinitionService.class);
 	
@@ -221,9 +220,9 @@ public class DatabaseDefinitionService {
 		logger.debug("current database version = {}", currentDbVersion);
 		
 		// TODO move mysql scripts to separate sub-folder
-		TreeMap<Integer, Resource> updateScripts = getVersionedScripts("classpath:sql/mysql-update-v*.sql", "^mysql-update-v([0-9]+).sql$");
+		TreeMap<Integer, Resource> updateScripts = getVersionedScripts("classpath:" + MYSQL_SCRIPT_PATH + "mysql-update-v*.sql", "^mysql-update-v([0-9]+).sql$");
 		// TODO executed update/rollback commands should be stored in database to allow rollback
-		TreeMap<Integer, Resource> rollbackScripts = getVersionedScripts("classpath:sql/mysql-rollback-v*.sql", "^mysql-rollback-v([0-9]+).sql$");
+		TreeMap<Integer, Resource> rollbackScripts = getVersionedScripts("classpath:" + MYSQL_SCRIPT_PATH + "mysql-rollback-v*.sql", "^mysql-rollback-v([0-9]+).sql$");
 		
 		if (updateScripts.isEmpty()) {
 			throw new Exception("No MySQL database update scripts found.");
@@ -261,23 +260,16 @@ public class DatabaseDefinitionService {
 	private void mysqlExecuteScript(Resource script) throws Exception {
 		
 		logger.info("Running database script: {}", script.getFilename());
+		String sql = getResourceAsString(script);
+		logger.debug("Update SQL:\n{}\n", sql);
 		
-		String[] blocks = getResourceAsString(script).split(";");
-		int i = 0;
-		for (String block : blocks) {
-			if (!block.trim().isEmpty()) {
-				i++;
-				logger.debug("section #{}: \n{}", i, block);
-				
-				Connection c = dataSource.getConnection();
-				c.setAutoCommit(false);
-				Statement statement = c.createStatement();
-				statement.executeUpdate(block);
-				statement.close();
-				c.commit();
-				c.close();
-			}
-		}
+		Connection c = dataSource.getConnection();
+		c.setAutoCommit(false);
+		Statement statement = c.createStatement();
+		statement.executeUpdate(sql);
+		statement.close();
+		c.commit();
+		c.close();
 	}
 	
 	private TreeMap<Integer, Resource> getVersionedScripts(String resourcePattern, String versionMatchingPattern) throws IOException {
@@ -303,12 +295,29 @@ public class DatabaseDefinitionService {
 	}
 	
 	private String getResourceAsString(Resource resource) throws IOException {
-		Path path = Paths.get(resource.getURI());
-		Stream<String> lines = Files.lines(path);
-		String data = lines.collect(Collectors.joining(" \n"));
-		lines.close();
 		
-		return data;
+		String resourcePath = MYSQL_SCRIPT_PATH + resource.getFilename();
+		logger.debug("Getting resource as string: {}",  resourcePath);
+		
+		InputStream inputStream = null;
+		StringBuilder data = new StringBuilder();
+		try {
+			ClassLoader classLoader = getClass().getClassLoader();
+			inputStream = classLoader.getResourceAsStream(resourcePath);
+			
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					data.append(line).append("\n");
+				}
+			}
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+		}
+		
+		return data.toString();
 	}
 	
 	/**
