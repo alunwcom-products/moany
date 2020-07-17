@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +35,7 @@ import com.alunw.moany.model.UserAuthority;
 import com.alunw.moany.model.UserAuthorityTypes;
 import com.alunw.moany.repository.UserAuthorityRepository;
 import com.alunw.moany.repository.UserRepository;
+import com.alunw.moany.utils.ScriptRunner;
 
 /**
  * TODO Experimental service, to handle database initialization and migration (update/rollback).
@@ -260,14 +260,17 @@ public class DatabaseDefinitionService {
 	private void mysqlExecuteScript(Resource script) throws Exception {
 		
 		logger.info("Running database script: {}", script.getFilename());
-		String sql = getResourceAsString(script);
-		logger.debug("Update SQL:\n{}\n", sql);
 		
 		Connection c = dataSource.getConnection();
 		c.setAutoCommit(false);
-		Statement statement = c.createStatement();
-		statement.executeUpdate(sql);
-		statement.close();
+		
+		ScriptRunner runner = new ScriptRunner(c, false, false);
+		
+		String resourcePath = MYSQL_SCRIPT_PATH + script.getFilename();
+		ClassLoader classLoader = getClass().getClassLoader();
+		InputStream inputStream = classLoader.getResourceAsStream(resourcePath);
+		runner.runScript(new BufferedReader(new InputStreamReader(inputStream)));
+		
 		c.commit();
 		c.close();
 	}
@@ -292,32 +295,6 @@ public class DatabaseDefinitionService {
 		}
 		
 		return scripts;
-	}
-	
-	private String getResourceAsString(Resource resource) throws IOException {
-		
-		String resourcePath = MYSQL_SCRIPT_PATH + resource.getFilename();
-		logger.debug("Getting resource as string: {}",  resourcePath);
-		
-		InputStream inputStream = null;
-		StringBuilder data = new StringBuilder();
-		try {
-			ClassLoader classLoader = getClass().getClassLoader();
-			inputStream = classLoader.getResourceAsStream(resourcePath);
-			
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-				String line;
-				while ((line = br.readLine()) != null) {
-					data.append(line).append("\n");
-				}
-			}
-		} finally {
-			if (inputStream != null) {
-				inputStream.close();
-			}
-		}
-		
-		return data.toString();
 	}
 	
 	/**

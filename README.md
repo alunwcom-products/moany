@@ -1,8 +1,17 @@
-# README #
+# README
 
-----
+## WIP
 
-## What's this? ##
++ handle failure to connect to database more gracefully - no stacktraces, and just retry and log...
++ 
+```
+-Dspring.profiles.active=dev
+
+export spring_profiles_active=dev
+
+```
+
+## What's this?
 
 'Moany' ... me moaning about money.
 
@@ -10,9 +19,8 @@
 * Why? To track personal accounts, transactions, and do away with pesky spreadsheets.
 * It's a pet project allowing me to try out different things, and hopefully get a basically functioning app.
 
-----
 
-### ISSUES/TODO ###
+### ISSUES/TODO
 
 NEXT RELEASE: v7.0.0
 
