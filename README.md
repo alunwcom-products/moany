@@ -3,7 +3,8 @@
 ## WIP
 
 + handle failure to connect to database more gracefully - no stacktraces, and just retry and log...
-+ 
+
+
 ```
 -Dspring.profiles.active=dev
 
