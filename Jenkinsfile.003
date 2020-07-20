@@ -1,0 +1,36 @@
+pipeline {
+	agent docker
+	triggers {
+		pollSCM('H/5 * * * *')
+	}
+	options {
+		buildDiscarder(logRotator(numToKeepStr: '7'))
+	}
+	stages {
+		stage('init') {
+			steps {
+				echo "Using workspace [${WORKSPACE}]"
+			}
+		}
+		stage('build-snapshot') {
+			when {
+				not {
+					tag 'v*.*.*'
+				}
+			}
+			steps {
+				echo "Git commit = ${GIT_COMMIT}"
+				sh '''
+					docker build -t moany-public:latest -f Dockerfile .
+					docker-compose
+				'''
+			}
+		}
+		stage('publish-artifacts') {
+			steps {
+				echo "TODO"
+			}
+		}
+	}
+}
+
