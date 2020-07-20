@@ -5,6 +5,7 @@
 FROM openjdk:8-jdk-alpine as build
 WORKDIR /workspace
 COPY . /workspace
+RUN echo "hello"
 VOLUME /root/.gradle
 RUN sh gradlew build
 
