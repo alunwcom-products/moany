@@ -12,6 +12,7 @@ repositories {
 
 checkstyle { 
 	configFile = 'src/test/resources/checkstyle.xml' as File
+	//configFile = 'src/test/resources/sun_checks.xml' as File
 }
 
 sourceCompatibility = 1.8
