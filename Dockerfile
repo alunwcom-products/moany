@@ -2,7 +2,7 @@
 # build image
 #
 
-FROM openjdk:8-jdk-alpine as build
+FROM openjdk:11-jdk-alpine as build
 WORKDIR /workspace
 COPY . /workspace
 RUN echo "hello"
@@ -13,7 +13,7 @@ RUN sh gradlew build
 # deployment image
 #
 
-FROM openjdk:8-jre-alpine
+FROM openjdk:11-jre-alpine
 
 RUN mkdir -p /opt/software/
 COPY --from=build /workspace/build/libs/moany-SNAPSHOT.war /opt/software/moany.war
