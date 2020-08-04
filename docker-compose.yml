@@ -6,6 +6,10 @@ services:
     build: .
     ports:
       - "9080:9080"
+    environment:
+      MYSQL_URL: 'jdbc:mysql://db:3306/moany?verifyServerCertificate=false&useSSL=true'
+      MYSQL_USER: 'moany'
+      MYSQL_PASSWORD: 'password'
   db:
     image: mariadb
     restart: always
