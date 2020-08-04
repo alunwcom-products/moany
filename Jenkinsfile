@@ -1,11 +1,37 @@
-node {
-	stage('init') {
-		checkout scm
+pipeline {
+	agent docker
+	triggers {
+		pollSCM('H/5 * * * *')
 	}
-	stage('build') {
-		def customImage = docker.build("alunwcom/moany-public:${env.BUILD_ID}")
-		customImage.inside {
-			sh 'ls -lR /opt/software/moany/'
+	options {
+		buildDiscarder(logRotator(numToKeepStr: '7'))
+	}
+	stages {
+		stage('init') {
+			steps {
+				echo "Using workspace [${WORKSPACE}]"
+			}
+		}
+		stage('build-snapshot') {
+			when {
+				not {
+					tag 'v*.*.*'
+				}
+			}
+			steps {
+				echo "Git commit = ${GIT_COMMIT}"
+				sh '''
+					docker build -t alunwcom/moany-public:${BUILD_ID} -f Dockerfile .
+				'''
+			}
+		}
+		stage('publish-artifacts') {
+			steps {
+				sh '''
+					docker image ls | grep moany-public
+				'''
+			}
 		}
 	}
 }
+
