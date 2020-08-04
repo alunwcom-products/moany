@@ -1,7 +1,11 @@
 node {
-	checkout scm
-	def customImage = docker.build("alunwcom/moany-public:${env.BUILD_ID}")
-	customImage.inside {
-		sh 'ls -l /opt/software/moany/'
+	stage('init') {
+		checkout scm
+	}
+	stage('build') {
+		def customImage = docker.build("alunwcom/moany-public:${env.BUILD_ID}")
+		customImage.inside {
+			sh 'ls -lR /opt/software/moany/'
+		}
 	}
 }
