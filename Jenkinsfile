@@ -21,7 +21,21 @@ pipeline {
 			steps {
 				echo "Git commit = ${GIT_COMMIT}"
 				sh '''
-					docker build -t alunwcom/moany-public:${BUILD_ID} -f Dockerfile .
+					docker build -t alunwcom/moany-public:${BUILD_ID} -t alunwcom/moany-public:latest -f Dockerfile .
+				'''
+			}
+		}
+		stage('deploy-snapshot') {
+			when {
+				not {
+					tag 'v*.*.*'
+				}
+			}
+			steps {
+				sh '''
+					#docker-compose down --remove-orphans
+					docker-compose build
+					docker-compose up -d --remove-orphans
 				'''
 			}
 		}

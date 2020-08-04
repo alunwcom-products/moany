@@ -3,7 +3,7 @@ services:
   app:
     depends_on:
       - db
-    build: .
+    image: alunwcom/moany-public
     ports:
       - "9080:9080"
     environment:
