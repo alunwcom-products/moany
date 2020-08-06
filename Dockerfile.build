@@ -1,8 +1,0 @@
-#
-# build image
-#
-
-FROM openjdk:8-jdk-alpine
-WORKDIR /workspace
-COPY . /workspace
-RUN sh gradlew build
