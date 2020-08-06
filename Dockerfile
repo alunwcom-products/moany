@@ -15,7 +15,7 @@ FROM openjdk:11-jre
 RUN mkdir -p /opt/software/moany/config
 VOLUME /opt/software/moany/config
 COPY --from=build /workspace/build/libs/moany-SNAPSHOT.war /opt/software/moany/moany.war
-ENV SPRING_PROFILES_ACTIVE="default" \
+ENV SPRING_PROFILES_ACTIVE="datasource" \
     DB_URL="jdbc:h2:mem:moany" \
     DB_USER="sa" \
     DB_PASSWORD="password" \
