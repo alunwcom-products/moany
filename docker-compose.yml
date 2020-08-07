@@ -4,6 +4,9 @@ services:
     depends_on:
       - db
     image: alunwcom/moany-public
+    container_name: moany-app-test
+    networks:
+      - moany-backend-test
     ports:
       - "9080:9080"
     environment:
@@ -13,6 +16,9 @@ services:
       DB_PLATFORM: 'MySQL8'
   db:
     image: mariadb
+    container_name: moany-db-test
+    networks:
+      - moany-backend-test
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: secret
@@ -23,3 +29,5 @@ services:
       - "3336:3306"
     volumes:
       - "/home/alunwcom/mysql:/var/lib/mysql"
+networks:
+  moany-backend-test:
