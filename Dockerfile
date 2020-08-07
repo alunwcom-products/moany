@@ -6,6 +6,7 @@ FROM openjdk:11-jdk as build
 WORKDIR /workspace
 COPY . /workspace
 RUN sh gradlew build
+RUN ls -l build/libs
 
 #
 # deployment image
