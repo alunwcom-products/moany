@@ -24,6 +24,10 @@ spring.resources.static-locations: classpath:/META-INF/resources/,classpath:/res
 #spring.datasource.password: password
 #spring.jpa.database-platform: MySQL8
 
+#moany:
+#  databaseStartupInterval: 5
+#  databaseStartupTimeout: 120
+
 server.error.whitelabel.enabled: false
 
 # none This is the default for MySQL, no change to the database structure.
