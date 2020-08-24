@@ -7,13 +7,19 @@ $ docker build -t alunwcom/moany-public:latest -f Dockerfile .
 
 $ docker network create moany
 
+$ aws s3 cp s3://alunwcom-repo/backups/node4/moany-db.sql ~
+
 $ cat maria.env
 MYSQL_ROOT_PASSWORD=secret
 MYSQL_DATABASE=moany
 MYSQL_USER=moany
 MYSQL_PASSWORD=password
 
-$ docker run -d -p 3336:3306 --network="moany" --env-file maria.env --name moany-db-uat mariadb:latest
+$ docker run -d -p 3336:3306 -v ~/moany-db-uat:/var/lib/mysql --network="moany" --env-file maria.env --name moany-db-uat mariadb:latest
+
+$ docker logs -f moany-db-uat
+
+$ mysql moany -h 192.168.1.51 -P 3336 -u moany -p < ~/moany-db.sql
 
 $ cat h2.env
 DB_URL=jdbc:h2:mem:moany
@@ -22,6 +28,14 @@ DB_PASSWORD=password
 DB_PLATFORM=H2
 
 $ docker run -d -p 9080:9080 --network="moany" --env-file h2.env --name moany-uat alunwcom/moany-public:latest
+
+$ cat maria.env
+DB_URL=jdbc:mysql://moany-db-uat:3306/moany?verifyServerCertificate=false&useSSL=true
+DB_USER=moany
+DB_PASSWORD=password
+DB_PLATFORM=MySQL8
+
+$ docker run -d -p 9080:9080 --network="moany" --env-file maria.env --name moany-app-uat alunwcom/moany-public:latest
 
 $ docker ps -a
 CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS                PORTS                                 NAMES
