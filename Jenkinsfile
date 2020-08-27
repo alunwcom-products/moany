@@ -36,8 +36,14 @@ pipeline {
 				    docker rm -f moany-app-uat || true
 				    docker rm -f moany-db-uat || true
 				    docker network prune -f
+
 				    docker network create moany || true
-				    docker run -d -p 9080:9080 --network="moany" --env-file h2.env --name moany-app-uat alunwcom/moany-public:${BUILD_ID}
+
+				    docker run -d -p 3336:3306 --network="moany" --env-file maria.env --name moany-db-uat mariadb:latest
+				    sleep 30
+				    docker exec -i moany-db-uat sh -c 'exec mysql moany -hmoany-db-uat -uroot -p"$MYSQL_ROOT_PASSWORD"' < /srv/backups/moany-db.sql
+
+				    docker run -d -p 9080:9080 --network="moany" --env-file mysql.env --name moany-app-uat alunwcom/moany-public:${BUILD_ID}
 				'''
 			}
 		}

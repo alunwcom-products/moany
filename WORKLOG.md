@@ -29,7 +29,7 @@ DB_PLATFORM=H2
 
 $ docker run -d -p 9080:9080 --network="moany" --env-file h2.env --name moany-uat alunwcom/moany-public:latest
 
-$ cat maria.env
+$ cat mysql.env
 DB_URL=jdbc:mysql://moany-db-uat:3306/moany?verifyServerCertificate=false&useSSL=true
 DB_USER=moany
 DB_PASSWORD=password
