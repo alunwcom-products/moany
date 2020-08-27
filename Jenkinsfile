@@ -33,9 +33,10 @@ pipeline {
 			}
 			steps {
 				sh '''
-					docker-compose down --remove-orphans
-					docker-compose build
-					docker-compose up -d --remove-orphans
+				    docker rm -f moany-app-uat
+				    docker network prune -f
+				    docker network create moany
+				    docker run -d -p 9080:9080 --network="moany" --env-file h2.env --name moany-app-uat alunwcom/moany-public:${BUILD_ID}
 				'''
 			}
 		}
