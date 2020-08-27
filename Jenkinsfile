@@ -33,9 +33,10 @@ pipeline {
 			}
 			steps {
 				sh '''
-				    docker rm -f moany-app-uat
+				    docker rm -f moany-app-uat || true
+				    docker rm -f moany-db-uat || true
 				    docker network prune -f
-				    docker network create moany
+				    docker network create moany || true
 				    docker run -d -p 9080:9080 --network="moany" --env-file h2.env --name moany-app-uat alunwcom/moany-public:${BUILD_ID}
 				'''
 			}
