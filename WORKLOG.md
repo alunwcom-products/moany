@@ -2,6 +2,13 @@
 
 ## 27-Aug-2020
 
++ What's needed to complete Jenkins build?
+    + auto-build/test Docker image on commit - any branch.
+    + UAT build - manual, from specified tag - using existing DB or latest DB backup.
+    + Parameters:
+        + tag
+        + refresh database
+
 + Need to consider next steps (i.e. complete docker_build branch).
     + What features are really important for me? 
         + Monitoring cashflow - to see surplus/deficit for month/year. How?

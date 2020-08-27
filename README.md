@@ -47,7 +47,6 @@ BACKLOG
 - FEATURE: What is the behaviour when an account is deleted? Are transactions deleted? Need to include budget items too!
 - FEATURE: What needs to be done to allow multiple users/accounts??
 - ENHANCEMENT: Add Spring unit tests.
-- FEATURE: Dockerize moany for easier deployment.
 - ENHANCEMENT/BUG: Need to make the UI update when data changes.
 - ENHANCEMENT/BUG: Clear tr form after transaction deleted
 - ENHANCEMENT: Remove stored statements, create test statements as test resource with unit tests.
