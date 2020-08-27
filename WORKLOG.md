@@ -1,5 +1,11 @@
 # WORKLOG
 
+## 27-Aug-2020
+
++ Work on Jenkinsfile - to spin-up UAT instance from backup data.
+    + Need to retrieve latest backup from S3 - either in pipeline (AWS credentials needed), or as cronjob.
+    + Need to secure envvars used in Jenkinsfile (not in Git in plain text).
+
 ## 24-Aug-2020
 
 ```
