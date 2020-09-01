@@ -47,10 +47,10 @@ pipeline {
         }
         stage('deploy') {
             when {
-                expression { params.DEPLOYMENT_ENVIRONMENT != null && params.DEPLOYMENT_ENVIRONMENT != '' }
+                expression { env.DEPLOYMENT_ENVIRONMENT != null && env.DEPLOYMENT_ENVIRONMENT != '' }
             }
             steps {
-                echo "Deploying image to ${DEPLOYMENT_ENVIRONMENT}"
+                echo "Deploying image to ${env.DEPLOYMENT_ENVIRONMENT}"
                 deploy_image()
             }
         }
@@ -68,7 +68,7 @@ pipeline {
 def build_image(def tag) {
 	script {
 	    env.BUILD_TAG = tag
-        sh "docker build -t alunwcom/moany-public:${BUILD_TAG} -t alunwcom/moany-public:latest -f Dockerfile ."
+        sh "docker build -t alunwcom/moany-public:${BUILD_TAG} -f Dockerfile ."
 	}
 }
 

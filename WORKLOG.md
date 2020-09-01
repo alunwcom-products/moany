@@ -1,5 +1,11 @@
 # WORKLOG
 
+## 01-Sep-2020
+
++ Parameterizing pipeline...
+    + Need to tag releases as 'latest'
+    + Need to complete deployment
+
 ## 27-Aug-2020
 
 + What's needed to complete Jenkins build?
