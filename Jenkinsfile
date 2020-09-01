@@ -16,7 +16,7 @@ pipeline {
 		choice(
 			name: 'REFRESH_DATABASE',
 			description: "Should database be restored from latest backup? (Defaults to NO.)",
-			choices: ['<no>', 'YES']
+		    choices: ['<no>', 'YES']
 		)
 	}
     stages {
@@ -75,7 +75,20 @@ def build_image(def tag) {
 def deploy_image() {
 	script {
 		if (env.DEPLOYMENT_ENVIRONMENT ==  "UAT") {
-			currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment of moany-public. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}; BUILD_TAG = ${env.BUILD_TAG}]"
+			currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}; BUILD_TAG = ${env.BUILD_TAG}]"
+            // remove existing app image
+            sh "docker rm -f moany-app-uat || true"
+            if (env.REFRESH_DATABASE == "YES") {
+                sh "docker rm -f moany-db-uat || true"
+            }
+            // docker network prune -f
+            sh "docker network create moany || true"
+            if (env.REFRESH_DATABASE == "YES") {
+                sh "docker run -d -p 3336:3306 --network=\"moany\" --env-file maria.env --name moany-db-uat mariadb:latest"
+                sh "sleep 30"
+                sh "docker exec -i moany-db-uat sh -c 'exec mysql moany -hmoany-db-uat -uroot -p\"$MYSQL_ROOT_PASSWORD\"' < /srv/backups/moany-db.sql"
+            }
+            sh "docker run -d -p 9080:9080 --network=\"moany\" --env-file mysql.env --name moany-app-uat alunwcom/moany-public:${BUILD_TAG}"
 	    }
 	}
 }
