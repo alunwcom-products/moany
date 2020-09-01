@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.3.2.RELEASE'
     id 'java'
     id 'eclipse'
-    id 'war'
     id 'checkstyle'
 }
 
@@ -13,6 +12,10 @@ repositories {
 checkstyle { 
 	configFile = 'src/test/resources/checkstyle.xml' as File
 	//configFile = 'src/test/resources/sun_checks.xml' as File
+}
+
+bootJar {
+	layered()
 }
 
 sourceCompatibility = 1.8
@@ -52,7 +55,7 @@ dependencies {
 
 def distFolder = file("$buildDir/distribution")
 def distAssemblyFolder = file("$distFolder/$project.name")
-def webappsFolder = file("$distAssemblyFolder/webapps/$project.name")
+//def webappsFolder = file("$distAssemblyFolder/webapps/$project.name")
 
 //println "BUILD FOLDER -> $buildDir"
 //println "DIST ASSEMBLY FOLDER -> $distAssemblyFolder"

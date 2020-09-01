@@ -90,9 +90,10 @@ def deploy_image() {
             // docker network prune -f
             sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
             if (env.REFRESH_DATABASE == "YES") {
-                sh "docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --env-file maria.env --name ${DOCKER_UAT_DB_NAME} mariadb:latest"
+                sh "source maria.env"
+                sh "docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --name ${DOCKER_UAT_DB_NAME} mariadb:latest"
                 sh "sleep 30"
-                sh "docker exec -i ${DOCKER_UAT_DB_NAME} sh -c 'exec mysql moany -h${DOCKER_UAT_DB_NAME} -uroot -p$MYSQL_ROOT_PASSWORD' < ${SQL_BACKUP_LOCATION}"
+                sh "docker exec -i ${DOCKER_UAT_DB_NAME} sh -c 'exec mysql moany -h${DOCKER_UAT_DB_NAME} -uroot -p${MYSQL_ROOT_PASSWORD}' < ${SQL_BACKUP_LOCATION}"
             }
             sh "docker run -d -p 9080:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_UAT_APP_NAME} alunwcom/moany-public:${BUILD_TAG}"
         }
