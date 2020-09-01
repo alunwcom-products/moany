@@ -68,7 +68,7 @@ pipeline {
 def build_image(def tag) {
 	script {
 	    env.BUILD_TAG = tag
-        docker build -t alunwcom/moany-public:${BUILD_TAG} -t alunwcom/moany-public:latest -f Dockerfile .
+        sh "docker build -t alunwcom/moany-public:${BUILD_TAG} -t alunwcom/moany-public:latest -f Dockerfile ."
 	}
 }
 
