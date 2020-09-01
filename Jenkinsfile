@@ -33,7 +33,7 @@ pipeline {
             }
             steps {
                 echo "Snapshot build [BUILD_TAG = ${GIT_COMMIT}]"
-                build_image(${GIT_COMMIT})
+                build_image("${GIT_COMMIT}")
             }
         }
         stage('build-release') {
@@ -42,7 +42,7 @@ pipeline {
             }
             steps {
                 echo "Release build [BUILD_TAG = ${TAG_NAME}]"
-                build_image(${TAG_NAME})
+                build_image("${TAG_NAME}")
             }
         }
         stage('deploy') {
