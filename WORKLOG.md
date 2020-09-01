@@ -4,7 +4,7 @@
 
 + Parameterizing pipeline...
     + Need to tag releases as 'latest'
-    + Need to complete deployment
+    + Improve docker image layering
 
 ## 27-Aug-2020
 
