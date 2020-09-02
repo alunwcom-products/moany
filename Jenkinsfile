@@ -90,6 +90,7 @@ def deploy_image() {
             // docker network prune -f
             sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
             if (env.REFRESH_DATABASE == "YES") {
+                sh "pwd; ls -l;"
                 sh "source maria.env"
                 sh "docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --name ${DOCKER_UAT_DB_NAME} mariadb:latest"
                 sh "sleep 30"
