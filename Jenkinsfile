@@ -92,9 +92,9 @@ def deploy_image() {
             sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
             if (env.REFRESH_DATABASE == "YES") {
                 sh '''
-                    . ./maria.env
-                    docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --name ${DOCKER_UAT_DB_NAME} mariadb:latest
+                    docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --env-file maria.env --name ${DOCKER_UAT_DB_NAME} mariadb:latest
                     sleep 30
+                    source ./maria.env
                     docker exec -i ${DOCKER_UAT_DB_NAME} sh -c 'exec mysql moany -h${DOCKER_UAT_DB_NAME} -uroot -p${MYSQL_ROOT_PASSWORD}' < ${SQL_BACKUP_LOCATION}
                 '''
             }
