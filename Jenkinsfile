@@ -7,7 +7,7 @@ pipeline {
         SQL_BACKUP_LOCATION = '/srv/backups/moany-db.sql'
     }
     triggers {
-        pollSCM('H/5 * * * *')
+        pollSCM('H/2 * * * *')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
@@ -73,6 +73,7 @@ pipeline {
 
 def build_image(def tag) {
     script {
+        currentBuild.description = "Automated build."
         env.BUILD_TAG = tag
         sh "docker build -t alunwcom/moany-public:${BUILD_TAG} -f Dockerfile ."
     }
@@ -91,7 +92,7 @@ def deploy_image() {
             sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
             if (env.REFRESH_DATABASE == "YES") {
                 sh "pwd; ls -l;"
-                sh "source maria.env"
+                sh ". ./maria.env"
                 sh "docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --name ${DOCKER_UAT_DB_NAME} mariadb:latest"
                 sh "sleep 30"
                 sh "docker exec -i ${DOCKER_UAT_DB_NAME} sh -c 'exec mysql moany -h${DOCKER_UAT_DB_NAME} -uroot -p${MYSQL_ROOT_PASSWORD}' < ${SQL_BACKUP_LOCATION}"
