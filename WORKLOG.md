@@ -1,10 +1,11 @@
 # WORKLOG
 
-## 01-Sep-2020
+## 02-Sep-2020
 
 + Parameterizing pipeline...
-    + Need to tag releases as 'latest'
-    + Improve docker image layering
+    + [DEFER] Need to tag releases as 'latest'
+    + [DONE] Improve docker image layering
+    + [TODO] Display version in deployed app
 
 ## 27-Aug-2020
 
