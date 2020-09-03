@@ -10,6 +10,7 @@ RUN sh gradlew projects
 
 COPY *.gradle *.env ./
 COPY src/ ./src/
+COPY .git/ ./.git/
 RUN sh gradlew build
 RUN java -Djarmode=layertools -jar build/libs/moany-SNAPSHOT.jar extract
 RUN ls -al
