@@ -3,7 +3,11 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'checkstyle'
+    id 'com.palantir.git-version' version '0.12.3'
 }
+
+version gitVersion()
+println "VERSION -> ${version}"
 
 repositories {
 	jcenter()
@@ -53,21 +57,5 @@ dependencies {
 	//compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 	
 	//testCompile group: 'junit', name: 'junit', version: '4.12'
-}
-
-// Build distribution - war file plus runnable zip package
-
-def distFolder = file("$buildDir/distribution")
-def distAssemblyFolder = file("$distFolder/$project.name")
-//def webappsFolder = file("$distAssemblyFolder/webapps/$project.name")
-
-//println "BUILD FOLDER -> $buildDir"
-//println "DIST ASSEMBLY FOLDER -> $distAssemblyFolder"
-
-if ( ! version.equalsIgnoreCase("unspecified") ) { 
-	println "VERSION -> ${version}"
-} else { 
-	project.version = "SNAPSHOT"
-	println "NO VERSION DEFINED - CREATING SNAPSHOT"
 }
 
