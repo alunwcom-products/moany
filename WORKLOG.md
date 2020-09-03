@@ -1,11 +1,13 @@
 # WORKLOG
 
-## 02-Sep-2020
+## 03-Sep-2020
 
 + Parameterizing pipeline...
     + [DEFER] Need to tag releases as 'latest'
     + [DONE] Improve docker image layering
     + [TODO] Display version in deployed app
+    + [TODO] Secure deployment 'secrets'
+    + [MAYBE] Build Docker image in Gradle?
 
 ## 27-Aug-2020
 
