@@ -12,11 +12,10 @@ RUN sh gradlew projects
 
 # copy all project assets for application build/test
 COPY ./ ./
-ENV NO_VERSION=true
 RUN sh gradlew build
 
 # extract spring boot layered jars for deployment image
-RUN java -Djarmode=layertools -jar build/libs/moany.jar extract
+RUN cd build && java -Djarmode=layertools -jar libs/$(cat jar.archiveName) extract
 
 #
 # deployment image
@@ -26,10 +25,10 @@ FROM openjdk:11-jre
 WORKDIR /opt/software/moany
 
 # copy layered jars
-COPY --from=build /workspace/dependencies/ ./
-COPY --from=build /workspace/spring-boot-loader/ ./
-COPY --from=build /workspace/snapshot-dependencies/ ./
-COPY --from=build /workspace/application/ ./
+COPY --from=build /workspace/build/dependencies/ ./
+COPY --from=build /workspace/build/spring-boot-loader/ ./
+COPY --from=build /workspace/build/snapshot-dependencies/ ./
+COPY --from=build /workspace/build/application/ ./
 
 RUN mkdir -p config
 VOLUME /opt/software/moany/config

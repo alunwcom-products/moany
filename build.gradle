@@ -6,29 +6,28 @@ plugins {
     id 'com.palantir.git-version' version '0.12.3'
 }
 
-if ("${System.env.NO_VERSION}" == "true") {
-    version ''
-    println "VERSION -> \'${version}\' [NO_VERSION SET]"
-} else {
-    version gitVersion()
-    println "VERSION -> \'${version}\'"
-}
-
 repositories {
-	jcenter()
+    jcenter()
 }
 
 checkstyle { 
-	configFile = 'src/test/resources/checkstyle.xml' as File
-	//configFile = 'src/test/resources/sun_checks.xml' as File
+    configFile = 'src/test/resources/checkstyle.xml' as File
+    //configFile = 'src/test/resources/sun_checks.xml' as File
 }
 
+version gitVersion()
+println "VERSION -> \'${version}\'"
+
 bootJar {
-	layered()
+    layered()
+    // output jar file name - for use in Dockerfile
+    doLast {   
+        new File(buildDir, "jar.archiveName").text = jar.archiveName
+    }
 }
 
 springBoot {
-	buildInfo()
+    buildInfo()
 }
 
 sourceCompatibility = 1.8
