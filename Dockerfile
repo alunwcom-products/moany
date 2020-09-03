@@ -4,15 +4,19 @@
 
 FROM openjdk:11-jdk as build
 WORKDIR /workspace
+
+# copy gradle wrapper assets to create layer that should only change on gradle version/wrapper change 
 COPY gradlew ./
 COPY gradle/ ./gradle/
 RUN sh gradlew projects
 
-COPY *.gradle *.env ./
-COPY src/ ./src/
+# copy all project assets for application build/test
+COPY ./ ./
+ENV NO_VERSION=true
 RUN sh gradlew build
-RUN java -Djarmode=layertools -jar build/libs/moany-SNAPSHOT.jar extract
-RUN ls -al
+
+# extract spring boot layered jars for deployment image
+RUN java -Djarmode=layertools -jar build/libs/moany.jar extract
 
 #
 # deployment image
@@ -20,13 +24,15 @@ RUN ls -al
 
 FROM openjdk:11-jre
 WORKDIR /opt/software/moany
+
+# copy layered jars
 COPY --from=build /workspace/dependencies/ ./
 COPY --from=build /workspace/spring-boot-loader/ ./
 COPY --from=build /workspace/snapshot-dependencies/ ./
 COPY --from=build /workspace/application/ ./
+
 RUN mkdir -p config
 VOLUME /opt/software/moany/config
-RUN ls -al
 ENV SPRING_PROFILES_ACTIVE=datasource
 ENV DB_URL=jdbc:h2:mem:moany
 ENV DB_USER=sa
