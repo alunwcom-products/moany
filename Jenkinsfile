@@ -38,8 +38,8 @@ pipeline {
                 }
             }
             steps {
-                echo "Snapshot build [BUILD_TAG = ${GIT_COMMIT}]"
-                build_image("${GIT_COMMIT}")
+                echo "Snapshot build [${GIT_COMMIT}]"
+                build_image()
             }
         }
         stage('build-release') {
@@ -47,8 +47,8 @@ pipeline {
                 buildingTag()
             }
             steps {
-                echo "Release build [BUILD_TAG = ${TAG_NAME}]"
-                build_image("${TAG_NAME}")
+                echo "Release build [${TAG_NAME}]"
+                build_image()
             }
         }
         stage('deploy') {
@@ -71,18 +71,20 @@ pipeline {
     }
 }
 
-def build_image(def tag) {
+def build_image() {
     script {
         currentBuild.description = "Automated build only."
-        env.BUILD_TAG = tag
-        sh "docker build -t alunwcom/moany-public:${BUILD_TAG} -f Dockerfile ."
+        // env.BUILD_TAG = tag
+        // sh "docker build -t alunwcom/moany-public:${BUILD_TAG} -f Dockerfile ."
+        sh "sh gradlew bootBuildImage"
     }
 }
 
 def deploy_image() {
     script {
         if (env.DEPLOYMENT_ENVIRONMENT ==  "UAT") {
-            currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}; BUILD_TAG = ${env.BUILD_TAG}]"
+            env.IMAGE_NAME = "$(cat build/imageName)"
+            currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}; IMAGE_NAME = ${env.IMAGE_NAME}]"
             // remove existing app image
             sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
             if (env.REFRESH_DATABASE == "YES") {
@@ -100,7 +102,7 @@ def deploy_image() {
                     set -x
                 '''
             }
-            sh "docker run -d -p 9080:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_UAT_APP_NAME} alunwcom/moany-public:${BUILD_TAG}"
+            sh "docker run -d -p 9080:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_UAT_APP_NAME} ${IMAGE_NAME}"
         }
     }
 }

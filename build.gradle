@@ -10,7 +10,7 @@ repositories {
     jcenter()
 }
 
-checkstyle { 
+checkstyle {
     configFile = 'src/test/resources/checkstyle.xml' as File
     //configFile = 'src/test/resources/sun_checks.xml' as File
 }
@@ -19,11 +19,19 @@ group = 'com.alunw'
 version gitVersion()
 println "VERSION -> \'${version}\'"
 
+// define image name
+bootBuildImage {
+    imageName = "alunwcom/moany:${version}"
+    doLast {
+        new File(buildDir, "imageName").text = imageName
+    }
+}
+
 // create layered JARs for Docker image
 bootJar {
     layered()
     // output jar file name - for use in Dockerfile
-    doLast {   
+    doLast {
         new File(buildDir, "jar.archiveName").text = jar.archiveName
     }
 }
@@ -37,32 +45,32 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-	compile("org.springframework.boot:spring-boot-starter-web:2.3.2.RELEASE")
-	compile("org.springframework.boot:spring-boot-starter-freemarker:2.3.2.RELEASE")
-	compile("org.springframework.boot:spring-boot-starter-actuator:2.3.2.RELEASE")
-	compile('org.springframework.boot:spring-boot-starter-data-jpa:2.3.2.RELEASE')
-	compile('mysql:mysql-connector-java:8.0.21')
-	compile("com.h2database:h2:1.4.200")
-	compile ('org.apache.poi:poi-ooxml:4.1.2')
-	
-	testCompile("org.springframework.boot:spring-boot-starter-test:2.3.2.RELEASE")
-	
-	compile("org.springframework.security:spring-security-web:5.3.3.RELEASE")
-	compile("org.springframework.security:spring-security-config:5.3.3.RELEASE")
-	compile("org.springframework.security:spring-security-test:5.3.3.RELEASE")
-	
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-	
-	compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.1'
-	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.1'
-	//compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
-	//compile group: 'no.api.freemarker', name: 'freemarker-java8', version: '1.2.0'
-	//compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.11.Final'
-	//compile group: 'org.hibernate', name: 'hibernate-java8', version: '5.2.11.Final'
-	//compile group: 'org.hibernate', name: 'hibernate-c3p0', version: '5.2.11.Final'
-	//compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
-	
-	//testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile("org.springframework.boot:spring-boot-starter-web:2.3.2.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-freemarker:2.3.2.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-actuator:2.3.2.RELEASE")
+    compile('org.springframework.boot:spring-boot-starter-data-jpa:2.3.2.RELEASE')
+    compile('mysql:mysql-connector-java:8.0.21')
+    compile("com.h2database:h2:1.4.200")
+    compile ('org.apache.poi:poi-ooxml:4.1.2')
+
+    testCompile("org.springframework.boot:spring-boot-starter-test:2.3.2.RELEASE")
+
+    compile("org.springframework.security:spring-security-web:5.3.3.RELEASE")
+    compile("org.springframework.security:spring-security-config:5.3.3.RELEASE")
+    compile("org.springframework.security:spring-security-test:5.3.3.RELEASE")
+
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.1'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.1'
+    //compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
+    //compile group: 'no.api.freemarker', name: 'freemarker-java8', version: '1.2.0'
+    //compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.11.Final'
+    //compile group: 'org.hibernate', name: 'hibernate-java8', version: '5.2.11.Final'
+    //compile group: 'org.hibernate', name: 'hibernate-c3p0', version: '5.2.11.Final'
+    //compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+    //testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
