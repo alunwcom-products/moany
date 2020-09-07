@@ -15,9 +15,11 @@ checkstyle {
     //configFile = 'src/test/resources/sun_checks.xml' as File
 }
 
+group = 'com.alunw'
 version gitVersion()
 println "VERSION -> \'${version}\'"
 
+// create layered JARs for Docker image
 bootJar {
     layered()
     // output jar file name - for use in Dockerfile
@@ -26,6 +28,7 @@ bootJar {
     }
 }
 
+// inject build info for Spring Actuator
 springBoot {
     buildInfo()
 }
