@@ -83,7 +83,7 @@ def build_image() {
 def deploy_image() {
     script {
         if (env.DEPLOYMENT_ENVIRONMENT ==  "UAT") {
-            sh "export IMAGE_NAME = $(cat build/imageName)"
+            sh "export IMAGE_NAME = `cat build/imageName`"
             currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}; IMAGE_NAME = ${env.IMAGE_NAME}]"
             // remove existing app image
             sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
