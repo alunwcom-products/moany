@@ -17,7 +17,13 @@ checkstyle {
 
 group = 'com.alunw'
 version gitVersion()
-println "VERSION -> \'${version}\'"
+
+printVersion {
+    doLast {
+        mkdir "${buildDir}"
+        new File(buildDir, "version").text = gitVersion()
+    }
+}
 
 // define image name
 bootBuildImage {
