@@ -5,8 +5,8 @@
 + Parameterizing pipeline...
     + [DEFER] Need to tag releases as 'latest'
     + [DONE] Improve docker image layering
-    + [TODO] Display version in deployed app
-    + [TODO] Secure deployment 'secrets'
+    + [DONE] Display version in deployed app
+    + [TODO] Secure deployment 'secrets'. (DB password visible in Jenkins logs.)
     + [MAYBE] Build Docker image in Gradle?
 
 ## 27-Aug-2020

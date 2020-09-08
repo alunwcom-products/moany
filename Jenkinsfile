@@ -73,10 +73,12 @@ pipeline {
 
 def build_image() {
     script {
-        currentBuild.description = "Automated build only."
+        currentBuild.description = "Build only"
+        sh "sh gradlew printVersion"
+        sh "export VERSION=`cat build/version`"
         // env.BUILD_TAG = tag
-        // sh "docker build -t alunwcom/moany-public:${BUILD_TAG} -f Dockerfile ."
-        sh "sh gradlew bootBuildImage"
+        sh "docker build -t alunwcom/moany:${VERSION} -f Dockerfile ."
+        //sh "sh gradlew bootBuildImage"
     }
 }
 
