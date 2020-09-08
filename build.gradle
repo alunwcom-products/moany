@@ -45,25 +45,25 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web:2.3.2.RELEASE")
-    compile("org.springframework.boot:spring-boot-starter-freemarker:2.3.2.RELEASE")
-    compile("org.springframework.boot:spring-boot-starter-actuator:2.3.2.RELEASE")
-    compile('org.springframework.boot:spring-boot-starter-data-jpa:2.3.2.RELEASE')
-    compile('mysql:mysql-connector-java:8.0.21')
-    compile("com.h2database:h2:1.4.200")
-    compile ('org.apache.poi:poi-ooxml:4.1.2')
+    implementation("org.springframework.boot:spring-boot-starter-web:2.3.2.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-freemarker:2.3.2.RELEASE")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:2.3.2.RELEASE")
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa:2.3.2.RELEASE')
+    implementation('mysql:mysql-connector-java:8.0.21')
+    implementation("com.h2database:h2:1.4.200")
+    implementation ('org.apache.poi:poi-ooxml:4.1.2')
 
-    testCompile("org.springframework.boot:spring-boot-starter-test:2.3.2.RELEASE")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.3.2.RELEASE")
 
-    compile("org.springframework.security:spring-security-web:5.3.3.RELEASE")
-    compile("org.springframework.security:spring-security-config:5.3.3.RELEASE")
-    compile("org.springframework.security:spring-security-test:5.3.3.RELEASE")
+    implementation("org.springframework.security:spring-security-web:5.3.3.RELEASE")
+    implementation("org.springframework.security:spring-security-config:5.3.3.RELEASE")
+    implementation("org.springframework.security:spring-security-test:5.3.3.RELEASE")
 
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
 
-    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.1'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.1'
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.1'
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.1'
     //compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
     //compile group: 'no.api.freemarker', name: 'freemarker-java8', version: '1.2.0'
     //compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.11.Final'
