@@ -38,7 +38,9 @@ pipeline {
                 }
             }
             steps {
-                checkout scm
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/docker_build']],
+                ])
                 echo "Snapshot build [${GIT_COMMIT}]"
                 build_image()
             }
