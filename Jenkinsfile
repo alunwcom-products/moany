@@ -28,7 +28,12 @@ pipeline {
     stages {
         stage('init') {
             steps {
-                echo "Starting moany-public build [workspace = ${WORKSPACE}]."
+                echo "Starting 'moany' build [WORKSPACE = ${WORKSPACE}, BRANCH_NAME = ${BRANCH_NAME}; TAG_NAME = ${TAG_NAME}]."
+                sh '''
+                    git describe --dirty --tags --first-parent --always > .version
+                    VERSION=$(cat .version)
+                    echo "VERSION = $VERSION"
+                '''
             }
         }
         stage('build-snapshot') {
