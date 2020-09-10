@@ -7,7 +7,7 @@ pipeline {
         SQL_BACKUP_LOCATION = '/srv/backups/moany-db.sql'
     }
     triggers {
-        pollSCM('H/2 * * * *')
+        pollSCM('H/* * * * *')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
@@ -74,11 +74,9 @@ pipeline {
 def build_image() {
     script {
         currentBuild.description = "Build only"
-        sh "sh gradlew printVersion"
-        sh "export VERSION=`cat build/version`"
-        // env.BUILD_TAG = tag
+        sh "git status"
+        sh "export VERSION=`git describe --dirty --tags --first-parent`"
         sh "docker build -t alunwcom/moany:${VERSION} -f Dockerfile ."
-        //sh "sh gradlew bootBuildImage"
     }
 }
 
