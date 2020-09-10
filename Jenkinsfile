@@ -36,12 +36,14 @@ pipeline {
         }
         stage('build') {
             steps {
-                currentBuild.description = "Build only"
-                sh '''
-                    . ./gradle.properties
-                    docker build -t alunwcom/moany:${version} -f Dockerfile .
-                    echo "JAR = moany-${version}.jar"
-                '''
+                script {
+                    currentBuild.description = "Build only"
+                    sh '''
+                        . ./gradle.properties
+                        docker build -t alunwcom/moany:${version} -f Dockerfile .
+                        echo "JAR = moany-${version}.jar"
+                    '''
+                }
             }
         }
         stage('deploy') {
