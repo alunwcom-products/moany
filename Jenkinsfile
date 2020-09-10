@@ -7,7 +7,7 @@ pipeline {
         SQL_BACKUP_LOCATION = '/srv/backups/moany-db.sql'
     }
     triggers {
-        pollSCM('H/* * * * *')
+        pollSCM('* * * * *')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
