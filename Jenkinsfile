@@ -38,9 +38,6 @@ pipeline {
                 }
             }
             steps {
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/docker_build']],
-                ])
                 echo "Snapshot build [${GIT_COMMIT}]"
                 build_image()
             }
@@ -77,6 +74,8 @@ pipeline {
 def build_image() {
     script {
         currentBuild.description = "Build only"
+        echo "BRANCH = ${env.BRANCH_NAME}"
+        sh "git checkout docker_build"
         sh "git status"
         sh "export VERSION=`git describe --dirty --tags`"
         sh "docker build -t alunwcom/moany:${VERSION} -f Dockerfile ."
