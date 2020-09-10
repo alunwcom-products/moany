@@ -28,7 +28,7 @@ pipeline {
     stages {
         stage('init') {
             steps {
-                echo "Starting 'moany' build [WORKSPACE = ${WORKSPACE}, BRANCH_NAME = ${BRANCH_NAME}; TAG_NAME = ${TAG_NAME}]."
+                echo "Starting 'moany' build [WORKSPACE = ${WORKSPACE}, BRANCH_NAME = ${BRANCH_NAME}]."
                 sh '''
                     git describe --dirty --tags --first-parent --always > .version
                     VERSION=$(cat .version)
