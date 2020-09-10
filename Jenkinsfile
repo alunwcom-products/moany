@@ -75,7 +75,7 @@ def build_image() {
     script {
         currentBuild.description = "Build only"
         sh "git status"
-        sh "export VERSION=`git describe --dirty --tags --first-parent`"
+        sh "export VERSION=`git describe --dirty --tags`"
         sh "docker build -t alunwcom/moany:${VERSION} -f Dockerfile ."
     }
 }
