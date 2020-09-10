@@ -11,11 +11,14 @@ COPY gradle/ ./gradle/
 RUN sh gradlew projects
 
 # copy all project assets for application build/test
-COPY ./ ./
+COPY ./src/ ./src/
+COPY ./*.gradle ./
+COPY ./*.env ./
+COPY ./*.properties ./
 RUN sh gradlew build
 
 # extract spring boot layered jars for deployment image
-RUN cd build && java -Djarmode=layertools -jar libs/$(cat jar.archiveName) extract
+RUN source ./gradle.properties && cd build && java -Djarmode=layertools -jar libs/moany-${version}.jar extract
 
 #
 # deployment image
