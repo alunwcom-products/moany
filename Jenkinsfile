@@ -63,7 +63,7 @@ pipeline {
         stage('publish-artifacts') {
             steps {
                 sh '''
-                    echo "Not yet implemented!"
+                    echo "Not yet implemented! VERSION = ${VERSION}"
                     docker image ls | grep moany-public
                 '''
             }
@@ -76,7 +76,6 @@ def build_image() {
         currentBuild.description = "Build only"
         echo "BRANCH = ${env.BRANCH_NAME}"
         sh '''
-            git checkout docker_build
             VERSION=`git describe --dirty --tags --first-parent --always`
             docker build -t alunwcom/moany:${VERSION} -f Dockerfile .
         '''
