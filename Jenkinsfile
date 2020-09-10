@@ -75,9 +75,11 @@ def build_image() {
     script {
         currentBuild.description = "Build only"
         echo "BRANCH = ${env.BRANCH_NAME}"
-        sh "git checkout docker_build"
-        sh "export VERSION=`git describe --dirty --tags --first-parent --always`"
-        sh "docker build -t alunwcom/moany:${VERSION} -f Dockerfile ."
+        sh '''
+            git checkout docker_build
+            VERSION=`git describe --dirty --tags --first-parent --always`
+            docker build -t alunwcom/moany:${VERSION} -f Dockerfile .
+        '''
     }
 }
 
