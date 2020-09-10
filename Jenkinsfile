@@ -28,32 +28,20 @@ pipeline {
     stages {
         stage('init') {
             steps {
-                echo "Starting 'moany' build [WORKSPACE = ${WORKSPACE}, BRANCH_NAME = ${BRANCH_NAME}]."
                 sh '''
-                    git describe --dirty --tags --first-parent --always > .version
-                    VERSION=$(cat .version)
-                    echo "VERSION = $VERSION"
+                    GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)
+                    echo "version=${GIT_DESCRIBE}" > gradle.properties
                 '''
             }
         }
-        stage('build-snapshot') {
-            when {
-                not {
-                    buildingTag()
-                }
-            }
+        stage('build') {
             steps {
-                echo "Snapshot build [${GIT_COMMIT}]"
-                build_image()
-            }
-        }
-        stage('build-release') {
-            when {
-                buildingTag()
-            }
-            steps {
-                echo "Release build [${TAG_NAME}]"
-                build_image()
+                currentBuild.description = "Build only"
+                sh '''
+                    . ./gradle.properties
+                    docker build -t alunwcom/moany:${version} -f Dockerfile .
+                    echo "JAR = moany-${version}.jar"
+                '''
             }
         }
         stage('deploy') {

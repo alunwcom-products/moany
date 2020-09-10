@@ -3,7 +3,6 @@ plugins {
     id 'java'
     id 'eclipse'
     id 'checkstyle'
-    id 'com.palantir.git-version' version '0.12.3'
 }
 
 repositories {
@@ -16,30 +15,10 @@ checkstyle {
 }
 
 group = 'com.alunw'
-version gitVersion()
-
-printVersion {
-    doLast {
-        mkdir "${buildDir}"
-        new File(buildDir, "version").text = gitVersion()
-    }
-}
-
-// define image name
-bootBuildImage {
-    imageName = "alunwcom/moany:${version}"
-    doLast {
-        new File(buildDir, "imageName").text = imageName
-    }
-}
 
 // create layered JARs for Docker image
 bootJar {
     layered()
-    // output jar file name - for use in Dockerfile
-    doLast {
-        new File(buildDir, "jar.archiveName").text = jar.archiveName
-    }
 }
 
 // inject build info for Spring Actuator
@@ -79,4 +58,3 @@ dependencies {
 
     //testCompile group: 'junit', name: 'junit', version: '4.12'
 }
-
