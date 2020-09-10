@@ -38,6 +38,7 @@ pipeline {
                 }
             }
             steps {
+                checkout scm
                 echo "Snapshot build [${GIT_COMMIT}]"
                 build_image()
             }
