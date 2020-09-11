@@ -29,8 +29,7 @@ pipeline {
         stage('init') {
             steps {
                 sh '''
-                    GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)
-                    echo "version=${GIT_DESCRIBE}" > gradle.properties
+                    echo "init()"
                 '''
             }
         }
@@ -39,9 +38,8 @@ pipeline {
                 script {
                     currentBuild.description = "Build only"
                     sh '''
-                        . ./gradle.properties
-                        docker build -t alunwcom/moany:${version} -f Dockerfile .
-                        echo "JAR = moany-${version}.jar"
+                        GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)
+                        docker build --build-arg BUILD_VERSION=${GIT_DESCRIBE} -t alunwcom/moany:${version} -f Dockerfile .
                     '''
                 }
             }
