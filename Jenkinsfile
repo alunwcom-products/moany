@@ -39,7 +39,7 @@ pipeline {
                     currentBuild.description = "Build only"
                     sh '''
                         GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)
-                        docker build --build-arg BUILD_VERSION=${GIT_DESCRIBE} -t alunwcom/moany:${version} -f Dockerfile .
+                        docker build -t alunwcom/moany:${version} -f Dockerfile . --build-arg BUILD_VERSION=${GIT_DESCRIBE}
                     '''
                 }
             }
