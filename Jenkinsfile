@@ -28,9 +28,11 @@ pipeline {
     stages {
         stage('init') {
             steps {
-                sh '''
-                    echo "init()"
-                '''
+                MYTEST = """${sh(
+                    returnStdout: true,
+                    script: 'git describe --dirty --tags --first-parent --always'
+                )}"""
+                echo $MYTEST
             }
         }
         stage('build') {
@@ -50,7 +52,7 @@ pipeline {
             }
             steps {
                 echo "Deploying image to ${env.DEPLOYMENT_ENVIRONMENT}"
-                deploy_image()
+                //deploy_image()
             }
         }
         stage('publish-artifacts') {

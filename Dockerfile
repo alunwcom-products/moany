@@ -1,3 +1,6 @@
+
+ARG BUILD_VERSION=SNAPSHOT
+
 #
 # build image
 #
@@ -16,7 +19,6 @@ COPY ./*.gradle ./*.env ./
 #COPY ./*.env ./
 #COPY ./*.properties ./
 
-ARG BUILD_VERSION=SNAPSHOT
 RUN echo "version=${BUILD_VERSION}" > gradle.properties
 RUN sh gradlew build
 
