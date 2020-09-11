@@ -26,17 +26,6 @@ pipeline {
         )
     }
     stages {
-        stage('init') {
-            steps {
-                script {
-                    MYTEST = """${sh(
-                        returnStdout: true,
-                        script: 'git describe --dirty --tags --first-parent --always'
-                    )}"""
-                    echo $MYTEST
-                }
-            }
-        }
         stage('build') {
             steps {
                 script {
@@ -60,8 +49,11 @@ pipeline {
         stage('publish-artifacts') {
             steps {
                 sh '''
-                    echo "Not yet implemented! VERSION = ${VERSION}"
-                    docker image ls | grep moany-public
+                    GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)
+                    docker create --name jenkins-moany-${GIT_DESCRIBE} alunwcom/moany:${GIT_DESCRIBE}
+                    docker cp jenkins-moany-${GIT_DESCRIBE}:/opt/software/moany.jar .
+                    docker rm jenkins-moany-${GIT_DESCRIBE}
+                    ls -l
                 '''
             }
         }
