@@ -28,11 +28,13 @@ pipeline {
     stages {
         stage('init') {
             steps {
-                MYTEST = """${sh(
-                    returnStdout: true,
-                    script: 'git describe --dirty --tags --first-parent --always'
-                )}"""
-                echo $MYTEST
+                script {
+                    MYTEST = """${sh(
+                        returnStdout: true,
+                        script: 'git describe --dirty --tags --first-parent --always'
+                    )}"""
+                    echo $MYTEST
+                }
             }
         }
         stage('build') {
