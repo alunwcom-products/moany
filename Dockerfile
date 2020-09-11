@@ -18,8 +18,10 @@ COPY ./*.properties ./
 RUN sh gradlew build
 
 # extract spring boot layered jars for deployment image
-ARG version=SNAPSHOT
-RUN source ./gradle.properties && cd build && java -Djarmode=layertools -jar libs/moany-${version}.jar extract
+ARG BUILD_VERSION=SNAPSHOT
+WORKDIR build
+RUN echo "version = $BUILD_VERSION"
+RUN java -Djarmode=layertools -jar libs/moany-$BUILD_VERSION.jar extract
 
 #
 # deployment image
