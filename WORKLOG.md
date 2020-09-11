@@ -1,5 +1,17 @@
 # WORKLOG
 
+## 11-Sep-2020
+
++ Have been endlessly re-working Jenkins build (not always productively).
++ Focus on key objectives:
+    1. [DONE] Make moany build (java/gradle) within Docker image. No java/gradle calls from Jenkinsfile.
+    2. [HAVE VERSIONED ARTIFACTS - NEED TO GET JAR FROM IMAGE] Produce versioned artifacts: Docker/OCI image + executable JAR file. Include version info in running app.
+    3. [NEED TO SET_UP ARTIFACTORY] Publish artifacts (to Artifactory).
+    4. [TODO] Deploy to UAT and LIVE via Jenkins (from Artifactory?).
++ Not sure that layered JAR image build adds much value currently...
+    + May work better if build + deploy images are separated, but does this add value?
+    + Also, it means running JAR file is not the same as running image.
+    
 ## 03-Sep-2020
 
 + Parameterizing pipeline...
