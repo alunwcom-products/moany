@@ -4,7 +4,6 @@
 #
 
 FROM openjdk:11-jdk as build
-ARG BUILD_VERSION=SNAPSHOT
 WORKDIR /workspace
 
 # copy gradle wrapper assets to create layer that should only change on gradle version/wrapper change 
@@ -16,6 +15,7 @@ RUN sh gradlew projects
 COPY ./src/ ./src/
 COPY ./*.gradle ./*.env ./
 
+ARG BUILD_VERSION=SNAPSHOT
 RUN echo "version=${BUILD_VERSION}" > gradle.properties
 RUN sh gradlew build
 
@@ -28,7 +28,6 @@ RUN sh gradlew build
 #
 
 FROM openjdk:11-jre
-ARG BUILD_VERSION=SNAPSHOT
 WORKDIR /opt/software
 
 # copy layered jars
@@ -46,6 +45,7 @@ ENV DB_PASSWORD=password
 ENV DB_PLATFORM=h2
 EXPOSE 9080
 #ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ARG BUILD_VERSION=SNAPSHOT
 COPY --from=build /workspace/build/libs/moany-${BUILD_VERSION}.jar /opt/software/moany.jar
 CMD ["java","-jar","/opt/software/moany.jar"]
 
