@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        MOANY_IMAGE = 'alunwcom/moany'
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
         DOCKER_UAT_DB_NAME = 'moany-db-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
@@ -31,8 +32,8 @@ pipeline {
                 script {
                     currentBuild.description = "Build only"
                     sh '''
-                        GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)
-                        docker build -t alunwcom/moany:${GIT_DESCRIBE} -f Dockerfile . --build-arg BUILD_VERSION=${GIT_DESCRIBE}
+                        BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
+                        docker build -t ${MOANY_IMAGE}:${BUILD_VERSION} -f Dockerfile . --build-arg BUILD_VERSION=${BUILD_VERSION}
                     '''
                 }
             }
@@ -45,8 +46,7 @@ pipeline {
                 echo "Deploying image to ${env.DEPLOYMENT_ENVIRONMENT}"
                 script {
                     if (env.DEPLOYMENT_ENVIRONMENT ==  "UAT") {
-                        sh 'export GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)'
-                        currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}; IMAGE_NAME = ${env.GIT_DESCRIBE}]"
+                        currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}]"
                         // remove existing app image
                         sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
                         if (env.REFRESH_DATABASE == "YES") {
@@ -64,7 +64,10 @@ pipeline {
                                 set -x
                             '''
                         }
-                        sh "docker run -d -p 9080:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_UAT_APP_NAME} ${GIT_DESCRIBE}"
+                        sh '''
+                            BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
+                            docker run -d -p 9080:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_UAT_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
+                        '''
                     }
                 }
             }
@@ -72,10 +75,10 @@ pipeline {
         stage('publish-artifacts') {
             steps {
                 sh '''
-                    GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)
-                    docker create --name jenkins-moany-${GIT_DESCRIBE} alunwcom/moany:${GIT_DESCRIBE}
-                    docker cp jenkins-moany-${GIT_DESCRIBE}:/opt/software/moany.jar ./moany-${GIT_DESCRIBE}.jar
-                    docker rm jenkins-moany-${GIT_DESCRIBE}
+                    BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
+                    docker create --name jenkins-moany-${GIT_DESCRIBE} ${MOANY_IMAGE}:${BUILD_VERSION}
+                    docker cp jenkins-moany-${BUILD_VERSION}:/opt/software/moany.jar ./moany-${BUILD_VERSION}.jar
+                    docker rm jenkins-moany-${BUILD_VERSION}
                 '''
                 //archiveArtifacts artifacts: "./moany-${GIT_DESCRIBE}.jar", fingerprint: true
             }
