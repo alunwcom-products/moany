@@ -7,6 +7,13 @@
     1. [DONE] Make moany build (java/gradle) within Docker image. No java/gradle calls from Jenkinsfile.
     2. [HAVE VERSIONED ARTIFACTS - NEED TO GET JAR FROM IMAGE] Produce versioned artifacts: Docker/OCI image + executable JAR file. Include version info in running app.
     3. [NEED TO SET_UP ARTIFACTORY] Publish artifacts (to Artifactory).
+```
+$ docker pull docker.bintray.io/jfrog/artifactory-oss:latest
+$ sudo mkdir -p /srv/apps/jfrog/artifactory
+$ sudo chown -R 1030.1030 /srv/apps/jfrog
+$ docker run --name artifactory -d -p 8081:8081 -p 8082:8082 -v /srv/apps/jfrog/artifactory:/var/opt/jfrog/artifactory -e EXTRA_JAVA_OPTIONS='-Xms512m -Xmx2g -Xss256k -XX:+UseG1GC' docker.bintray.io/jfrog/artifactory-oss:latest
+```
+    
     4. [TODO] Deploy to UAT and LIVE via Jenkins (from Artifactory?).
 + Not sure that layered JAR image build adds much value currently...
     + May work better if build + deploy images are separated, but does this add value?
