@@ -45,7 +45,7 @@ pipeline {
                 echo "Deploying image to ${env.DEPLOYMENT_ENVIRONMENT}"
                 script {
                     if (env.DEPLOYMENT_ENVIRONMENT ==  "UAT") {
-                        sh "GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)"
+                        sh 'GIT_DESCRIBE=$(git describe --dirty --tags --first-parent --always)'
                         currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}; IMAGE_NAME = ${env.GIT_DESCRIBE}]"
                         // remove existing app image
                         sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"

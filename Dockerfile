@@ -18,6 +18,7 @@ COPY ./*.gradle ./*.env ./
 ARG BUILD_VERSION=SNAPSHOT
 RUN echo "version=${BUILD_VERSION}" > gradle.properties
 RUN sh gradlew build
+RUN ls -lR build/reports || true
 
 # extract spring boot layered jars for deployment image
 #WORKDIR build
