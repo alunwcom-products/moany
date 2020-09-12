@@ -15,8 +15,6 @@ RUN sh gradlew projects
 # copy all project assets for application build/test
 COPY ./src/ ./src/
 COPY ./*.gradle ./*.env ./
-#COPY ./*.env ./
-#COPY ./*.properties ./
 
 RUN echo "version=${BUILD_VERSION}" > gradle.properties
 RUN sh gradlew build
