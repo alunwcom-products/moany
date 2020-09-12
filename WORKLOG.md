@@ -19,7 +19,7 @@
     + [DONE] Improve docker image layering
     + [DONE] Display version in deployed app
     + [TODO] Secure deployment 'secrets'. (DB password visible in Jenkins logs.)
-    + [MAYBE] Build Docker image in Gradle?
+    + [NO - BUILD SHOULD BE WITHIN DOCKER] Build Docker image in Gradle?
 
 ## 27-Aug-2020
 

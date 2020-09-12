@@ -76,8 +76,8 @@ pipeline {
                     docker create --name jenkins-moany-${GIT_DESCRIBE} alunwcom/moany:${GIT_DESCRIBE}
                     docker cp jenkins-moany-${GIT_DESCRIBE}:/opt/software/moany.jar ./moany-${GIT_DESCRIBE}.jar
                     docker rm jenkins-moany-${GIT_DESCRIBE}
-                    archiveArtifacts artifacts: "./moany-${GIT_DESCRIBE}.jar", fingerprint: true
                 '''
+                archiveArtifacts artifacts: "./moany-${GIT_DESCRIBE}.jar", fingerprint: true
             }
         }
     }
