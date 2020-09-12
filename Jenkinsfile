@@ -76,7 +76,7 @@ pipeline {
             steps {
                 sh '''
                     BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
-                    docker create --name jenkins-moany-${GIT_DESCRIBE} ${MOANY_IMAGE}:${BUILD_VERSION}
+                    docker create --name jenkins-moany-${BUILD_VERSION} ${MOANY_IMAGE}:${BUILD_VERSION}
                     docker cp jenkins-moany-${BUILD_VERSION}:/opt/software/moany.jar ./moany-${BUILD_VERSION}.jar
                     docker rm jenkins-moany-${BUILD_VERSION}
                 '''
