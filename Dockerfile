@@ -1,11 +1,10 @@
 
-ARG BUILD_VERSION=SNAPSHOT
-
 #
 # build image
 #
 
 FROM openjdk:11-jdk as build
+ARG BUILD_VERSION=SNAPSHOT
 WORKDIR /workspace
 
 # copy gradle wrapper assets to create layer that should only change on gradle version/wrapper change 
@@ -31,6 +30,7 @@ RUN sh gradlew build
 #
 
 FROM openjdk:11-jre
+ARG BUILD_VERSION=SNAPSHOT
 WORKDIR /opt/software
 
 # copy layered jars
