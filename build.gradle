@@ -6,6 +6,13 @@ plugins {
 }
 
 repositories {
+    if (project.ext.properties.repoUrl) {
+        maven {
+            name = 'repo'
+            credentials(PasswordCredentials)
+            url repoUrl
+        }
+    }
     jcenter()
 }
 
