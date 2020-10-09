@@ -6,12 +6,25 @@
 + Focus on key objectives:
     1. [DONE] Make moany build (java/gradle) within Docker image. No java/gradle calls from Jenkinsfile.
     2. [HAVE VERSIONED ARTIFACTS - NEED TO GET JAR FROM IMAGE] Produce versioned artifacts: Docker/OCI image + executable JAR file. Include version info in running app.
-    3. [NEED TO SET_UP ARTIFACTORY] Publish artifacts (to Artifactory).
+    3. [NEED TO SET_UP ARTIFACTORY, CAN'T USE FREE VERSION FOR DOCKER IMAGES] Publish artifacts (to Artifactory).
+    4. [TODO] Publish image to docker hub.
+    
 ```
-$ docker pull docker.bintray.io/jfrog/artifactory-oss:latest
-$ sudo mkdir -p /srv/apps/jfrog/artifactory
-$ sudo chown -R 1030.1030 /srv/apps/jfrog
-$ docker run --name artifactory -d -p 8081:8081 -p 8082:8082 -v /srv/apps/jfrog/artifactory:/var/opt/jfrog/artifactory -e EXTRA_JAVA_OPTIONS='-Xms512m -Xmx2g -Xss256k -XX:+UseG1GC' docker.bintray.io/jfrog/artifactory-oss:latest
+$ sudo mdkir -p /srv/apps/artifactory/var/etc/
+$ cd /srv/apps/artifactory/var/etc/
+$ sudo touch system.yaml
+$ sudo chown -R 1030:1030 /srv/apps/artifactory/
+$ sudo chmod -R 777 /srv/apps/artifactory/
+
+$ docker run --name artifactory -v /srv/apps/artifactory/var/:/var/opt/jfrog/artifactory -d -p 8081:8081 -p 8082:8082 docker.bintray.io/jfrog/artifactory-oss:latest
+# default password on set-up: admin/password
+$ docker logs -f artifactory
+
+$ docker image ls | grep moany
+$ docker tag alunwcom/moany:d9d6316 alunwcom/moany:latest
+$ docker push alunwcom/moany:latest
+
+$ docker pull alunwcom/moany:latest
 ```
     
     4. [TODO] Deploy to UAT and LIVE via Jenkins (from Artifactory?).
