@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moany-app-test
+  labels:
+    app: moany-app-test
+spec:
+  selector:
+    matchLabels:
+      app: moany-app-test
+  template:
+    metadata:
+      labels:
+        app: moany-app-test
+    spec:
+      containers:
+      - name: moany-app-test-container
+        image: alunwcom/moany:latest
+        ports:
+        - containerPort: 9080
+        env:
+        - name: DB_URL
+          value: 'jdbc:mysql://db:3306/moany?verifyServerCertificate=false&useSSL=true'
+        - name: DB_USER
+          value: 'moany'
+        - name: DB_PASSWORD
+          value: 'password'
+        - name: DB_PLATFORM
+          value: 'MySQL8'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moany-db-test
+  labels:
+    app: moany-db-test
+spec:
+  selector:
+    matchLabels:
+      app: moany-db-test
+  template:
+    metadata:
+      labels:
+        app: moany-db-test
+    spec:
+      containers:
+      - name: moany-db-test-container
+        image: mariadb:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: 'secret'
+        - name: MYSQL_DATABASE
+          value: 'moany'
+        - name: MYSQL_USER
+          value: 'moany'
+        - name: MYSQL_PASSWORD
+          value: 'password'
+        volumeMounts:
+        - mountPath: "/var/lib/mysql"
+          name: maria-data
+      volumes:
+      - name: maria-data
+        hostPath:
+          path: /home/alunwcom/testdata
+          type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moany-app-test-service
+spec:
+  type: NodePort
+  selector:
+    app: moany-app-test
+  ports:
+  - protocol: TCP
+    port: 9088
+    targetPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moany-db-test-service
+spec:
+  type: NodePort
+  selector:
+    app: moany-db-test
+  ports:
+  - protocol: TCP
+    port: 3336
+    targetPort: 3306
