@@ -33,25 +33,24 @@ springBoot {
     buildInfo()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+//sourceCompatibility = 1.8
+//targetCompatibility = 1.8
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web:2.3.2.RELEASE")
-    implementation("org.springframework.boot:spring-boot-starter-freemarker:2.3.2.RELEASE")
-    implementation("org.springframework.boot:spring-boot-starter-actuator:2.3.2.RELEASE")
-    implementation('org.springframework.boot:spring-boot-starter-data-jpa:2.3.2.RELEASE')
-    implementation('mysql:mysql-connector-java:8.0.21')
-    implementation("com.h2database:h2:1.4.200")
-    implementation ('org.apache.poi:poi-ooxml:4.1.2')
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.3.2.RELEASE")
+//    implementation('org.keycloak:keycloak-spring-boot-starter:11.0.2')
+//    implementation('org.keycloak:keycloak-spring-security-adapter:11.0.2')
 
-    implementation("org.springframework.security:spring-security-web:5.3.3.RELEASE")
-    implementation("org.springframework.security:spring-security-config:5.3.3.RELEASE")
-    implementation("org.springframework.security:spring-security-test:5.3.3.RELEASE")
+    implementation 'mysql:mysql-connector-java:8.0.22'
+    implementation 'com.h2database:h2:1.4.200'
+    implementation 'org.apache.poi:poi-ooxml:4.1.2'
 
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation 'org.springframework.security:spring-security-web:5.4.1'
+    implementation 'org.springframework.security:spring-security-config:5.4.1'
+    implementation 'org.springframework.security:spring-security-test:5.4.1'
+    implementation 'org.springframework.security:spring-security-core:5.4.1'
+
+    implementation 'org.apache.commons:commons-lang3:3.11'
 
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.1'
@@ -64,4 +63,12 @@ dependencies {
     //compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
     //testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.4.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.4.0'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.4.0'
+    testImplementation 'junit:junit:4.13.1'
 }

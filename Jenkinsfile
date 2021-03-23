@@ -55,14 +55,14 @@ pipeline {
                         // docker network prune -f
                         sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
                         if (env.REFRESH_DATABASE == "YES") {
-                            sh '''
-                                docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --env-file maria.env --name ${DOCKER_UAT_DB_NAME} mariadb:latest
-                                sleep 30
-                                source ./maria.env
-                                set +x
-                                docker exec -i ${DOCKER_UAT_DB_NAME} sh -c "exec mysql moany -h${DOCKER_UAT_DB_NAME} -uroot -p${MYSQL_ROOT_PASSWORD}" < ${SQL_BACKUP_LOCATION}
-                                set -x
-                            '''
+                              sh '''
+                                  docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --env-file maria.env --name ${DOCKER_UAT_DB_NAME} mariadb:latest
+                                  sleep 30
+                                  source ./maria.env
+                                  set +x
+                                  docker exec -i ${DOCKER_UAT_DB_NAME} sh -c "exec mysql moany -h${DOCKER_UAT_DB_NAME} -uroot -p${MYSQL_ROOT_PASSWORD}" < ${SQL_BACKUP_LOCATION}
+                                  set -x
+                              '''
                         }
                         sh '''
                             BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
