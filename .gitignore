@@ -4,6 +4,7 @@
 /.gradle
 /.project
 /.settings
+/.idea
 /moany.log*
 
 /*.upload
