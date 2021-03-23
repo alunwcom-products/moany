@@ -1,32 +1,11 @@
 package com.alunw.moany;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.alunw.moany.model.Account;
-import com.alunw.moany.model.BudgetItem;
-import com.alunw.moany.model.Transaction;
-import com.alunw.moany.repository.AccountRepository;
-import com.alunw.moany.repository.BudgetItemRepository;
-import com.alunw.moany.services.BudgetItemService;
 
 //@RunWith(SpringRunner.class)
-//@SpringBootTest
+@SpringBootTest
 //@AutoConfigureMockMvc
 //@TestPropertySource("classpath:application-test.yml")
 public class BudgetItemTest {
@@ -62,7 +41,7 @@ public class BudgetItemTest {
 
 	@Test
 	public void dummy() {
-		assertTrue(true);
+		Assertions.assertTrue(true);
 	}
 	
 //	@Test

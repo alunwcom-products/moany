@@ -1,24 +1,11 @@
 package com.alunw.moany;
 
-import static org.junit.Assert.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 //@RunWith(SpringRunner.class)
-//@SpringBootTest
+@SpringBootTest
 //@AutoConfigureMockMvc
 //@TestPropertySource("classpath:application-test.yml")
 public class RestTransactionControllerTest {
@@ -28,7 +15,7 @@ public class RestTransactionControllerTest {
 
 	@Test
 	public void dummy() {
-		assertTrue(true);
+		Assertions.assertTrue(true);
 	}
 
 //	@Test

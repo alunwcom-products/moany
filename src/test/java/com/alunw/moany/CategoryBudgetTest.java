@@ -1,49 +1,31 @@
 package com.alunw.moany;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.math.BigDecimal;
-import java.time.YearMonth;
-import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.alunw.moany.model.Category;
-import com.alunw.moany.model.CategoryBudget;
-import com.alunw.moany.repository.CategoryRepository;
 
 //@RunWith(SpringRunner.class)
-//@SpringBootTest
+@SpringBootTest
 //@AutoConfigureMockMvc
 //@TestPropertySource("classpath:application-test.yml")
 public class CategoryBudgetTest {
 	
-	private static Logger logger = LoggerFactory.getLogger(CategoryBudgetTest.class);
+//	private static Logger logger = LoggerFactory.getLogger(CategoryBudgetTest.class);
 	
 //	@Autowired
 //	private CategoryRepository categoryRepo;
 	
-	@Before
-	public void before() {
-	}
+//	@Before
+//	public void before() {
+//	}
 	
-	@After
-	public void after() {
-	}
+//	@After
+//	public void after() {
+//	}
 
 	@Test
 	public void dummy() {
-		assertTrue(true);
+		Assertions.assertTrue(true);
 	}
 
 	/**
