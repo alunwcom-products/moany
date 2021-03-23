@@ -18,6 +18,16 @@ spring.resources.static-locations: classpath:/META-INF/resources/,classpath:/res
 #spring.datasource.username: moany
 #spring.datasource.password: password
 
+spring.datasource.url: jdbc:h2:mem:moany
+spring.datasource.username: sa
+spring.datasource.password: password
+spring.jpa.database-platform: H2
+
+#spring.datasource.url: jdbc:mysql://localhost:3336/moany?verifyServerCertificate=false&useSSL=true
+#spring.datasource.username: moany
+#spring.datasource.password: password
+#spring.jpa.database-platform: MySQL8
+
 server.error.whitelabel.enabled: false
 
 # none This is the default for MySQL, no change to the database structure.
