@@ -1,107 +1,119 @@
 package com.alunw.moany;
 
+import com.alunw.moany.model.Account;
+import com.alunw.moany.model.BudgetItem;
+import com.alunw.moany.model.Transaction;
+import com.alunw.moany.repository.AccountRepository;
+import com.alunw.moany.repository.BudgetItemRepository;
+import com.alunw.moany.services.BudgetItemService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 //@RunWith(SpringRunner.class)
 @SpringBootTest
-//@AutoConfigureMockMvc
+@AutoConfigureMockMvc
 //@TestPropertySource("classpath:application-test.yml")
 public class BudgetItemTest {
 	
-//	@Autowired
-//	private MockMvc mvc;
+	@Autowired
+	private MockMvc mvc;
 	
-//	@Autowired
-//	private AccountRepository accRepo;
+	@Autowired
+	private AccountRepository accRepo;
 	
-//	@Autowired
-//	private BudgetItemRepository budgetRepo;
+	@Autowired
+	private BudgetItemRepository budgetRepo;
 	
-//	@Autowired
-//	private BudgetItemService budgetService;
+	@Autowired
+	private BudgetItemService budgetService;
 	
-//	private static Account account;
+	private static Account account;
 	
-//	@Before
-//	public void before() {
-//		if (account == null) {
-//			account = new Account();
-//			account.setAccNum("12345678");
-//			account.setName("test account");
-//			account = accRepo.save(account);
-//		}
-//	}
-	
-//	@After
-//	public void after() {
-//		budgetRepo.deleteAll();
-//	}
-
-	@Test
-	public void dummy() {
-		Assertions.assertTrue(true);
+	@BeforeEach
+	public void before() {
+		if (account == null) {
+			account = new Account();
+			account.setAccNum("12345678");
+			account.setName("test account");
+			account = accRepo.save(account);
+		}
 	}
 	
-//	@Test
-//	public void testBudgetItem_1() throws Exception {
-//
-//		BudgetItem item = new BudgetItem();
-//		item.setAccount(account);
-//		item.setAmount(new BigDecimal("-50.00"));
-//		item.setDescription("test item");
-//		item.setStartDate(LocalDate.parse("2018-04-12", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//		item = budgetRepo.save(item);
-//
-//		List<BudgetItem> items = budgetRepo.findAll();
-//		assertEquals(1, items.size());
-//		assertEquals(item.getId(), items.get(0).getId());
-//
-//	}
+	@AfterEach
+	public void after() {
+		budgetRepo.deleteAll();
+	}
+	
+	@Test
+	public void testBudgetItem_1() throws Exception {
 
-//	@Test
-//	public void testBudgetItemService_1() throws Exception {
-//
-//		BudgetItem item = new BudgetItem();
-//		item.setAccount(account);
-//		item.setAmount(new BigDecimal("-50.00"));
-//		item.setDescription("test item");
-//		item.setStartDate(LocalDate.parse("2018-04-12", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//		item = budgetRepo.save(item);
-//
-//		List<Account> accounts = new ArrayList<>();
-//		accounts.add(account);
-//
-//		List<Transaction> results = budgetService.generateBudgetingTransactionsByAccount(accounts, LocalDate.parse("2018-05-01"), LocalDate.parse("2018-07-31"));
-//
-//		System.out.println(results);
-//
-//		assertEquals(3, results.size());
-//
-//	}
+		BudgetItem item = new BudgetItem();
+		item.setAccount(account);
+		item.setAmount(new BigDecimal("-50.00"));
+		item.setDescription("test item");
+		item.setStartDate(LocalDate.parse("2018-04-12", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		item = budgetRepo.save(item);
 
-//	@Test
-//	public void testBudgetItemService_2() throws Exception {
-//
-//		BudgetItem item = new BudgetItem();
-//		item.setAccount(account);
-//		item.setAmount(new BigDecimal("-50.00"));
-//		item.setDescription("test item");
-//		item.setStartDate(LocalDate.parse("2018-04-12", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//		item.setDayOfPeriod(99); // end of month
-//		item = budgetRepo.save(item);
-//
-//		List<Account> accounts = new ArrayList<>();
-//		accounts.add(account);
-//
-//		List<Transaction> results = budgetService.generateBudgetingTransactionsByAccount(accounts, LocalDate.parse("2018-01-01"), LocalDate.parse("2018-07-31"));
-//
-//		System.out.println(results);
-//
-//		assertEquals(4, results.size());
-//
-//	}
+		List<BudgetItem> items = budgetRepo.findAll();
+		Assertions.assertEquals(1, items.size());
+		Assertions.assertEquals(item.getId(), items.get(0).getId());
+
+	}
+
+	@Test
+	public void testBudgetItemService_1() throws Exception {
+
+		BudgetItem item = new BudgetItem();
+		item.setAccount(account);
+		item.setAmount(new BigDecimal("-50.00"));
+		item.setDescription("test item");
+		item.setStartDate(LocalDate.parse("2018-04-12", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		item = budgetRepo.save(item);
+
+		List<Account> accounts = new ArrayList<>();
+		accounts.add(account);
+
+		List<Transaction> results = budgetService.generateBudgetingTransactionsByAccount(accounts, LocalDate.parse("2018-05-01"), LocalDate.parse("2018-07-31"));
+
+		System.out.println(results);
+
+		Assertions.assertEquals(3, results.size());
+
+	}
+
+	@Test
+	public void testBudgetItemService_2() throws Exception {
+
+		BudgetItem item = new BudgetItem();
+		item.setAccount(account);
+		item.setAmount(new BigDecimal("-50.00"));
+		item.setDescription("test item");
+		item.setStartDate(LocalDate.parse("2018-04-12", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+		item.setDayOfPeriod(99); // end of month
+		item = budgetRepo.save(item);
+
+		List<Account> accounts = new ArrayList<>();
+		accounts.add(account);
+
+		List<Transaction> results = budgetService.generateBudgetingTransactionsByAccount(accounts, LocalDate.parse("2018-01-01"), LocalDate.parse("2018-07-31"));
+
+		System.out.println(results);
+
+		Assertions.assertEquals(4, results.size());
+
+	}
 
 //	@Test
 //	public void getTransactions_OK() throws Exception {

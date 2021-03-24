@@ -1,80 +1,91 @@
 package com.alunw.moany;
 
+import com.alunw.moany.model.Account;
+import com.alunw.moany.model.Category;
+import com.alunw.moany.model.CategoryBudget;
+import com.alunw.moany.repository.AccountRepository;
+import com.alunw.moany.repository.BudgetItemRepository;
+import com.alunw.moany.repository.CategoryRepository;
+import com.alunw.moany.repository.TransactionRepository;
+import com.alunw.moany.services.BudgetItemService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
+import java.time.YearMonth;
 
 //@RunWith(SpringRunner.class)
 @SpringBootTest
-//@AutoConfigureMockMvc
+@AutoConfigureMockMvc
 //@TestPropertySource("classpath:application-test.yml")
 public class CategoryTest {
 	
-//	@Autowired
-//	private MockMvc mvc;
+	@Autowired
+	private MockMvc mvc;
 	
-//	@Autowired
-//	private CategoryRepository categoryRepo;
+	@Autowired
+	private CategoryRepository categoryRepo;
 	
-//	@Autowired
-//	private AccountRepository accountRepo;
+	@Autowired
+	private AccountRepository accountRepo;
 	
-//	@Autowired
-//	private TransactionRepository transactionRepo;
+	@Autowired
+	private TransactionRepository transactionRepo;
 	
-//	@Autowired
-//	private BudgetItemRepository budgetRepo;
+	@Autowired
+	private BudgetItemRepository budgetRepo;
 	
-//	@Autowired
-//	private BudgetItemService budgetService;
+	@Autowired
+	private BudgetItemService budgetService;
 	
-//	private static Account account;
+	private static Account account;
 	
-//	@Before
-//	public void before() {
-//	}
+	@BeforeEach
+	public void before() {
+	}
 	
-//	@After
-//	public void after() {
-//	}
-
-	@Test
-	public void dummy() {
-		Assertions.assertTrue(true);
+	@AfterEach
+	public void after() {
 	}
 
 	/**
 	 * Basic Category POJO methods
 	 */
-//	@Test
-//	public void test_Category_1() {
-//
-//		String cat1Name = "Level 1 Category";
-//		String cat2Name = "Level 2 Category";
-//		CategoryBudget budget = new CategoryBudget(YearMonth.parse("2000-01"), null, new BigDecimal(100));
-//
-//		Category cat1 = new Category();
-//		cat1.setName(cat1Name);
-//
-//		Category cat2 = new Category(cat2Name, cat1);
-//		cat2.addCategoryBudget(budget);
-//
-//		assertEquals(null, cat1.getId());
-//		assertEquals(null, cat2.getId());
-//
-//		assertEquals(cat1Name, cat1.getName());
-//		assertEquals(cat2Name, cat2.getName());
-//
-//		assertEquals(cat1Name, cat1.getFullName());
-//		assertEquals(cat1Name + Category.FULL_NAME_SEPARATOR + cat2Name, cat2.getFullName());
-//
-//		assertEquals(0, cat1.getCategoryBudgets().size());
-//		assertEquals(1, cat2.getCategoryBudgets().size());
-//		assertEquals(budget.getMonthlyBudget(), cat2.getCategoryBudget(YearMonth.parse("2018-01")));
-//
-//		assertEquals(null, cat1.getParent());
-//		assertEquals(cat1, cat2.getParent());
-//	}
+	@Test
+	public void test_Category_1() {
+
+		String cat1Name = "Level 1 Category";
+		String cat2Name = "Level 2 Category";
+		CategoryBudget budget = new CategoryBudget(YearMonth.parse("2000-01"), null, new BigDecimal(100));
+
+		Category cat1 = new Category();
+		cat1.setName(cat1Name);
+
+		Category cat2 = new Category(cat2Name, cat1);
+		cat2.addCategoryBudget(budget);
+
+		Assertions.assertEquals(null, cat1.getId());
+		Assertions.assertEquals(null, cat2.getId());
+
+		Assertions.assertEquals(cat1Name, cat1.getName());
+		Assertions.assertEquals(cat2Name, cat2.getName());
+
+		Assertions.assertEquals(cat1Name, cat1.getFullName());
+		Assertions.assertEquals(cat1Name + Category.FULL_NAME_SEPARATOR + cat2Name, cat2.getFullName());
+
+		Assertions.assertEquals(0, cat1.getCategoryBudgets().size());
+		Assertions.assertEquals(1, cat2.getCategoryBudgets().size());
+		Assertions.assertEquals(budget.getMonthlyBudget(), cat2.getCategoryBudget(YearMonth.parse("2018-01")));
+
+		Assertions.assertEquals(null, cat1.getParent());
+		Assertions.assertEquals(cat1, cat2.getParent());
+	}
 	
 	/**
 	 * Basic repository save and find
