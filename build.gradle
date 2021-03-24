@@ -33,19 +33,7 @@ dependencies {
 	
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	
-//	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
-//	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.2'
-	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.4'
-	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.4'
-
-	//implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
-	//implementation group: 'no.api.freemarker', name: 'freemarker-java8', version: '1.2.0'
-	//implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.2.11.Final'
-	//implementation group: 'org.hibernate', name: 'hibernate-java8', version: '5.2.11.Final'
-	//implementation group: 'org.hibernate', name: 'hibernate-c3p0', version: '5.2.11.Final'
 	implementation 'javax.validation:validation-api:2.0.1.Final'
-	
-	//testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
 test {
