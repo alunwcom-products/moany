@@ -3,8 +3,8 @@
 /.classpath
 /.gradle
 /.project
-/.idea
 /.settings
+/.idea
 /moany.log*
 
 /*.upload

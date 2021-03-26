@@ -1,7 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.3.2.RELEASE'
+	id 'org.springframework.boot' version '2.4.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'eclipse'
     id 'checkstyle'
 }
 
@@ -18,57 +18,34 @@ repositories {
 
 checkstyle {
     configFile = 'src/test/resources/checkstyle.xml' as File
-    //configFile = 'src/test/resources/sun_checks.xml' as File
 }
 
-group = 'com.alunw'
-
-// create layered JARs for Docker image
-bootJar {
-    layered()
-}
-
-// inject build info for Spring Actuator
-springBoot {
-    buildInfo()
-}
-
-//sourceCompatibility = 1.8
-//targetCompatibility = 1.8
+sourceCompatibility = '11'
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-//    implementation('org.keycloak:keycloak-spring-boot-starter:11.0.2')
-//    implementation('org.keycloak:keycloak-spring-security-adapter:11.0.2')
-
-    implementation 'mysql:mysql-connector-java:8.0.22'
+	implementation 'mysql:mysql-connector-java:8.0.23'
     implementation 'com.h2database:h2:1.4.200'
-    implementation 'org.apache.poi:poi-ooxml:4.1.2'
+	implementation 'org.apache.poi:poi-ooxml:5.0.0'
 
-    implementation 'org.springframework.security:spring-security-web:5.4.1'
-    implementation 'org.springframework.security:spring-security-config:5.4.1'
-    implementation 'org.springframework.security:spring-security-test:5.4.1'
-    implementation 'org.springframework.security:spring-security-core:5.4.1'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation 'org.apache.commons:commons-lang3:3.11'
+	implementation 'org.springframework.security:spring-security-web:5.4.5'
+	implementation 'org.springframework.security:spring-security-config:5.4.5'
+	implementation 'org.springframework.security:spring-security-test:5.4.5'
 
-    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.1'
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.1'
-    //compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
-    //compile group: 'no.api.freemarker', name: 'freemarker-java8', version: '1.2.0'
-    //compile group: 'org.hibernate', name: 'hibernate-core', version: '5.2.11.Final'
-    //compile group: 'org.hibernate', name: 'hibernate-java8', version: '5.2.11.Final'
-    //compile group: 'org.hibernate', name: 'hibernate-c3p0', version: '5.2.11.Final'
-    //compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
-    //testCompile group: 'junit', name: 'junit', version: '4.12'
-
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.4.0'
-    implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.4.0'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.4.0'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.4.0'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.4.0'
-    testImplementation 'junit:junit:4.13.1'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
 }
+
+test {
+	useJUnitPlatform()
+}
+
+
+
