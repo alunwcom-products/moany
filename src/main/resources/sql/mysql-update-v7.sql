@@ -2,6 +2,9 @@
 -- Database v7 update
 -- 
 
+-- drop category budgets
+DROP TABLE IF EXISTS moany.category_budgets;
+
 -- add category budgets
 CREATE TABLE moany.category_budgets (
   uuid varchar(255) NOT NULL,
@@ -15,8 +18,9 @@ CREATE TABLE moany.category_budgets (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- create stored procedure to migrate existing budgets
+DROP PROCEDURE IF EXISTS temp_init_budgets;
+
 DELIMITER $$
-DROP PROCEDURE IF EXISTS temp_init_budgets $$
 CREATE PROCEDURE temp_init_budgets()
 BEGIN
   DECLARE done INT DEFAULT FALSE;
@@ -37,7 +41,8 @@ BEGIN
   END LOOP;
   CLOSE cursor1;
 END $$
-DELIMITER ;
+
+DELIMITER ; -- space before semi-colon is needed!
 
 -- run procedure
 CALL temp_init_budgets;
@@ -50,4 +55,3 @@ ALTER TABLE moany.categories DROP COLUMN monthly_budget;
 
 UPDATE moany.system_info SET value = '7' WHERE name = 'db_version';
 COMMIT;
-

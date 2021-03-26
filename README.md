@@ -1,8 +1,18 @@
-# README #
+# README
 
-----
+## WIP
 
-## What's this? ##
++ handle failure to connect to database more gracefully - no stacktraces, and just retry and log...
+
+
+```
+-Dspring.profiles.active=dev
+
+export spring_profiles_active=dev
+
+```
+
+## What's this?
 
 'Moany' ... me moaning about money.
 
@@ -10,9 +20,8 @@
 * Why? To track personal accounts, transactions, and do away with pesky spreadsheets.
 * It's a pet project allowing me to try out different things, and hopefully get a basically functioning app.
 
-----
 
-### ISSUES/TODO ###
+### ISSUES/TODO
 
 NEXT RELEASE: v7.0.0
 
@@ -38,7 +47,6 @@ BACKLOG
 - FEATURE: What is the behaviour when an account is deleted? Are transactions deleted? Need to include budget items too!
 - FEATURE: What needs to be done to allow multiple users/accounts??
 - ENHANCEMENT: Add Spring unit tests.
-- FEATURE: Dockerize moany for easier deployment.
 - ENHANCEMENT/BUG: Need to make the UI update when data changes.
 - ENHANCEMENT/BUG: Clear tr form after transaction deleted
 - ENHANCEMENT: Remove stored statements, create test statements as test resource with unit tests.
@@ -55,3 +63,4 @@ BACKLOG
 - Allow mass selection/change of categories + filtering transactions.
 
 ----
+
