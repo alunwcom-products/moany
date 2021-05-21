@@ -77,9 +77,4 @@ public class DefaultController implements ErrorController {
 		model.addAttribute("reason", httpStatus.getReasonPhrase());
 		return "error";
 	}
-	
-	@Override
-	public String getErrorPath() {
-		return "/error";
-	}
 }

@@ -28,7 +28,10 @@ spring.jpa.database-platform: H2
 #spring.datasource.password: password
 #spring.jpa.database-platform: MySQL8
 
-server.error.whitelabel.enabled: false
+server:
+  error:
+    path: /error
+    whitelabel.enabled: false
 
 # none This is the default for MySQL, no change to the database structure.
 # update Hibernate changes the database according to the given Entity structures.
