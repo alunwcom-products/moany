@@ -1,4 +1,4 @@
-name: Moany CI Workflow
+name: GitHub CI Workflow
 on:
   push:
     branches: [ main ]
