@@ -1,3 +1,3 @@
-# Moany :: Docs
+# Documentation
 
 **TODO**
