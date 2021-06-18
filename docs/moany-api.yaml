@@ -1,0 +1,294 @@
+openapi: 3.0.1
+info:
+  title: moany-api
+  description: 'Existing moany-public API (but with JWT included for authentication).'
+  version: 1.0.0
+servers: []
+paths:
+  /rest/accounts/v2/:
+    get:
+      tags:
+        - accounts
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountList'
+    put:
+      description:
+        'PUT an account record in the repository, returning the account.
+
+
+        If the id is blank, then a new account record is created, and the id is
+        included in the returned account.
+
+
+        If the id is specified, then this account will be updated and the
+        account returned. If the specified id does not exist, then the record
+        is not stored, and an error response is returned.
+
+
+	      If there is a validation error (e.g. no account number or name), then
+	      the record is not stored, and an error response returned.'
+      tags:
+        - accounts
+
+  /rest/accounts/v2/id/{accountId}:
+    parameters:
+      - name: accountId
+        in: path
+        description: 'Account identifier.'
+        # TODO currently not required
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - accounts
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+    # TODO this needs re-thinking - if I create 'virtual' accounts transactions should not be deleted
+    delete:
+      description: "Deletes the specified account and all child transactions."
+      tags:
+        - accounts
+      responses:
+        200:
+          description: "Account deleted"
+
+  /transaction/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: 'Transaction identifier.'
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+        - transactions
+      security:
+        - bearerJWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionInput'
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionOutput'
+
+    get:
+      tags:
+        - transactions
+      security:
+        - bearerJWTAuth: []
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          description: 'The number of items to skip before starting to collect the result set.'
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: 'The numbers of items to return.'
+      responses:
+        200:
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+    delete:
+      tags:
+        - transactions
+      security:
+        - bearerJWTAuth: []
+      responses:
+        200:
+          description: ""
+          content: {}
+
+
+
+
+
+components:
+  securitySchemes:
+    bearerJWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    TransactionInput:
+      type: object
+      description: 'Transaction properties for manual input.'
+      properties:
+        transactionDate:
+          type: string
+          format: date-time
+          description: 'Transaction date (as shown on bank statement).'
+        type:
+          type: string
+          description: 'Transaction type (as shown on bank statement).'
+        description:
+          type: string
+          description: 'Transaction description (as shown on bank statement).'
+        netAmount:
+          type: integer
+          format: int64
+          description: 'Transaction amount (credit/debit).'
+        account:
+          type: string
+          description: 'Account identifier.'
+      required:
+        - transactionDate
+        - netAmount
+        - account
+    TransactionOutput:
+      type: object
+      description: 'Transaction properties from data store.'
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'Transaction identifier (UUID).'
+        transactionDate:
+          type: string
+          format: date-time
+          description: 'Transaction date (as shown on bank statement).'
+        entryDate:
+          type: string
+          format: date-time
+          description: 'Date of entry to data store.'
+        type:
+          type: string
+          description: 'Transaction type (as shown on bank statement).'
+        description:
+          type: string
+          description: 'Transaction description (as shown on bank statement).'
+        sourceType:
+          type: string
+          enum:
+            - statement
+            - budgeting
+            - manual
+          description: 'Source of transaction entry.'
+        sourceName:
+          type: string
+          description: 'Name of entry source (e.g. statement file/reference).'
+        sourceRow:
+          type: integer
+          format: int64
+          description: 'Source row (for entries from statement files).'
+        statementAmount:
+          type: integer
+          format: int64
+          description: 'Transaction amount (as shown on bank statement).'
+        netAmount:
+          type: integer
+          format: int64
+          description: 'Transaction amount (credit/debit).'
+        statementBalance:
+          type: integer
+          format: int64
+          description: 'Running balance (as shown on bank statement).'
+        accountBalance:
+          type: integer
+          format: int64
+          description: 'Calculated running account balance.'
+        account:
+          type: string
+          description: 'Account identifier.'
+      required:
+        - id
+        - transactionDate
+        - entryDate
+        - sourceType
+        - netAmount
+        - accountBalance
+        - account
+    TransactionList:
+      type: object
+      description: 'Transaction properties from data store.'
+      properties:
+        count:
+          type: integer
+          format: int32
+        resultsPerPage:
+          type: integer
+          format: int32
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionOutput'
+
+    Account:
+      type: object
+      description: 'An account.'
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'Application generated identifier (UUID).'
+        name:
+          type: string
+          description: 'User-defined account name'
+        accountNumber:
+          type: string
+          description: 'User-defined account number'
+        # TODO add sort code
+        # accountSortCode:
+        #   type: string
+        #   description: 'User-defined account sort code'
+        #
+        # TODO should separate user-defined name/number from that found in statements
+        # the latter should be a list to allow for statement changes over time
+        accountType:
+          $ref: '#/components/schemas/AccountType'
+        # TODO how to handle start - if earlier transactions added later??
+        startingBalance:
+          type: integer
+          format: int64
+          description: 'Starting balance when added to application.'
+        # TODO remove list? these should be queried separately if needed
+        # transactions:
+        #   type: array
+        #   items:
+        #     $ref: '#/components/schemas/TransactionOutput'
+
+    AccountType:
+      type: string
+      enum:
+        - DEBIT
+        - CREDIT
+
+    AccountList:
+      type: object
+      description: 'List of accounts.'
+      properties:
+        count:
+          type: integer
+          format: int32
+        resultsPerPage:
+          type: integer
+          format: int32
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
