@@ -30,10 +30,13 @@ paths:
         is not stored, and an error response is returned.
 
 
-	      If there is a validation error (e.g. no account number or name), then
-	      the record is not stored, and an error response returned.'
+        If there is a validation error (e.g. no account number or name), then
+        the record is not stored, and an error response returned.'
       tags:
         - accounts
+      responses:
+        200:
+          description: ""
 
   /rest/accounts/v2/id/{accountId}:
     parameters:
@@ -62,6 +65,43 @@ paths:
       responses:
         200:
           description: "Account deleted"
+  /rest/accounts/v2/balance/:
+    parameters:
+      - name: acc
+        in: query
+        description: 'Comma-delimited account identifiers'
+        required: true
+        schema:
+          type: string
+      - name: date
+        in: query
+        description: 'Balance date'
+        schema:
+          type: string
+    get:
+      tags:
+        - accounts
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: integer
+  /rest/accounts/v2/rebalance/{transactionId}:
+    parameters:
+      - name: transactionId
+        in: path
+        description: 'Transaction identifier'
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - accounts
+      responses:
+        200:
+          description: ''
 
   /transaction/{id}:
     parameters:
