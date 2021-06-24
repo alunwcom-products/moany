@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alunw.moany.services.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,6 @@ import com.alunw.moany.model.TransactionType;
 import com.alunw.moany.repository.TransactionRepository;
 import com.alunw.moany.services.AccountService;
 import com.alunw.moany.services.BudgetItemService;
-import com.alunw.moany.services.TransactionService;
 import com.alunw.moany.services.Utilities;
 
 @RestController
@@ -40,9 +40,6 @@ public class RestTransactionController {
 	
 	@Autowired
 	private TransactionRepository transactionRepo;
-	
-	@Autowired
-	private TransactionService transactionService;
 	
 	@Autowired
 	private BudgetItemService budgetService;
@@ -79,7 +76,7 @@ public class RestTransactionController {
 			endDate = Utilities.getLatestDate();
 		}
 		
-		return transactionService.findTransactionsByAccount(accountService.findByIdIn(accountNumbers), startDate, endDate);
+		return transactionRepo.findTransactionsByAccount(accountService.findByIdIn(accountNumbers), startDate, endDate);
 	}
 	
 	/**
@@ -115,9 +112,9 @@ public class RestTransactionController {
 	/**
 	 * TODO Returns merged and sorted real and virtual transactions.
 	 * 
-	 * @param accountNumbers
-	 * @param startDateStr
-	 * @param endDateStr
+	 * @param monthStr
+	 * @param accountNumbersStr
+	 * @param excludeBudgetItemsStr
 	 * @return
 	 */
 	@RequestMapping(value={"/month/{month}"}, method = RequestMethod.GET)
@@ -141,7 +138,7 @@ public class RestTransactionController {
 		
 		// get real transactions
 		// TODO add service methods to access results directly with YearMonth
-		List<Transaction> results = transactionService.findTransactionsByAccount(accountService.findByIdIn(accountNumbersStr), 
+		List<Transaction> results = transactionRepo.findTransactionsByAccount(accountService.findByIdIn(accountNumbersStr),
 				LocalDate.of(month.getYear(), month.getMonth(), 1), 
 				LocalDate.of(month.getYear(), month.getMonth(), month.getMonth().length(month.isLeapYear())));
 		

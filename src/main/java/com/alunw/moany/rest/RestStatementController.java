@@ -63,9 +63,9 @@ public class RestStatementController {
 	
 	/**
 	 * Upload statement and display loaded transactions
-	 * 
-	 * @param model The MVC model.
+	 *
 	 * @param file The uploaded statement file.
+	 * @param importerName Selected importer (name).
 	 * @param autoAcc Create new accounts automatically?
 	 * @param noDup Abort (and rollback) saving of statement if a duplicate transaction is found?
 	 *   (If false, then duplicate transactions will be ignored, but other transactions, and accounts, will be saved.)
