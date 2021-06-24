@@ -32,9 +32,6 @@ public class TransactionService {
 	private TransactionRepository transactionRepo;
 	
 	@Autowired
-	private TransactionService transactionService;
-	
-	@Autowired
 	private AccountRepository accountRepo;
 	
 	@PersistenceContext
@@ -42,43 +39,7 @@ public class TransactionService {
 	
 	@PostConstruct
 	public void init() {}
-	
-	/**
-	 * 
-	 * 
-	 * @param accounts
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	@Transactional(readOnly = true)
-	public List<Transaction> findTransactionsByAccount(List<Account> accounts, LocalDate startDate, LocalDate endDate) {
-		
-		logger.debug("getTransactionsByAccount(" + accounts + ", " + startDate + ", " + endDate + ")");
-		logger.debug("count = {}", transactionRepo.count());
 
-		return transactionRepo.findTransactionsByAccount(accounts, startDate, endDate);
-		
-//		// Don't run query if parameters are missing
-//		if (startDate == null || endDate == null || accounts == null || accounts.isEmpty()) {
-//			return Collections.emptyList();
-//		}
-//
-//		TypedQuery<Transaction> typedQuery = em.createQuery("from Transaction where account in :acc "
-//				+ "and transactionDate >= :startDate "
-//				+ "and transactionDate <= :endDate "
-//				+ "order by transactionDate, sourceRow asc", Transaction.class);
-//		typedQuery.setParameter("acc", accounts);
-//		typedQuery.setParameter("startDate", startDate);
-//		typedQuery.setParameter("endDate", endDate);
-//
-//		List<Transaction> results = typedQuery.getResultList();
-//
-//		logger.debug("Retrieved {} subscription(s)", results.size());
-//
-//		return results;
-	}
-	
 	/**
 	 * TODO
 	 * 
@@ -112,7 +73,7 @@ public class TransactionService {
 		accounts.add(account);
 		
 		// Re-balance account from transaction forwards
-		List<Transaction> transactionsForwards = transactionService.findTransactionsByAccount(accounts, tran.get().getTransactionDate(), Utilities.getLatestDate());
+		List<Transaction> transactionsForwards = transactionRepo.findTransactionsByAccount(accounts, tran.get().getTransactionDate(), Utilities.getLatestDate());
 		BigDecimal balance = tran.get().getStmtBalance().multiply(account.getType().getMultiplier());
 		boolean balancingStarted = false;
 		for (Transaction t : transactionsForwards) {
@@ -142,7 +103,7 @@ public class TransactionService {
 		}
 		
 		// Re-balance account from transaction backwards
-		List<Transaction> transactionsBackwards = transactionService.findTransactionsByAccount(accounts, Utilities.getEarliestDate(), tran.get().getTransactionDate());
+		List<Transaction> transactionsBackwards = transactionRepo.findTransactionsByAccount(accounts, Utilities.getEarliestDate(), tran.get().getTransactionDate());
 		balance = tran.get().getStmtBalance().multiply(account.getType().getMultiplier());
 		balancingStarted = false;
 		BigDecimal previousNetAmount = null;
@@ -216,7 +177,7 @@ public class TransactionService {
 			
 			List<Account> accountList = new ArrayList<>();
 			accountList.add(account);
-			List<Transaction> transactions = transactionService.findTransactionsByAccount(accountList, Utilities.getEarliestDate(), Utilities.getLatestDate());
+			List<Transaction> transactions = transactionRepo.findTransactionsByAccount(accountList, Utilities.getEarliestDate(), Utilities.getLatestDate());
 			
 			for (Transaction transaction : transactions) {
 				

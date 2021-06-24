@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.alunw.moany.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class AccountService {
 	private AccountRepository accountRepo;
 	
 	@Autowired
-	private TransactionService transactionService;
+	private TransactionRepository transactionRepo;
 	
 	@Autowired
 	private BudgetItemService budgetItemService;
@@ -122,7 +123,7 @@ public class AccountService {
 			balance = balance.add(account.getStartBalance());
 			logger.debug("balance [acc = {}, total = {}]", account.getAccNum(), balance);
 		}
-		List<Transaction> transactions = transactionService.findTransactionsByAccount(accounts, accountStartDate, endDate);
+		List<Transaction> transactions = transactionRepo.findTransactionsByAccount(accounts, accountStartDate, endDate);
 		for (Transaction t : transactions) {
 			
 			// amount may be null

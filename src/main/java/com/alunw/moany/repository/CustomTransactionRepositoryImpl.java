@@ -41,7 +41,6 @@ public class CustomTransactionRepositoryImpl implements CustomTransactionReposit
         List<Transaction> results = typedQuery.getResultList();
 
         logger.debug("Retrieved {} transactions(s)", results.size());
-        logger.debug("Retrieved transactions(s): {}", results);
 
         return results;
     }
