@@ -1,12 +1,11 @@
 package com.alunw.moany.repository;
 
+import com.alunw.moany.model.Transaction;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 
-import org.springframework.data.repository.CrudRepository;
-
-import com.alunw.moany.model.Transaction;
-
-public interface TransactionRepository extends CrudRepository<Transaction, String> {
+public interface TransactionRepository extends JpaRepository<Transaction, String>, CustomTransactionRepository {
 	
 	List<Transaction> findAll();
 	List<Transaction> findBySourceName(String sourceName);

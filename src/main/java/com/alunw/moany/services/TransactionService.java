@@ -56,25 +56,28 @@ public class TransactionService {
 	public List<Transaction> findTransactionsByAccount(List<Account> accounts, LocalDate startDate, LocalDate endDate) {
 		
 		logger.debug("getTransactionsByAccount(" + accounts + ", " + startDate + ", " + endDate + ")");
+		logger.debug("count = {}", transactionRepo.count());
+
+		return transactionRepo.findTransactionsByAccount(accounts, startDate, endDate);
 		
-		// Don't run query if parameters are missing
-		if (startDate == null || endDate == null || accounts == null || accounts.isEmpty()) {
-			return Collections.emptyList();
-		}
-		
-		TypedQuery<Transaction> typedQuery = em.createQuery("from Transaction where account in :acc "
-				+ "and transactionDate >= :startDate "
-				+ "and transactionDate <= :endDate "
-				+ "order by transactionDate, sourceRow asc", Transaction.class);
-		typedQuery.setParameter("acc", accounts);
-		typedQuery.setParameter("startDate", startDate);
-		typedQuery.setParameter("endDate", endDate);
-		
-		List<Transaction> results = typedQuery.getResultList();
-		
-		logger.debug("Retrieved {} subscription(s)", results.size());
-		
-		return results;
+//		// Don't run query if parameters are missing
+//		if (startDate == null || endDate == null || accounts == null || accounts.isEmpty()) {
+//			return Collections.emptyList();
+//		}
+//
+//		TypedQuery<Transaction> typedQuery = em.createQuery("from Transaction where account in :acc "
+//				+ "and transactionDate >= :startDate "
+//				+ "and transactionDate <= :endDate "
+//				+ "order by transactionDate, sourceRow asc", Transaction.class);
+//		typedQuery.setParameter("acc", accounts);
+//		typedQuery.setParameter("startDate", startDate);
+//		typedQuery.setParameter("endDate", endDate);
+//
+//		List<Transaction> results = typedQuery.getResultList();
+//
+//		logger.debug("Retrieved {} subscription(s)", results.size());
+//
+//		return results;
 	}
 	
 	/**
@@ -188,7 +191,7 @@ public class TransactionService {
 	 * 
 	 * Work through all accounts - starting from start date, and also update net_amount
 	 * 
-	 * @param account (Optional) account to rebalance from starting balance. If null, then all accounts are rebalanced.
+	 * @param acc (Optional) account to rebalance from starting balance. If null, then all accounts are rebalanced.
 	 */
 	@Transactional // TODO check workings of this
 	public void recalculateBalances(Account acc) {
