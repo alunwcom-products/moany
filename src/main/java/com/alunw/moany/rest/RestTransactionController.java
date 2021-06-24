@@ -115,9 +115,9 @@ public class RestTransactionController {
 	/**
 	 * TODO Returns merged and sorted real and virtual transactions.
 	 * 
-	 * @param accountNumbers
-	 * @param startDateStr
-	 * @param endDateStr
+	 * @param monthStr
+	 * @param accountNumbersStr
+	 * @param excludeBudgetItemsStr
 	 * @return
 	 */
 	@RequestMapping(value={"/month/{month}"}, method = RequestMethod.GET)
