@@ -57,4 +57,3 @@ BACKLOG
 - Allow mass selection/change of categories + filtering transactions.
 
 ----
-
