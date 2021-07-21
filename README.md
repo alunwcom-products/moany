@@ -1,6 +1,6 @@
 # README #
 
-[![Build Status](https://travis-ci.com/alunwcom/moany-public.svg?branch=master)](https://travis-ci.com/alunwcom/moany-public) [![Build Status](https://github.com/alunwcom/moany-public/actions/workflows/main.yml/badge.svg)](https://github.com/alunwcom/moany-public/actions)
+[![Build Status](https://github.com/alunwcom/moany-public/actions/workflows/main.yml/badge.svg)](https://github.com/alunwcom/moany-public/actions)
 
 ----
 
