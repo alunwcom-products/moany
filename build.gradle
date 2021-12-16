@@ -3,22 +3,25 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
     id 'checkstyle'
+	id 'com.github.ben-manes.versions' version '0.39.0'
 }
 
 repositories {
 	mavenCentral()
 }
 
-tasks.withType(JavaCompile) {
-	options.compilerArgs << '-Xlint:unchecked'
-	options.deprecation = true
-}
+//tasks.withType(JavaCompile) {
+//	options.compilerArgs << '-Xlint:unchecked'
+//	options.deprecation = true
+//}
 
 checkstyle {
 	configFile = 'src/test/resources/checkstyle.xml' as File
 }
 
-sourceCompatibility = '11'
+//compileJava {
+//	sourceCompatibility = '11'
+//}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
