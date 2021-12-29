@@ -6,7 +6,7 @@ app.config(function($mdDateLocaleProvider) {
 	};
 });
 
-app.controller('reportCtrl', ['$scope', '$filter', '$http', 'categorySvc', 'accountsSvc', 'transactionSvc', function($scope, $filter, $http, categorySvc, accountsSvc, transactionSvc) {
+app.controller('reportCtrl2', ['$scope', '$filter', '$http', 'categorySvc', 'accountsSvc', 'transactionSvc', function($scope, $filter, $http, categorySvc, accountsSvc, transactionSvc) {
 	
 	var self = this;
 	

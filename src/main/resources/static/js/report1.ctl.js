@@ -6,7 +6,7 @@ app.config(function($mdDateLocaleProvider) {
 	};
 });
 
-app.controller('reportCtrl', ['$scope', '$filter', '$http', 'categorySvc', 'accountsSvc', 'transactionSvc', function($scope, $filter, $http, categorySvc, accountsSvc, transactionSvc) {
+app.controller('reportCtrl1', ['$scope', '$filter', '$http', 'categorySvc', 'accountsSvc', 'transactionSvc', function($scope, $filter, $http, categorySvc, accountsSvc, transactionSvc) {
 	
 	var self = this;
 	
@@ -34,7 +34,7 @@ app.controller('reportCtrl', ['$scope', '$filter', '$http', 'categorySvc', 'acco
 
 		accountsSvc.getAllAccounts($scope);
 
-		categorySvc.getCategorySummaryByMonth($scope, $scope.selectedAccounts, start, end);
+		categorySvc.getCategorySummary($scope, $scope.selectedAccounts, start);
 	}
 	$scope.refreshLists();
 
@@ -76,25 +76,26 @@ app.controller('reportCtrl', ['$scope', '$filter', '$http', 'categorySvc', 'acco
 	}
 
 	self.total = function(cat) {
+    console.log("total(" + cat + ")");
 		var total = 0;
-		for (var key in cat.months) {
-			console.log("key = " + key);
-			total += cat.months[key];
+		for (var entry in cat.actualAmount) {
+			console.log("entry = " + entry);
+			console.log("value = " + cat.actualAmount[entry]);
+			total += cat.actualAmount[entry];
 		}
-
-		console.log("total for '" + cat.category.fullName + "' = " + total);
-
+		console.log("total for '" + cat.fullName + "' = " + total);
 		return total;
 	}
 
 	self.budget = function(cat) {
+    console.log("budget(" + cat + ")");
 		var budget = 0;
-		for (var key in cat.months) {
-			budget += cat.category.monthlyBudget;
+		for (var entry in cat.plannedAmount) {
+			console.log("entry = " + entry);
+			console.log("value = " + cat.plannedAmount[entry]);
+			budget += cat.plannedAmount[entry];
 		}
-
-		console.log("budget for '" + cat.category.fullName + "' = " + budget);
-
+		console.log("budget for '" + cat.fullName + "' = " + budget);
 		return budget;
 	}
 
@@ -105,12 +106,12 @@ app.controller('reportCtrl', ['$scope', '$filter', '$http', 'categorySvc', 'acco
 	}
 
 	$scope.filterCats = function(cat) {
-		console.log("cat... " + cat.category.name)
+		console.log("cat... " + cat.name)
 		console.log(cat)
 		//console.log("cat = " + cat.name + " - > " + cat.name === 'Uncategorized')
 		//console.log("cat = " + cat.name + " - > " + cat.name === 'All Categories')
 
-		return cat.category.name !== 'Uncategorized' && cat.category.name !== 'All Categories';
+		return cat.name !== 'Uncategorized' && cat.name !== 'All Categories';
 		//return true;
 	}
 

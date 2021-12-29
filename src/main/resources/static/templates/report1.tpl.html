@@ -25,19 +25,19 @@
 
     <tr data-ng-repeat="cat in categorySummary | filter:filterCats | orderBy: 'category.fullName'">
       <td data-ng-bind="cat.fullName" class="t150"></td>
-      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.months[key] | currency : '£' : 2 " class="t150" style="{{ ctrl.budgetStatus(cat.months[key], cat.category.monthlyBudget) }}"></td>
-      <td style="{{ ctrl.totalStatus(cat) }}">{{ cat }}   {{ ctrl.total(cat) | currency : '£' : 2 }} (of {{ ctrl.budget(cat) | currency : '£' : 2 }})</td>
+      <td data-ng-repeat="(key, value) in headings" class="t150" style="{{ ctrl.budgetStatus(cat.actualAmount[key], cat.plannedAmount[key]) }}">{{ cat.actualAmount[key] | currency : '£' : 2 }}</td>
+      <td style="{{ ctrl.totalStatus(cat) }}">{{ ctrl.total(cat) | currency : '£' : 2 }} (of {{ ctrl.budget(cat) | currency : '£' : 2 }})</td>
     </tr>
 
     <tr data-ng-repeat="cat in categorySummary | filter: 'Uncategorized' ">
       <td data-ng-bind="cat.fullName" class="t150"></td>
-      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.months[key] | currency : '£' : 2 " class="t150"></td>
+      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.actualAmount[key] | currency : '£' : 2 " class="t150"></td>
       <td style="{{ ctrl.totalStatus(cat) }}">{{ ctrl.total(cat) | currency : '£' : 2 }} (of {{ ctrl.budget(cat) | currency : '£' : 2 }})</td>
     </tr>
 
     <tr data-ng-repeat="cat in categorySummary | filter: 'All Categories' ">
       <td data-ng-bind="cat.fullName" class="t150"></td>
-      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.months[key] | currency : '£' : 2 " class="t150"></td>
+      <td data-ng-repeat="(key, value) in headings" data-ng-bind=" cat.actualAmount[key] | currency : '£' : 2 " class="t150"></td>
       <td style="{{ ctrl.totalStatus(cat) }}">{{ ctrl.total(cat) | currency : '£' : 2 }} (of {{ ctrl.budget(cat) | currency : '£' : 2 }})</td>
     </tr>
 
