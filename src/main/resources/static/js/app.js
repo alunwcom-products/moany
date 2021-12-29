@@ -39,9 +39,14 @@ app.config(function ($routeProvider) {
       controller: 'categoryCtrl',
       controllerAs: 'ctrl'
     })
-    .when('/report', {
-      templateUrl: '/templates/report.tpl.html',
-      controller: 'reportCtrl',
+    .when('/report1', {
+      templateUrl: '/templates/report1.tpl.html',
+      controller: 'reportCtrl1',
+      controllerAs: 'ctrl'
+    })
+    .when('/report2', {
+      templateUrl: '/templates/report2.tpl.html',
+      controller: 'reportCtrl2',
       controllerAs: 'ctrl'
     })
     .otherwise({
