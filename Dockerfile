@@ -9,7 +9,7 @@ WORKDIR /workspace
 # copy gradle wrapper assets to create layer that should only change on gradle version/wrapper change 
 COPY gradlew ./
 COPY gradle/ ./gradle/
-RUN sh gradlew projects
+RUN sh gradlew init
 
 # copy all project assets for application build/test
 COPY ./src/ ./src/
