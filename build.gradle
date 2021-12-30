@@ -14,8 +14,10 @@ repositories {
             url repoUrl
         }
     }
-    jcenter()
+	mavenCentral()
 }
+
+//version = '1.0.2'
 
 //tasks.withType(JavaCompile) {
 //	options.compilerArgs << '-Xlint:unchecked'
