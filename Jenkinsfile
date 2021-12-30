@@ -5,7 +5,7 @@ pipeline {
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
         DOCKER_UAT_DB_NAME = 'moany-db-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
-        SQL_BACKUP_LOCATION = '/srv/backups/moany-db.sql'
+        SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
     }
     triggers {
         pollSCM('* * * * *')
