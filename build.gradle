@@ -25,18 +25,20 @@ if ( ! version.equalsIgnoreCase("unspecified") ) {
 	println "USING SCM VERSION -> ${version}"
 }
 
-//tasks.withType(JavaCompile) {
-//	options.compilerArgs << '-Xlint:unchecked'
-//	options.deprecation = true
-//}
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-Xlint:unchecked'
+	options.deprecation = true
+}
 
 checkstyle {
     configFile = 'src/test/resources/checkstyle.xml' as File
 }
 
-//compileJava {
-//	sourceCompatibility = '11'
-//}
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(8)
+	}
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'

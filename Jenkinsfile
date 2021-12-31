@@ -29,6 +29,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
+                cleanWs()
                 script {
                     currentBuild.description = "Build only"
                     sh '''
@@ -80,7 +81,7 @@ pipeline {
                     docker cp jenkins-moany-${BUILD_VERSION}:/opt/software/moany.jar ./moany-${BUILD_VERSION}.jar
                     docker rm jenkins-moany-${BUILD_VERSION}
                 '''
-                archiveArtifacts artifacts: "**/*.jar"
+                archiveArtifacts artifacts: "**/moany-*.jar"
             }
         }
     }
