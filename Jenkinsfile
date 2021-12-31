@@ -29,7 +29,6 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                cleanWs()
                 script {
                     currentBuild.description = "Build only"
                     sh '''
@@ -76,6 +75,7 @@ pipeline {
         stage('publish-artifacts') {
             steps {
                 sh '''
+                    rm -f ./moany-*.jar
                     BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
                     docker create --name jenkins-moany-${BUILD_VERSION} ${MOANY_IMAGE}:${BUILD_VERSION}
                     docker cp jenkins-moany-${BUILD_VERSION}:/opt/software/moany.jar ./moany-${BUILD_VERSION}.jar
