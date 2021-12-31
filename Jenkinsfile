@@ -80,7 +80,7 @@ pipeline {
                     docker cp jenkins-moany-${BUILD_VERSION}:/opt/software/moany.jar ./moany-${BUILD_VERSION}.jar
                     docker rm jenkins-moany-${BUILD_VERSION}
                 '''
-//                 archiveArtifacts artifacts: "./moany-${BUILD_VERSION}.jar", fingerprint: true
+                archiveArtifacts artifacts: "**/*.jar"
             }
         }
     }
