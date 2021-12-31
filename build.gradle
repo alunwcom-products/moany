@@ -50,6 +50,9 @@ dependencies {
     implementation 'com.h2database:h2:1.4.200'
 	implementation 'org.apache.poi:poi-ooxml:5.0.0'
 
+	implementation 'ch.qos.logback:logback-core:1.2.10'
+	implementation 'ch.qos.logback:logback-classic:1.2.10'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	implementation 'org.springframework.security:spring-security-web:5.5.0'
