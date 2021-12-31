@@ -173,6 +173,10 @@ public class RestTransactionController {
 				}
 				
 				// last ditch comparison - description
+				if (t1.getDescription() == null || t2.getDescription() == null) {
+					return 0;
+				}
+				
 				return t1.getDescription().compareToIgnoreCase(t2.getDescription());
 			}
 		});

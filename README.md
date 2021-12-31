@@ -1,10 +1,21 @@
-# README #
+# README
 
 [![Build Status](https://github.com/alunwcom/moany-public/actions/workflows/main.yml/badge.svg)](https://github.com/alunwcom/moany-public/actions)
 
+## WIP
+
++ handle failure to connect to database more gracefully - no stacktraces, and just retry and log...
+
+```
+-Dspring.profiles.active=dev
+
+export spring_profiles_active=dev
+
+```
+
 ----
 
-## What's this? ##
+## What's this?
 
 'Moany' ... me moaning about money.
 
@@ -14,7 +25,7 @@
 
 ----
 
-### ISSUES/TODO ###
+### ISSUES/TODO
 
 NEXT RELEASE: v7.0.0
 

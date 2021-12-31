@@ -62,7 +62,8 @@
       <a href="/#!/monthview">Month View</a> | 
       <a href="/#!/statements">Statements</a> | 
       <a href="/#!/categories">Categories</a> | 
-      <a href="/#!/report">Category Report</a>
+      <a href="/#!/report1">Category Report [v1]</a> |
+      <a href="/#!/report2">Category Report [v2]</a>
     </p>
     
     <div ng-view></div>
@@ -77,6 +78,7 @@
   <script src="/js/monthview.ctl.js"></script>
   <script src="/js/budgeting.ctl.js"></script>
   <script src="/js/statements.ctl.js"></script>
-  <script src="/js/report.ctl.js"></script>
+  <script src="/js/report1.ctl.js"></script>
+  <script src="/js/report2.ctl.js"></script>
 </body>
 </html>

@@ -1,27 +1,44 @@
 plugins {
 	id 'org.springframework.boot' version '2.5.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'java'
     id 'checkstyle'
 	id 'com.github.ben-manes.versions' version '0.39.0'
 }
 
 repositories {
+    if (project.ext.properties.repoUrl) {
+        maven {
+            name = 'repo'
+            credentials(PasswordCredentials)
+            url repoUrl
+        }
+    }
 	mavenCentral()
 }
 
-//tasks.withType(JavaCompile) {
-//	options.compilerArgs << '-Xlint:unchecked'
-//	options.deprecation = true
-//}
-
-checkstyle {
-	configFile = 'src/test/resources/checkstyle.xml' as File
+// Use Git tag/commit as version unless explicitly set elsewhere (in gradle.properties)
+if ( ! version.equalsIgnoreCase("unspecified") ) {
+	println "USING CUSTOM VERSION -> ${version}"
+} else {
+	project.version = 'git describe --dirty --tags --first-parent --always'.execute().text.trim()
+	println "USING SCM VERSION -> ${version}"
 }
 
-//compileJava {
-//	sourceCompatibility = '11'
-//}
+tasks.withType(JavaCompile) {
+	options.compilerArgs << '-Xlint:unchecked'
+	options.deprecation = true
+}
+
+checkstyle {
+    configFile = 'src/test/resources/checkstyle.xml' as File
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(8)
+	}
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -30,37 +47,20 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
 	implementation 'mysql:mysql-connector-java:8.0.25'
-	implementation 'com.h2database:h2:1.4.200'
+    implementation 'com.h2database:h2:1.4.200'
 	implementation 'org.apache.poi:poi-ooxml:5.0.0'
-	
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	
+
 	implementation 'org.springframework.security:spring-security-web:5.5.0'
 	implementation 'org.springframework.security:spring-security-config:5.5.0'
 	implementation 'org.springframework.security:spring-security-test:5.5.0'
-	
+
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
-	
+
 	implementation 'javax.validation:validation-api:2.0.1.Final'
 }
 
 test {
 	useJUnitPlatform()
 }
-
-// Build distribution - war file plus runnable zip package
-
-def distFolder = file("$buildDir/distribution")
-def distAssemblyFolder = file("$distFolder/$project.name")
-def webappsFolder = file("$distAssemblyFolder/webapps/$project.name")
-
-//println "BUILD FOLDER -> $buildDir"
-//println "DIST ASSEMBLY FOLDER -> $distAssemblyFolder"
-
-if ( ! version.equalsIgnoreCase("unspecified") ) { 
-	println "VERSION -> ${version}"
-} else { 
-	project.version = "SNAPSHOT"
-	println "NO VERSION DEFINED - CREATING SNAPSHOT"
-}
-

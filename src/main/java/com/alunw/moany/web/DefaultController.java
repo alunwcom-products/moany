@@ -39,7 +39,7 @@ public class DefaultController implements ErrorController {
 	 */
 	@RequestMapping(path = "/", method = RequestMethod.GET)
 	public ModelAndView home(Principal principal, HttpServletRequest request, HttpServletResponse response) {
-		logger.info("home() [user={}, remote={}]", principal.getName(), request.getRemoteAddr());
+		logger.info("status() [user={}, remote={}]", getPrincipalName(principal), request.getRemoteAddr());
 		return new ModelAndView("index");
 	}
 	
@@ -76,5 +76,13 @@ public class DefaultController implements ErrorController {
 		model.addAttribute("value", httpStatus.value());
 		model.addAttribute("reason", httpStatus.getReasonPhrase());
 		return "error";
+	}
+
+	private String getPrincipalName(Principal principal) {
+		if (principal == null) {
+			return null;
+		} else {
+			return principal.getName();
+		}
 	}
 }
