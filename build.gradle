@@ -17,7 +17,13 @@ repositories {
 	mavenCentral()
 }
 
-//version = '1.0.2'
+// Use Git tag/commit as version unless explicitly set elsewhere (in gradle.properties)
+if ( ! version.equalsIgnoreCase("unspecified") ) {
+	println "USING CUSTOM VERSION -> ${version}"
+} else {
+	project.version = 'git describe --dirty --tags --first-parent --always'.execute().text.trim()
+	println "USING SCM VERSION -> ${version}"
+}
 
 //tasks.withType(JavaCompile) {
 //	options.compilerArgs << '-Xlint:unchecked'
@@ -56,6 +62,3 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
-
-
-
