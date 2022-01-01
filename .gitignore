@@ -5,7 +5,7 @@
 /.project
 /.settings
 /.idea
-/moany.log*
+/moany*.log*
 
 /*.upload
 /*.loaded

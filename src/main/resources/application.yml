@@ -1,10 +1,6 @@
 ---
 server.port: 9080
 
-logging.file: moany.log
-logging.file.max-history: 5
-logging.file.max-size: 10MB
-
 moany.homeFolder: ""
 #moany.admin.username: admin
 #moany.admin.password: password
@@ -64,7 +60,3 @@ spring.freemarker.requestContextAttribute: rc
 
 spring.servlet.multipart.max-file-size: 128KB
 spring.servlet.multipart.max-request-size: 128KB
-
-logging.level.com.alunw: DEBUG
-#logging.level.org.springframework.security: DEBUG
-
