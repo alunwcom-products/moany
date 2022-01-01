@@ -1,4 +1,4 @@
-<configuration>
+<configuration debug="true">
 
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
@@ -11,11 +11,12 @@
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <pattern>%date{yyyy-MM-dd'T'HH:mm:ss.SSSX} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </encoder>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>moany.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <maxFileSize>10MB</maxFileSize>
-      </timeBasedFileNamingAndTriggeringPolicy>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>moany.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <!-- each file should be at most 50MB, keep 30 days worth of history, but at most 4GB -->
+      <maxFileSize>50MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>4GB</totalSizeCap>
     </rollingPolicy>
   </appender>
 
