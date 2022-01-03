@@ -1,28 +1,5 @@
 package com.alunw.moany.rest;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.alunw.moany.model.BarclaysCsvStatementV1;
 import com.alunw.moany.model.NatWestCsvStatementV1;
 import com.alunw.moany.model.Statement;
@@ -31,6 +8,28 @@ import com.alunw.moany.repository.TransactionRepository;
 import com.alunw.moany.services.StatementService;
 import com.alunw.moany.services.TransactionService;
 import com.alunw.moany.services.validators.JsonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.PostConstruct;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/rest/statements/v2/")
@@ -71,6 +70,7 @@ public class RestStatementController {
 	 *        (If false, then duplicate transactions will be ignored, but other transactions, and accounts, will be saved.)
 	 * @return ResponseEntity
 	 */
+	@CrossOrigin("*")
 	@PostMapping("/upload")
 	public ResponseEntity<?> postStatementUpload(
 			@RequestParam(name = "file", required = false) MultipartFile file, 

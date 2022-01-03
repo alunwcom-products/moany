@@ -1,6 +1,11 @@
 package com.alunw.moany;
 
-import com.alunw.moany.model.*;
+import com.alunw.moany.model.Account;
+import com.alunw.moany.model.AccountType;
+import com.alunw.moany.model.Category;
+import com.alunw.moany.model.CategoryBudget;
+import com.alunw.moany.model.Transaction;
+import com.alunw.moany.model.TransactionType;
 import com.alunw.moany.repository.AccountRepository;
 import com.alunw.moany.repository.BudgetItemRepository;
 import com.alunw.moany.repository.CategoryRepository;
