@@ -70,7 +70,6 @@ public class RestStatementController {
 	 *        (If false, then duplicate transactions will be ignored, but other transactions, and accounts, will be saved.)
 	 * @return ResponseEntity
 	 */
-	@CrossOrigin("*")
 	@PostMapping("/upload")
 	public ResponseEntity<?> postStatementUpload(
 			@RequestParam(name = "file", required = false) MultipartFile file, 
