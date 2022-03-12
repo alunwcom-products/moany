@@ -24,7 +24,8 @@ spring.resources.static-locations: classpath:/META-INF/resources/,classpath:/res
 #  databaseStartupInterval: 5
 #  databaseStartupTimeout: 120
 
-spring.datasource.url: jdbc:h2:mem:moany
+# TODO rename user field in UserAuthority class so NON_KEYWORDS statement can be removed
+spring.datasource.url: jdbc:h2:mem:moany;NON_KEYWORDS=USER
 spring.datasource.username: sa
 spring.datasource.password: password
 spring.jpa.database-platform: H2

@@ -1,9 +1,9 @@
 plugins {
-	id 'org.springframework.boot' version '2.5.1'
+	id 'org.springframework.boot' version '2.6.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'checkstyle'
-	id 'com.github.ben-manes.versions' version '0.39.0'
+	id 'com.github.ben-manes.versions' version '0.42.0'
 }
 
 repositories {
@@ -46,18 +46,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-	implementation 'mysql:mysql-connector-java:8.0.25'
-    implementation 'com.h2database:h2:1.4.200'
-	implementation 'org.apache.poi:poi-ooxml:5.0.0'
+	implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'com.h2database:h2:2.1.210'
+	implementation 'org.apache.poi:poi-ooxml:5.2.1'
 
-	implementation 'ch.qos.logback:logback-core:1.2.10'
-	implementation 'ch.qos.logback:logback-classic:1.2.10'
+	implementation 'ch.qos.logback:logback-core:1.2.11'
+	implementation 'ch.qos.logback:logback-classic:1.2.11'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation 'org.springframework.security:spring-security-web:5.5.0'
-	implementation 'org.springframework.security:spring-security-config:5.5.0'
-	implementation 'org.springframework.security:spring-security-test:5.5.0'
+	implementation 'org.springframework.security:spring-security-web:5.6.2'
+	implementation 'org.springframework.security:spring-security-config:5.6.2'
+	implementation 'org.springframework.security:spring-security-test:5.6.2'
 
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 
@@ -67,3 +67,17 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+
+// https://github.com/ben-manes/gradle-versions-plugin
+// reject all non stable versions
+tasks.named("dependencyUpdates").configure {
+	rejectVersionIf {
+		isNonStable(it.candidate.version)
+	}
+}
+// disallow release candidates as upgradable versions from stable versions
+//tasks.named("dependencyUpdates").configure {
+//	rejectVersionIf {
+//		isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
+//	}
+//}
