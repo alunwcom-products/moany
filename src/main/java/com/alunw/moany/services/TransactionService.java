@@ -1,27 +1,24 @@
 package com.alunw.moany.services;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import com.alunw.moany.model.Account;
+import com.alunw.moany.model.AccountType;
+import com.alunw.moany.model.Transaction;
+import com.alunw.moany.repository.AccountRepository;
+import com.alunw.moany.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alunw.moany.model.Account;
-import com.alunw.moany.model.AccountType;
-import com.alunw.moany.model.Transaction;
-import com.alunw.moany.repository.AccountRepository;
-import com.alunw.moany.repository.TransactionRepository;
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class TransactionService {
@@ -46,7 +43,7 @@ public class TransactionService {
 	 * Helper method to (re-)calculate a transaction balances for an account starting from a single transaction *with*
 	 * a statement balance defined. This also updates the account record with the starting date/balance.
 	 * 
-	 * @param transactionId
+	 * @param transactionId Transaction ID
 	 */
 	@Transactional
 	public void rebalanceAccountFromTransaction(String transactionId) {
@@ -54,11 +51,12 @@ public class TransactionService {
 		logger.debug("rebalanceAccountFromTransaction({})", transactionId);
 		
 		Optional<Transaction> tran = transactionRepo.findById(transactionId);
-		logger.debug("transaction = [{}]", tran.get());
-		
+
 		if (!tran.isPresent()) {
 			logger.warn("No transaction found with supplied ID [{}] - skipping rebalance!", transactionId);
 			return;
+		} else {
+			logger.debug("transaction = [{}]", tran.get());
 		}
 		
 		if (tran.get().getStmtBalance() == null) {
