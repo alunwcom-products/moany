@@ -10,10 +10,11 @@ server.tomcat.basedir: .
 # Locations of static resources.
 spring.resources.static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/angular/
 
-#spring.datasource.url: jdbc:h2:mem:moany
-#spring.datasource.username: sa
-#spring.datasource.password: password
-#spring.jpa.database-platform: H2
+# default in-memory database
+spring.datasource.url: jdbc:h2:mem:moany
+spring.datasource.username: sa
+spring.datasource.password: password
+spring.jpa.database-platform: H2
 
 #spring.datasource.url: jdbc:mysql://localhost:3336/moany?verifyServerCertificate=false&useSSL=true
 #spring.datasource.username: moany
@@ -23,17 +24,6 @@ spring.resources.static-locations: classpath:/META-INF/resources/,classpath:/res
 #moany:
 #  databaseStartupInterval: 5
 #  databaseStartupTimeout: 120
-
-# TODO rename user field in UserAuthority class so NON_KEYWORDS statement can be removed
-spring.datasource.url: jdbc:h2:mem:moany;NON_KEYWORDS=USER
-spring.datasource.username: sa
-spring.datasource.password: password
-spring.jpa.database-platform: H2
-
-#spring.datasource.url: jdbc:mysql://localhost:3336/moany?verifyServerCertificate=false&useSSL=true
-#spring.datasource.username: moany
-#spring.datasource.password: password
-#spring.jpa.database-platform: MySQL8
 
 server:
   error:

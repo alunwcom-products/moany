@@ -251,7 +251,7 @@ public class DatabaseDefinitionService {
 		} else if (currentDbVersion > codeDbVersion) {
 			logger.info("Rolling back database version... [v{} - > v{}]", currentDbVersion, codeDbVersion);
 			// TODO rollback steps must have been stored in database
-			throw new Exception("Rollback datbase changes not yet implmented - must rollback manually.");
+			throw new Exception("Rollback database changes not yet implemented - must rollback manually.");
 		} else {
 			logger.info("Database is up-to-date. [v{}]", currentDbVersion);
 		}
