@@ -13,6 +13,11 @@ export spring_profiles_active=dev
 
 ```
 
+```
+# check for updates
+> .\gradlew dependencyUpdates
+```
+
 ----
 
 ## What's this?
