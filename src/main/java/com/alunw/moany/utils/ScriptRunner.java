@@ -98,7 +98,7 @@ public class ScriptRunner {
 		} catch (IOException e) {
 			System.err.println("Unable to access or create the db_create error log");
 		}
-		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
+		String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date());
 		println("\n-------\n" + timeStamp + "\n-------\n");
 		printlnError("\n-------\n" + timeStamp + "\n-------\n");
 	}
