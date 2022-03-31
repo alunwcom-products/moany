@@ -242,7 +242,7 @@ public class DatabaseDefinitionService {
 		if (codeDbVersion > currentDbVersion) {
 			logger.info("Updating database version... [v{} - > v{}]", currentDbVersion, codeDbVersion);
 			for (Entry<Integer, Resource> script : updateScripts.entrySet()) {
-				if (currentDbVersion < script.getKey().intValue()) {
+				if (currentDbVersion < script.getKey()) {
 					mysqlExecuteScript(script.getValue());
 				} else {
 					logger.info("...skipping database update script: {}", script.getValue().getFilename());

@@ -51,7 +51,7 @@ public class DefaultController implements ErrorController {
 		
 		if (statusCode != null && statusCode instanceof Integer) {
 			try {
-				int value = Integer.valueOf(statusCode.toString());
+				int value = Integer.parseInt(statusCode.toString());
 				httpStatus = HttpStatus.resolve(value);
 				if (httpStatus == null) {
 					logger.error("Unable to resolve HTTP status code: '{}'", value);
