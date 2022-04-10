@@ -48,7 +48,7 @@ dependencies {
 
 	implementation 'mysql:mysql-connector-java:8.0.28'
     implementation 'com.h2database:h2:2.1.210'
-	implementation 'org.apache.poi:poi-ooxml:5.2.1'
+	implementation 'org.apache.poi:poi-ooxml:5.2.2'
 
 	implementation 'ch.qos.logback:logback-core:1.2.11'
 	implementation 'ch.qos.logback:logback-classic:1.2.11'
@@ -70,11 +70,11 @@ test {
 
 // https://github.com/ben-manes/gradle-versions-plugin
 // reject all non stable versions
-tasks.named("dependencyUpdates").configure {
-	rejectVersionIf {
-		isNonStable(it.candidate.version)
-	}
-}
+//tasks.named("dependencyUpdates").configure {
+//	rejectVersionIf {
+//		isNonStable(it.candidate.version)
+//	}
+//}
 // disallow release candidates as upgradable versions from stable versions
 //tasks.named("dependencyUpdates").configure {
 //	rejectVersionIf {
