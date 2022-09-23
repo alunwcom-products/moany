@@ -235,68 +235,6 @@ app.service('transactionSvc', ['$log', '$http', function ($log, $http) {
 	
 }]);
 
-app.service('budgetingSvc', ['$log', '$http', function ($log, $http) {
-	
-	$log.info("budgetingSvc loading");
-	
-	var self = this;
-	
-	// getBudgetItems
-	self.getBudgetItems = function(thescope) {
-		$log.debug("getBudgetItems()");
-		var uri = ctxpath + "/rest/budgeting/v2/";
-		return $http.get(uri).then(
-			function(response) {
-				console.log("Success... [getBudgetItems]");
-				console.log(response);
-				thescope.budgetItems = response.data;
-			},
-			function(response) {
-				console.log("Error... [getBudgetItems]");
-				console.log(response);
-				thescope.budgetItems = [];
-			}
-		);
-	}
-	
-	// putBudgetItem
-	self.putBudgetItem = function(data, thescope) {
-		$log.debug("putBudgetItem()");
-		var uri = ctxpath + "/rest/budgeting/v2/";
-		return $http.put(uri, data)
-		.then(
-			function(response) {
-				console.log("Success... [putBudgetItem]");
-				console.log(response);
-				self.getBudgetItems(thescope);
-			},
-			function(response) {
-				console.log("Error... [putBudgetItem]");
-				console.log(response);
-			}
-		);
-	}
-	
-	// deleteBudgetItem
-	self.deleteBudgetItem = function(id, thescope) {
-		$log.info("deleteBudgetItem()");
-		var uri = ctxpath + "/rest/budgeting/v2/id/" + id;
-		return $http.delete(uri)
-		.then(
-			function(response) {
-				console.log("Success... [deleteBudgetItem]");
-				console.log(response);
-				$log.info(thescope);
-				self.getBudgetItems(thescope);
-			},
-			function(response) {
-				console.log("Error... [deleteBudgetItem]");
-				console.log(response);
-			}
-		);
-	}
-}]);
-
 app.service('categorySvc', ['$log', '$http', function ($log, $http) {
 	
 	$log.info("categorySvc loading...");

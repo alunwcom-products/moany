@@ -33,9 +33,6 @@ public class AccountService {
 	@Autowired
 	private TransactionRepository transactionRepo;
 	
-	@Autowired
-	private BudgetItemService budgetItemService;
-	
 	@PersistenceContext
 	private EntityManager em;
 	
@@ -127,18 +124,6 @@ public class AccountService {
 		for (Transaction t : transactions) {
 			
 			// amount may be null
-			if (t.getNetAmount() != null) {
-				balance = balance.add(t.getNetAmount());
-			}
-			
-			logger.debug("transaction [date = {}, desc = {}, net amount = {}, running balance = {}]", t.getTransactionDate(), t.getDescription(), t.getNetAmount(), balance);
-		}
-		
-		// calculate adjustment for virtual budgeting transactions
-		List<Transaction> budgetTransactions = budgetItemService.generateBudgetingTransactionsByAccount(accounts, accountStartDate, endDate);
-		for (Transaction t : budgetTransactions) {
-			
-			// amount should not be null - but check anyway
 			if (t.getNetAmount() != null) {
 				balance = balance.add(t.getNetAmount());
 			}

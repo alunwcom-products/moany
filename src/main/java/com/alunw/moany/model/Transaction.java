@@ -83,12 +83,6 @@ public class Transaction {
     @JoinColumn(name = "category", nullable = true)
     private Category category;
 
-    /**
-     * Include the BudgetItem parent for budgeting transactions, though these are not persisted.
-     */
-    @Transient
-    private BudgetItem budgetItem;
-
     @Column(name = "comment")
     @Type(type = "string")
     private String comment;
@@ -206,14 +200,6 @@ public class Transaction {
 
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public BudgetItem getBudgetItem() {
-        return budgetItem;
-    }
-
-    public void setBudgetItem(BudgetItem budgetItem) {
-        this.budgetItem = budgetItem;
     }
 
     public String getComment() {

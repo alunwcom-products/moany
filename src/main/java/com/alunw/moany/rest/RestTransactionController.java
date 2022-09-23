@@ -4,7 +4,6 @@ import com.alunw.moany.model.Transaction;
 import com.alunw.moany.model.TransactionType;
 import com.alunw.moany.repository.TransactionRepository;
 import com.alunw.moany.services.AccountService;
-import com.alunw.moany.services.BudgetItemService;
 import com.alunw.moany.services.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +37,6 @@ public class RestTransactionController {
 	
 	@Autowired
 	private TransactionRepository transactionRepo;
-	
-	@Autowired
-	private BudgetItemService budgetService;
 	
 	@Autowired
 	private AccountService accountService;
@@ -78,41 +74,11 @@ public class RestTransactionController {
 	}
 	
 	/**
-	 * TODO Returns 'virtual' budgeting transactions (not stored in database).
-	 * 
-	 * @param accountNumbers
-	 * @param startDateStr
-	 * @param endDateStr
-	 * @return
-	 */
-	@RequestMapping(value={"/budget"}, method = RequestMethod.GET)
-	@CrossOrigin("*")
-	public List<Transaction> getBudgetTransactions(
-			@RequestParam(name="acc", required=false) String accountNumbers,
-			@RequestParam(value="startDate", required = false) String startDateStr,
-			@RequestParam(value="endDate", required = false) String endDateStr) {
-		
-		logger.info("getBudgetTransactions({}, {}, {})", accountNumbers, startDateStr, endDateStr);
-		
-		LocalDate startDate = Utilities.getDateFromString(startDateStr);
-		if (startDate == null) {
-			startDate = Utilities.getEarliestDate();
-		}
-		
-		LocalDate endDate = Utilities.getDateFromString(endDateStr);
-		if (endDate == null) {
-			endDate = Utilities.getLatestDate();
-		}
-		
-		return budgetService.generateBudgetingTransactionsByAccount(accountService.findByIdIn(accountNumbers), startDate, endDate);
-	}
-	
-	/**
 	 * TODO Returns merged and sorted real and virtual transactions.
 	 * 
 	 * @param monthStr
 	 * @param accountNumbersStr
-	 * @param excludeBudgetItemsStr
+	 * @param excludeBudgetItemsStr NO LONGER USED!
 	 * @return
 	 */
 	@RequestMapping(value={"/month/{month}"}, method = RequestMethod.GET)
@@ -120,11 +86,11 @@ public class RestTransactionController {
 	public ResponseEntity<Map<String, Object>> getTransactionsByMonth(
 			@PathVariable(name="month", required=true) String monthStr,
 			@RequestParam(name="acc", required = false) String accountNumbersStr,
-			@RequestParam(name="excludeBudgetItems", required = false) String excludeBudgetItemsStr) {
+			@Deprecated @RequestParam(name="excludeBudgetItems", required = false) String excludeBudgetItemsStr) {
 		
 		logger.info("getTransactionsByMonth({}, {}, {})", monthStr, accountNumbersStr, excludeBudgetItemsStr);
 		
-		boolean excludeBudgetItems = Boolean.parseBoolean(excludeBudgetItemsStr);
+//		boolean excludeBudgetItems = Boolean.parseBoolean(excludeBudgetItemsStr);
 		
 		YearMonth month = null;
 		try {
@@ -140,13 +106,13 @@ public class RestTransactionController {
 				LocalDate.of(month.getYear(), month.getMonth(), 1), 
 				LocalDate.of(month.getYear(), month.getMonth(), month.getMonth().length(month.isLeapYear())));
 		
-		// merge virtual transactions
-		if (!excludeBudgetItems) {
-			results.addAll(budgetService.generateBudgetingTransactionsByAccount(
-				accountService.findByIdIn(accountNumbersStr), 
-				LocalDate.of(month.getYear(), month.getMonth(), 1),
-				LocalDate.of(month.getYear(), month.getMonth(), month.getMonth().length(month.isLeapYear()))));
-		}
+//		// merge virtual transactions
+//		if (!excludeBudgetItems) {
+//			results.addAll(budgetService.generateBudgetingTransactionsByAccount(
+//				accountService.findByIdIn(accountNumbersStr),
+//				LocalDate.of(month.getYear(), month.getMonth(), 1),
+//				LocalDate.of(month.getYear(), month.getMonth(), month.getMonth().length(month.isLeapYear()))));
+//		}
 		
 		Collections.sort(results, new Comparator<Transaction>() {
 			@Override

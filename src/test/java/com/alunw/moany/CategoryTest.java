@@ -7,10 +7,8 @@ import com.alunw.moany.model.CategoryBudget;
 import com.alunw.moany.model.Transaction;
 import com.alunw.moany.model.TransactionType;
 import com.alunw.moany.repository.AccountRepository;
-import com.alunw.moany.repository.BudgetItemRepository;
 import com.alunw.moany.repository.CategoryRepository;
 import com.alunw.moany.repository.TransactionRepository;
-import com.alunw.moany.services.BudgetItemService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,12 +39,6 @@ public class CategoryTest {
 
     @Autowired
     private TransactionRepository transactionRepo;
-
-    @Autowired
-    private BudgetItemRepository budgetRepo;
-
-    @Autowired
-    private BudgetItemService budgetService;
 
     private static Account account;
 

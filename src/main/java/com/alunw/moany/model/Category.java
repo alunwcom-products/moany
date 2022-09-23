@@ -1,10 +1,9 @@
 package com.alunw.moany.model;
 
-import java.math.BigDecimal;
-import java.time.YearMonth;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,12 +17,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.math.BigDecimal;
+import java.time.YearMonth;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "categories")
@@ -73,13 +71,6 @@ public class Category implements Comparable<Category> {
 	private Set<Transaction> transactions;
 	
 	/**
-	 * No accessor methods for this property - only included to allow cascading (i.e. removal of category in 
-	 * budget items when category is deleted).
-	 */
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "category")
-	private Set<BudgetItem> budgetItems;
-	
-	/**
 	 * CategoryBudgets items that are children of this category.
 	 */
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -100,7 +91,6 @@ public class Category implements Comparable<Category> {
 	 */
 	@PreRemove
 	private void preRemove() {
-		budgetItems.forEach(budgetItem -> budgetItem.setCategory(null));
 		transactions.forEach(transaction -> transaction.setCategory(null));
 	}
 

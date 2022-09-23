@@ -57,9 +57,7 @@
     <p>
       <a href="/#!/summary">Summary</a> | 
       <a href="/#!/accounts">Accounts</a> | 
-      <a href="/#!/transactions">Transactions</a> | 
-      <a href="/#!/budgeting">Budgeting</a> | 
-      <a href="/#!/monthview">Month View</a> | 
+      <a href="/#!/transactions">Transactions</a> |
       <a href="/#!/statements">Statements</a> | 
       <a href="/#!/categories">Categories</a> | 
       <a href="/#!/report1">Category Report [v1]</a> |
