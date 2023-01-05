@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id 'checkstyle'
 	id 'com.github.ben-manes.versions' version '0.42.0'
+	id 'org.liquibase.gradle' version '2.0.4'
 }
 
 repositories {
@@ -41,6 +42,10 @@ java {
 }
 
 dependencies {
+	liquibaseRuntime 'org.liquibase:liquibase-core:4.2.2'
+	liquibaseRuntime 'org.liquibase:liquibase-groovy-dsl:2.1.1'
+	liquibaseRuntime 'mysql:mysql-connector-java:8.0.28'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -66,6 +71,17 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+liquibase {
+	activities {
+		main {
+			changeLogFile "src/main/resources/changelog.mysql.sql"
+			url "jdbc:mysql://localhost:3306/moany"
+			username "root"
+			password "P@ssW0rd"
+		}
+	}
 }
 
 // https://github.com/ben-manes/gradle-versions-plugin

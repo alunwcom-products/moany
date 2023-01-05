@@ -2,6 +2,12 @@
 
 [![Build Status](https://github.com/alunwcom/moany-public/actions/workflows/main.yml/badge.svg)](https://github.com/alunwcom/moany-public/actions)
 
+## Liquibase try-out
+
+- Added liquibase Gradle plugin (build.gradle)
+- Initial snapshot if existing database ... use ```generateChangelog``` Gradle task.
+- ...
+
 ## WIP
 
 + handle failure to connect to database more gracefully - no stacktraces, and just retry and log...
