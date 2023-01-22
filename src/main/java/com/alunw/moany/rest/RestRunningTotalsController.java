@@ -1,5 +1,6 @@
 package com.alunw.moany.rest;
 
+import com.alunw.moany.model.DailyTotals;
 import com.alunw.moany.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST controller to return data to construct running balances display.
@@ -25,7 +27,7 @@ public class RestRunningTotalsController {
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     @CrossOrigin("*")
-    public List<Object> getTotals() {
+    public List<Map<String, Object>> getTotals() {
         logger.info("getTotals()");
         return transactionRepo.findByQuery();
     }
