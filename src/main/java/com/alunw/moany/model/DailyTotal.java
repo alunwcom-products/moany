@@ -2,12 +2,20 @@ package com.alunw.moany.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class DailyTotals {
+@Entity
+@Table(name = "daily_totals")
+public class DailyTotal {
+    @Id
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate trans_date;
+    @Column(name = "trans_date")
+    private LocalDate transactionDate;
 
     private BigDecimal incoming;
 
@@ -17,12 +25,12 @@ public class DailyTotals {
 
     private BigDecimal balance;
 
-    public LocalDate getTrans_date() {
-        return trans_date;
+    public LocalDate getTransactionDate() {
+        return transactionDate;
     }
 
-    public void setTrans_date(LocalDate trans_date) {
-        this.trans_date = trans_date;
+    public void setTransactionDate(LocalDate transactionDate) {
+        this.transactionDate = transactionDate;
     }
 
     public BigDecimal getIncoming() {

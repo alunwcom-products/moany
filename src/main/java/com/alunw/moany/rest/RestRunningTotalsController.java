@@ -1,6 +1,8 @@
 package com.alunw.moany.rest;
 
-import com.alunw.moany.model.DailyTotals;
+import com.alunw.moany.model.DailyTotal;
+import com.alunw.moany.repository.AccountRepository;
+import com.alunw.moany.repository.DailyTotalRepository;
 import com.alunw.moany.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,9 @@ public class RestRunningTotalsController {
     @Autowired
     private TransactionRepository transactionRepo;
 
+    @Autowired
+    private DailyTotalRepository dailyTotalRepo;
+
     private static Logger logger = LoggerFactory.getLogger(RestRunningTotalsController.class);
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
@@ -31,4 +36,12 @@ public class RestRunningTotalsController {
         logger.info("getTotals()");
         return transactionRepo.findByQuery();
     }
+
+    @RequestMapping(value = {"/test"}, method = RequestMethod.GET)
+    @CrossOrigin("*")
+    public List<DailyTotal> getDailyTotals() {
+        logger.info("getDailyTotals()");
+        return dailyTotalRepo.findAll();
+    }
+
 }

@@ -1,12 +1,9 @@
 package com.alunw.moany.repository;
 
-import com.alunw.moany.model.DailyTotals;
 import com.alunw.moany.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Map;
 
