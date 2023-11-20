@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class NatWestCsvStatementV1 implements Statement {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(NatWestCsvStatementV1.class);
-	private static final String HEADER_LINE = "Date, Type, Description, Value, Balance, Account Name, Account Number";
+	private static final String HEADER_LINE = "Date,Type,Description,Value,Balance,AccountName,AccountNumber";
 	private static final String LINE_REGEX = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
 	
 	@JsonIgnore
@@ -50,7 +50,7 @@ public class NatWestCsvStatementV1 implements Statement {
 				if (StringUtils.isBlank(line)) {
 					// Ignore blank lines
 					LOG.debug("Ignoring blank line");
-				} else if (line.equals(HEADER_LINE)) {
+				} else if (line.replaceAll("\\s+", "").equals(HEADER_LINE)) {
 					//Ignore header line
 					LOG.debug("Ignoring header line");
 				} else {
