@@ -1,6 +1,7 @@
 # README
 
 [![Build Status](https://github.com/alunwcom/moany-public/actions/workflows/main.yml/badge.svg)](https://github.com/alunwcom/moany-public/actions)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Falunwcom-products%2Fmoany.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Falunwcom-products%2Fmoany?ref=badge_shield)
 
 ## WIP
 
@@ -73,3 +74,7 @@ BACKLOG
 - Allow mass selection/change of categories + filtering transactions.
 
 ----
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Falunwcom-products%2Fmoany.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Falunwcom-products%2Fmoany?ref=badge_large)
