@@ -34,11 +34,11 @@ checkstyle {
     configFile = 'src/test/resources/checkstyle.xml' as File
 }
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(8)
-	}
-}
+//java {
+//	toolchain {
+//		languageVersion = JavaLanguageVersion.of(8)
+//	}
+//}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
