@@ -3,7 +3,7 @@
 # build image
 #
 
-FROM openjdk:11-jdk as build
+FROM docker.io/library/eclipse-temurin:11 as build
 WORKDIR /workspace
 
 # copy gradle wrapper assets to create layer that should only change on gradle version/wrapper change 
@@ -28,7 +28,7 @@ RUN ls -lR build/reports || true
 # deployment image
 #
 
-FROM openjdk:11-jre
+FROM docker.io/library/eclipse-temurin:11-jre
 WORKDIR /opt/software
 
 # copy layered jars
@@ -43,7 +43,7 @@ ENV SPRING_PROFILES_ACTIVE=datasource
 ENV DB_URL=jdbc:h2:mem:moany
 ENV DB_USER=sa
 ENV DB_PASSWORD=password
-ENV DB_PLATFORM=h2
+ENV DB_PLATFORM=H2
 EXPOSE 9080
 #ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 ARG BUILD_VERSION=SNAPSHOT
