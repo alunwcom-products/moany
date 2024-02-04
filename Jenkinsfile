@@ -54,10 +54,12 @@ pipeline {
                     }
                     echo "[${DOCKER_APP_NAME}|${DOCKER_NETWORK_NAME}|${DOCKER_PORT}]"
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
-                    sh "docker rm -f ${DOCKER_APP_NAME} || true"
-                    sh "docker network create ${DOCKER_NETWORK_NAME} || true"
-                    sh 'BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)'
-                    sh "docker run -d -p ${DOCKER_PORT}:9080 --network=${DOCKER_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}"
+                    sh """
+                      docker rm -f ${DOCKER_APP_NAME} || true
+                      docker network create ${DOCKER_NETWORK_NAME} || true
+                      BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
+                      docker run -d -p ${DOCKER_PORT}:9080 --network=${DOCKER_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
+                    """
                 }
             }
         }
