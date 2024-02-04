@@ -5,9 +5,11 @@ pipeline {
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
 //         DOCKER_UAT_DB_NAME = 'moany-db-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
+        DOCKER_UAT_PORT = '9080'
         DOCKER_PROD_NETWORK_NAME = 'moany-prod'
 //         DOCKER_PROD_DB_NAME = 'moany-db-prod'
         DOCKER_PROD_APP_NAME = 'moany-app-prod'
+        DOCKER_PROD_PORT = '9180'
         SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
     }
     triggers {
@@ -44,18 +46,20 @@ pipeline {
                 echo "Deploying image to ${env.DEPLOYMENT_ENVIRONMENT}"
                 script {
                     if (env.DEPLOYMENT_ENVIRONMENT ==  "PROD") {
-                        APP_NAME = DOCKER_PROD_APP_NAME
-                        NETWORK_NAME = DOCKER_PROD_NETWORK_NAME
+                        DOCKER_APP_NAME = DOCKER_PROD_APP_NAME
+                        DOCKER_NETWORK_NAME = DOCKER_PROD_NETWORK_NAME
+                        DOCKER_PORT = DOCKER_PROD_PORT
                     } else {
-                        APP_NAME = DOCKER_UAT_APP_NAME
-                        NETWORK_NAME = DOCKER_UAT_NETWORK_NAME
+                        DOCKER_APP_NAME = DOCKER_UAT_APP_NAME
+                        DOCKER_NETWORK_NAME = DOCKER_UAT_NETWORK_NAME
+                        DOCKER_PORT = DOCKER_UAT_PORT
                     }
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
-                    sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
-                    sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
+                    sh "docker rm -f ${DOCKER_APP_NAME} || true"
+                    sh "docker network create ${DOCKER_NETWORK_NAME} || true"
                     sh '''
                         BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
-                        docker run -d -p 9080:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_UAT_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
+                        docker run -d -p ${DOCKER_PORT}:9080 --network=${DOCKER_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
                     '''
                 }
             }
