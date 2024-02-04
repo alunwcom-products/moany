@@ -3,11 +3,9 @@ pipeline {
     environment {
         MOANY_IMAGE = 'alunwcom/moany'
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
-//         DOCKER_UAT_DB_NAME = 'moany-db-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
         DOCKER_UAT_PORT = '9080'
         DOCKER_PROD_NETWORK_NAME = 'moany-prod'
-//         DOCKER_PROD_DB_NAME = 'moany-db-prod'
         DOCKER_PROD_APP_NAME = 'moany-app-prod'
         DOCKER_PROD_PORT = '9180'
         SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
@@ -54,6 +52,7 @@ pipeline {
                         DOCKER_NETWORK_NAME = DOCKER_UAT_NETWORK_NAME
                         DOCKER_PORT = DOCKER_UAT_PORT
                     }
+                    echo "[${DOCKER_APP_NAME}|${DOCKER_NETWORK_NAME}|${DOCKER_PORT}]"
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
                     sh "docker rm -f ${DOCKER_APP_NAME} || true"
                     sh "docker network create ${DOCKER_NETWORK_NAME} || true"
