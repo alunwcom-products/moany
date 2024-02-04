@@ -5,9 +5,11 @@ pipeline {
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
         DOCKER_UAT_PORT = '9080'
+        DOCKER_UAT_ENV_FILE = 'mysql-uat.env'
         DOCKER_PROD_NETWORK_NAME = 'moany-prod'
         DOCKER_PROD_APP_NAME = 'moany-app-prod'
         DOCKER_PROD_PORT = '9180'
+        DOCKER_PROD_ENV_FILE = 'mysql-prod.env'
         SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
     }
     triggers {
@@ -47,17 +49,19 @@ pipeline {
                         DOCKER_APP_NAME = DOCKER_PROD_APP_NAME
                         DOCKER_NETWORK_NAME = DOCKER_PROD_NETWORK_NAME
                         DOCKER_PORT = DOCKER_PROD_PORT
+                        DOCKER_ENV_FILE = DOCKER_PROD_ENV_FILE
                     } else {
                         DOCKER_APP_NAME = DOCKER_UAT_APP_NAME
                         DOCKER_NETWORK_NAME = DOCKER_UAT_NETWORK_NAME
                         DOCKER_PORT = DOCKER_UAT_PORT
+                        DOCKER_ENV_FILE = DOCKER_UAT_ENV_FILE
                     }
                     def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
                     echo "[${DOCKER_APP_NAME}|${DOCKER_NETWORK_NAME}|${DOCKER_PORT}|${BUILD_VERSION}]"
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
                     sh "docker rm -f ${DOCKER_APP_NAME} || true"
                     sh "docker network create ${DOCKER_NETWORK_NAME} || true"
-                    sh "docker run -d -p ${DOCKER_PORT}:9080 --network=${DOCKER_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}"
+                    sh "docker run -d -p ${DOCKER_PORT}:9080 --network=${DOCKER_NETWORK_NAME} --env-file ${DOCKER_ENV_FILE} --name ${DOCKER_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}"
                     //BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
                 }
             }
