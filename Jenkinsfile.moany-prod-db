@@ -12,7 +12,7 @@ pipeline {
         DOCKER_IMAGE = 'mysql:8'
         DOCKER_NETWORK_NAME = 'moany-prod'
         DOCKER_CONTAINER_NAME = 'moany-db-prod'
-        MYSQL_HOST_PORT = 3366
+        MYSQL_HOST_PORT = 3306
         MYSQL_ROOT = credentials('moany-db-prod-root')
         MYSQL_DB = credentials('moany-db-prod-user')
         SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
