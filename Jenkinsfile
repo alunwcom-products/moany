@@ -4,11 +4,11 @@ pipeline {
         MOANY_IMAGE = 'alunwcom/moany'
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
-        DOCKER_UAT_PORT = '9280'
+        DOCKER_UAT_PORT = '9180'
         DOCKER_UAT_ENV_FILE = 'mysql-uat.env'
         DOCKER_PROD_NETWORK_NAME = 'moany-prod'
         DOCKER_PROD_APP_NAME = 'moany-app-prod'
-        DOCKER_PROD_PORT = '9180'
+        DOCKER_PROD_PORT = '9080'
         DOCKER_PROD_ENV_FILE = 'mysql-prod.env'
         SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
     }
