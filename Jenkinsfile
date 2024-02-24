@@ -1,16 +1,20 @@
+/*
+ * MOANY_PROD_DB_APP_CREDENTIALS   (username/password)
+ * MOANY_UAT_DB_APP_CREDENTIALS   (username/password)
+ */
 pipeline {
     agent any
     environment {
         MOANY_IMAGE = 'alunwcom/moany'
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
-        DOCKER_UAT_PORT = '9180'
-        DOCKER_UAT_ENV_FILE = 'mysql-uat.env'
+        DOCKER_UAT_PORT = '9280'
         DOCKER_PROD_NETWORK_NAME = 'moany-prod'
         DOCKER_PROD_APP_NAME = 'moany-app-prod'
-        DOCKER_PROD_PORT = '9080'
-        DOCKER_PROD_ENV_FILE = 'mysql-prod.env'
-        SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
+        DOCKER_PROD_PORT = '9180'
+        DB_PLATFORM='MySQL8'
+        MOANY_PROD_DB_APP_CREDENTIALS = credentials('MOANY_PROD_DB_APP_CREDENTIALS')
+        MOANY_UAT_DB_APP_CREDENTIALS = credentials('MOANY_UAT_DB_APP_CREDENTIALS')
     }
     triggers {
         pollSCM('* * * * *')
@@ -22,8 +26,8 @@ pipeline {
     parameters {
         choice(
             name: 'DEPLOYMENT_ENVIRONMENT',
-            description: 'Environment to deploy branch/tag build. (Defaults to no deploy - build only.)',
-            choices: ['<none>', 'UAT', 'PROD']
+            description: 'Environment to deploy branch/tag build. (Defaults to no deploy - build only. Main branch deploys to PROD)',
+            choices: ['<none>', 'UAT']
         )
     }
     stages {
@@ -31,38 +35,52 @@ pipeline {
             steps {
                 script {
                     currentBuild.description = "Build only"
-                    sh '''
-                        BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
-                        docker build -t ${MOANY_IMAGE}:${BUILD_VERSION} -f Dockerfile . --build-arg BUILD_VERSION=${BUILD_VERSION}
-                    '''
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    sh "docker build -t ${MOANY_IMAGE}:${BUILD_VERSION} -f Dockerfile . --build-arg BUILD_VERSION=${BUILD_VERSION}"
                 }
             }
         }
-        stage('deploy') {
+        stage('deploy-to-prod') {
             when {
-                expression { env.DEPLOYMENT_ENVIRONMENT != null && ( env.DEPLOYMENT_ENVIRONMENT == 'UAT' || env.DEPLOYMENT_ENVIRONMENT == 'PROD' ) }
+                branch 'main'
             }
             steps {
-                echo "Deploying image to ${env.DEPLOYMENT_ENVIRONMENT}"
                 script {
-                    if (env.DEPLOYMENT_ENVIRONMENT ==  "PROD") {
-                        DOCKER_APP_NAME = DOCKER_PROD_APP_NAME
-                        DOCKER_NETWORK_NAME = DOCKER_PROD_NETWORK_NAME
-                        DOCKER_PORT = DOCKER_PROD_PORT
-                        DOCKER_ENV_FILE = DOCKER_PROD_ENV_FILE
-                    } else {
-                        DOCKER_APP_NAME = DOCKER_UAT_APP_NAME
-                        DOCKER_NETWORK_NAME = DOCKER_UAT_NETWORK_NAME
-                        DOCKER_PORT = DOCKER_UAT_PORT
-                        DOCKER_ENV_FILE = DOCKER_UAT_ENV_FILE
-                    }
                     def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
-                    echo "[${DOCKER_APP_NAME}|${DOCKER_NETWORK_NAME}|${DOCKER_PORT}|${BUILD_VERSION}]"
+                    echo "Deploying main branch to production (image = ${MOANY_IMAGE}:${BUILD_VERSION})"
+                    currentBuild.description = "PROD deployment."
+                    sh "docker rm -f ${DOCKER_PROD_APP_NAME} || true"
+                    sh "docker network create ${DOCKER_PROD_NETWORK_NAME} || true"
+                    sh "docker run -d -p ${DOCKER_PROD_PORT}:9080 \
+                            --network=${DOCKER_PROD_NETWORK_NAME} \
+                            --name ${DOCKER_PROD_APP_NAME} \
+                            --env DB_URL=jdbc:mysql://moany-db-prod:3306/${MOANY_PROD_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true \
+                            --env DB_USER=${MOANY_PROD_DB_APP_CREDENTIALS_USR} \
+                            --env DB_PASSWORD=${MOANY_PROD_DB_APP_CREDENTIALS_PSW} \
+                            --env DB_PLATFORM=${DB_PLATFORM} \
+                            ${MOANY_IMAGE}:${BUILD_VERSION}"
+                }
+            }
+        }
+        stage('deploy-to-uat') {
+            when {
+                expression { env.DEPLOYMENT_ENVIRONMENT != null && env.DEPLOYMENT_ENVIRONMENT == 'UAT' }
+            }
+            steps {
+                script {
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    echo "Deploying to UAT (image = ${MOANY_IMAGE}:${BUILD_VERSION})"
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
-                    sh "docker rm -f ${DOCKER_APP_NAME} || true"
-                    sh "docker network create ${DOCKER_NETWORK_NAME} || true"
-                    sh "docker run -d -p ${DOCKER_PORT}:9080 --network=${DOCKER_NETWORK_NAME} --env-file ${DOCKER_ENV_FILE} --name ${DOCKER_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}"
-                    //BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
+                    sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
+                    sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
+                    sh "docker run -d -p ${DOCKER_UAT_PORT}:9080 \
+                            --network=${DOCKER_UAT_NETWORK_NAME} \
+                            --name ${DOCKER_UAT_APP_NAME} \
+                            --env DB_URL=jdbc:mysql://moany-db-uat:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true \
+                            --env DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR} \
+                            --env DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW} \
+                            --env DB_PLATFORM=${DB_PLATFORM} \
+                            ${MOANY_IMAGE}:${BUILD_VERSION}"
                 }
             }
         }
