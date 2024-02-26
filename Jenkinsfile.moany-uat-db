@@ -3,7 +3,10 @@
  *
  * Can choose database by setting Docker image:tag (e.g. mariadb or mysql)
  *
- * Requires username/password credentials for root and moany accounts.
+ * Requires username/password credentials for root and moany accounts:
+ * MOANY_UAT_DB_ADMIN_CREDENTIALS  (username/password)
+ * MOANY_UAT_DB_APP_CREDENTIALS    (username/password)
+ * MOANY_SQL_BACKUP_LOCATION       (secret text)
  *
  */
 pipeline {
@@ -12,10 +15,10 @@ pipeline {
         DOCKER_IMAGE = 'mysql:8'
         DOCKER_NETWORK_NAME = 'moany-uat'
         DOCKER_CONTAINER_NAME = 'moany-db-uat'
-        MYSQL_HOST_PORT = 3316
-        MYSQL_ROOT = credentials('moany-db-uat-root')
-        MYSQL_DB = credentials('moany-db-uat-user')
-        SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
+        MYSQL_HOST_PORT = 3326
+        MOANY_DB_ADMIN_CREDENTIALS = credentials('MOANY_UAT_DB_ADMIN_CREDENTIALS')
+        MOANY_DB_APP_CREDENTIALS = credentials('MOANY_UAT_DB_APP_CREDENTIALS')
+        SQL_BACKUP_LOCATION = credentials('MOANY_SQL_BACKUP_LOCATION')
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
@@ -39,10 +42,10 @@ pipeline {
                     docker run -d -p $MYSQL_HOST_PORT:3306 \
                         --network=$DOCKER_NETWORK_NAME \
                         --name $DOCKER_CONTAINER_NAME \
-                        -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PSW \
-                        -e MYSQL_DATABASE=$MYSQL_DB_USR \
-                        -e MYSQL_USER=$MYSQL_DB_USR \
-                        -e MYSQL_PASSWORD=$MYSQL_DB_PSW \
+                        -e MYSQL_ROOT_PASSWORD=$MOANY_DB_ADMIN_CREDENTIALS_PSW \
+                        -e MYSQL_DATABASE=$MOANY_DB_APP_CREDENTIALS_USR \
+                        -e MYSQL_USER=$MOANY_DB_APP_CREDENTIALS_USR \
+                        -e MYSQL_PASSWORD=$MOANY_DB_APP_CREDENTIALS_PSW \
                         $DOCKER_IMAGE
 
                     # wait for startup before continuing
@@ -55,7 +58,7 @@ pipeline {
                 echo "Restoring DB: backup = ${SQL_BACKUP_LOCATION}"
                 sh '''
                     docker exec -i $DOCKER_CONTAINER_NAME sh \
-                        -c "exec mysql $MYSQL_DB_USR -u$MYSQL_ROOT_USR -p$MYSQL_ROOT_PSW" \
+                        -c "exec mysql $MOANY_DB_APP_CREDENTIALS_USR -u$MOANY_DB_ADMIN_CREDENTIALS_USR -p$MOANY_DB_ADMIN_CREDENTIALS_PSW" \
                         < $SQL_BACKUP_LOCATION
                 '''
             }

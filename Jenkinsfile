@@ -1,29 +1,33 @@
+/*
+ * MOANY_PROD_DB_APP_CREDENTIALS   (username/password)
+ * MOANY_UAT_DB_APP_CREDENTIALS   (username/password)
+ */
 pipeline {
     agent any
     environment {
         MOANY_IMAGE = 'alunwcom/moany'
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
-        DOCKER_UAT_DB_NAME = 'moany-db-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
-        SQL_BACKUP_LOCATION = '/srv/backups/node4/moany-db.sql'
+        DOCKER_UAT_PORT = '9280'
+        DOCKER_PROD_NETWORK_NAME = 'moany-prod'
+        DOCKER_PROD_APP_NAME = 'moany-app-prod'
+        DOCKER_PROD_PORT = '9180'
+        DB_PLATFORM='MySQL8'
+        MOANY_PROD_DB_APP_CREDENTIALS = credentials('MOANY_PROD_DB_APP_CREDENTIALS')
+        MOANY_UAT_DB_APP_CREDENTIALS = credentials('MOANY_UAT_DB_APP_CREDENTIALS')
     }
     triggers {
         pollSCM('* * * * *')
     }
     options {
-        buildDiscarder(logRotator(numToKeepStr: '7'))
+        buildDiscarder(logRotator(numToKeepStr: '14'))
         disableConcurrentBuilds()
     }
     parameters {
         choice(
             name: 'DEPLOYMENT_ENVIRONMENT',
-            description: 'Envionment to deploy branch/tag build. (Defaults to no deploy - build only.)',
+            description: 'Environment to deploy branch/tag build. (Defaults to no deploy - build only. Main branch deploys to PROD)',
             choices: ['<none>', 'UAT']
-        )
-        choice(
-            name: 'REFRESH_DATABASE',
-            description: "Should database be restored from latest backup? (Defaults to NO.)",
-            choices: ['<no>', 'YES']
         )
     }
     stages {
@@ -31,44 +35,52 @@ pipeline {
             steps {
                 script {
                     currentBuild.description = "Build only"
-                    sh '''
-                        BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
-                        docker build -t ${MOANY_IMAGE}:${BUILD_VERSION} -f Dockerfile . --build-arg BUILD_VERSION=${BUILD_VERSION}
-                    '''
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    sh "docker build -t ${MOANY_IMAGE}:${BUILD_VERSION} -f Dockerfile . --build-arg BUILD_VERSION=${BUILD_VERSION}"
                 }
             }
         }
-        stage('deploy') {
+        stage('deploy-to-prod') {
             when {
-                expression { env.DEPLOYMENT_ENVIRONMENT != null && env.DEPLOYMENT_ENVIRONMENT != '' }
+                branch 'main'
             }
             steps {
-                echo "Deploying image to ${env.DEPLOYMENT_ENVIRONMENT}"
                 script {
-                    if (env.DEPLOYMENT_ENVIRONMENT ==  "UAT") {
-                        currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment. [REFRESH_DATABASE = ${env.REFRESH_DATABASE}]"
-                        // remove existing app image
-                        sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
-                        if (env.REFRESH_DATABASE == "YES") {
-                            sh "docker rm -f ${DOCKER_UAT_DB_NAME} || true"
-                        }
-                        // docker network prune -f
-                        sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
-                        if (env.REFRESH_DATABASE == "YES") {
-                              sh '''
-                                  docker run -d -p 3336:3306 --network=${DOCKER_UAT_NETWORK_NAME} --env-file maria.env --name ${DOCKER_UAT_DB_NAME} mariadb:latest
-                                  sleep 30
-                                  source ./maria.env
-                                  set +x
-                                  docker exec -i ${DOCKER_UAT_DB_NAME} sh -c "exec mysql moany -h${DOCKER_UAT_DB_NAME} -uroot -p${MYSQL_ROOT_PASSWORD}" < ${SQL_BACKUP_LOCATION}
-                                  set -x
-                              '''
-                        }
-                        sh '''
-                            BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
-                            docker run -d -p 9080:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file mysql.env --name ${DOCKER_UAT_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
-                        '''
-                    }
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    echo "Deploying main branch to production (image = ${MOANY_IMAGE}:${BUILD_VERSION})"
+                    currentBuild.description = "PROD deployment."
+                    sh "docker rm -f ${DOCKER_PROD_APP_NAME} || true"
+                    sh "docker network create ${DOCKER_PROD_NETWORK_NAME} || true"
+                    sh "docker run -d -p ${DOCKER_PROD_PORT}:9080 \
+                            --network=${DOCKER_PROD_NETWORK_NAME} \
+                            --name ${DOCKER_PROD_APP_NAME} \
+                            --env DB_URL=jdbc:mysql://moany-db-prod:3306/${MOANY_PROD_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true \
+                            --env DB_USER=${MOANY_PROD_DB_APP_CREDENTIALS_USR} \
+                            --env DB_PASSWORD=${MOANY_PROD_DB_APP_CREDENTIALS_PSW} \
+                            --env DB_PLATFORM=${DB_PLATFORM} \
+                            ${MOANY_IMAGE}:${BUILD_VERSION}"
+                }
+            }
+        }
+        stage('deploy-to-uat') {
+            when {
+                expression { env.DEPLOYMENT_ENVIRONMENT != null && env.DEPLOYMENT_ENVIRONMENT == 'UAT' }
+            }
+            steps {
+                script {
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    echo "Deploying to UAT (image = ${MOANY_IMAGE}:${BUILD_VERSION})"
+                    currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
+                    sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
+                    sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
+                    sh "docker run -d -p ${DOCKER_UAT_PORT}:9080 \
+                            --network=${DOCKER_UAT_NETWORK_NAME} \
+                            --name ${DOCKER_UAT_APP_NAME} \
+                            --env DB_URL=jdbc:mysql://moany-db-uat:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true \
+                            --env DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR} \
+                            --env DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW} \
+                            --env DB_PLATFORM=${DB_PLATFORM} \
+                            ${MOANY_IMAGE}:${BUILD_VERSION}"
                 }
             }
         }
