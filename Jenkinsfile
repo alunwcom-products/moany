@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     currentBuild.description = "Build only"
-                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always').trim()
                     sh "docker build -t ${MOANY_IMAGE}:${BUILD_VERSION} -f Dockerfile . --build-arg BUILD_VERSION=${BUILD_VERSION}"
                 }
             }
@@ -46,7 +46,7 @@ pipeline {
             }
             steps {
                 script {
-                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always').trim()
                     echo "Deploying main branch to production (image = ${MOANY_IMAGE}:${BUILD_VERSION})"
                     currentBuild.description = "PROD deployment."
                     sh "docker rm -f ${DOCKER_PROD_APP_NAME} || true"
@@ -68,7 +68,7 @@ pipeline {
             }
             steps {
                 script {
-                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always')
+                    def BUILD_VERSION = sh(returnStdout: true, script: 'git describe --dirty --tags --first-parent --always').trim()
                     echo "Deploying to UAT (image = ${MOANY_IMAGE}:${BUILD_VERSION})"
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
                     sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
