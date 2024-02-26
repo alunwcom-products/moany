@@ -51,14 +51,7 @@ pipeline {
                     currentBuild.description = "PROD deployment."
                     sh "docker rm -f ${DOCKER_PROD_APP_NAME} || true"
                     sh "docker network create ${DOCKER_PROD_NETWORK_NAME} || true"
-                    sh "docker run -d -p ${DOCKER_PROD_PORT}:9080 \
-                            --network=${DOCKER_PROD_NETWORK_NAME} \
-                            --name ${DOCKER_PROD_APP_NAME} \
-                            --env DB_URL=jdbc:mysql://moany-db-prod:3306/${MOANY_PROD_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true \
-                            --env DB_USER=${MOANY_PROD_DB_APP_CREDENTIALS_USR} \
-                            --env DB_PASSWORD=${MOANY_PROD_DB_APP_CREDENTIALS_PSW} \
-                            --env DB_PLATFORM=${DB_PLATFORM} \
-                            ${MOANY_IMAGE}:${BUILD_VERSION}"
+                    sh "docker run -d -p ${DOCKER_PROD_PORT}:9080 --network=${DOCKER_PROD_NETWORK_NAME} --name ${DOCKER_PROD_APP_NAME} --env DB_URL=jdbc:mysql://moany-db-prod:3306/${MOANY_PROD_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true --env DB_USER=${MOANY_PROD_DB_APP_CREDENTIALS_USR} --env DB_PASSWORD=${MOANY_PROD_DB_APP_CREDENTIALS_PSW} --env DB_PLATFORM=${DB_PLATFORM} ${MOANY_IMAGE}:${BUILD_VERSION}"
                 }
             }
         }
@@ -73,14 +66,7 @@ pipeline {
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
                     sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
                     sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
-                    sh "docker run -d -p ${DOCKER_UAT_PORT}:9080 \
-                            --network=${DOCKER_UAT_NETWORK_NAME} \
-                            --name ${DOCKER_UAT_APP_NAME} \
-                            --env DB_URL=jdbc:mysql://moany-db-uat:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true \
-                            --env DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR} \
-                            --env DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW} \
-                            --env DB_PLATFORM=${DB_PLATFORM} \
-                            ${MOANY_IMAGE}:${BUILD_VERSION}"
+                    sh "docker run -d -p ${DOCKER_UAT_PORT}:9080 --network=${DOCKER_UAT_NETWORK_NAME} --name ${DOCKER_UAT_APP_NAME} --env DB_URL=jdbc:mysql://moany-db-uat:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true --env DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR} --env DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW} --env DB_PLATFORM=${DB_PLATFORM} ${MOANY_IMAGE}:${BUILD_VERSION}"
                 }
             }
         }
