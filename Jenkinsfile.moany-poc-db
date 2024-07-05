@@ -28,7 +28,7 @@ pipeline {
     stages {
         stage('replace-container') {
             steps {
-                echo "Replacing container: ${DOCKER_CONTAINER_NAME} image = ${DOCKER_IMAGE}; network = ${DOCKER_NETWORK_NAME}"
+                echo "Replacing container: ${DOCKER_CONTAINER_NAME} image = ${DOCKER_IMAGE};"
                 sh '''
                     # remove container if exists
                     docker rm -f $DOCKER_CONTAINER_NAME || true
