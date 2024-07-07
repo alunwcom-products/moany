@@ -3,7 +3,7 @@
 # build image
 #
 
-FROM docker.io/library/eclipse-temurin:11 as build
+FROM docker.io/library/eclipse-temurin:21 as build
 WORKDIR /workspace
 
 # copy gradle wrapper assets to create layer that should only change on gradle version/wrapper change 
@@ -28,7 +28,7 @@ RUN ls -lR build/reports || true
 # deployment image
 #
 
-FROM docker.io/library/eclipse-temurin:11-jre
+FROM docker.io/library/eclipse-temurin:21-jre
 WORKDIR /opt/software
 
 # copy layered jars
