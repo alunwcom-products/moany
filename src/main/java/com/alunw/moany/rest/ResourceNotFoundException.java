@@ -1,9 +1,9 @@
-//package com.alunw.moany.rest;
-//
-//import org.springframework.http.HttpStatus;
-//import org.springframework.web.bind.annotation.ResponseStatus;
-//
-//@ResponseStatus(value = HttpStatus.NOT_FOUND)
-//public class ResourceNotFoundException extends RuntimeException {
-//	private static final long serialVersionUID = -99688361633303462L;
-//}
+package com.alunw.moany.rest;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException {
+	private static final long serialVersionUID = -99688361633303462L;
+}
