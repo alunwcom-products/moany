@@ -6,9 +6,11 @@
  * Can choose database by setting Docker image:tag (e.g. mariadb or mysql)
  *
  * Requires username/password credentials for root and moany accounts:
- * MOANY_PROD_DB_ADMIN_CREDENTIALS (username/password)
- * MOANY_PROD_DB_APP_CREDENTIALS   (username/password)x§
- * MOANY_SQL_BACKUP_LOCATION       (secret text)
+ * MOANY_UAT_DB_ADMIN_CREDENTIALS (username/password)
+ * MOANY_UAT_DB_APP_CREDENTIALS   (username/password)
+ * MOANY_UAT_DB_MOUNT_POINT       (envvar)
+ * MOANY_SQL_BACKUP_LOCATION      (envvar)
+ * NOTIFICATION_RECIPIENTS        (envvar)
  *
  */
 pipeline {
@@ -16,10 +18,11 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'mariadb:11.2'
         DOCKER_CONTAINER_NAME = 'moany-poc-db'
-        MYSQL_HOST_PORT = 3316
-        MOANY_POC_DB_ADMIN_CREDENTIALS = credentials('MOANY_POC_DB_ADMIN_CREDENTIALS')
-        MOANY_POC_DB_APP_CREDENTIALS = credentials('MOANY_POC_DB_APP_CREDENTIALS')
-        SQL_BACKUP_LOCATION = 'todo'
+        MYSQL_HOST_PORT = 3336
+        DB_ADMIN_CREDENTIALS = credentials('MOANY_UAT_DB_ADMIN_CREDENTIALS')
+        DB_APP_CREDENTIALS = credentials('MOANY_UAT_DB_APP_CREDENTIALS')
+        DB_MOUNT_POINT = '${MOANY_UAT_DB_MOUNT_POINT}'
+        SQL_BACKUP_LOCATION = '${MOANY_SQL_BACKUP_LOCATION}'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
@@ -37,12 +40,15 @@ pipeline {
                     docker pull -q $DOCKER_IMAGE
 
                     # start container
-                    docker run -d -p $MYSQL_HOST_PORT:3306 \
+                    docker run -d \
+                        -p $MYSQL_HOST_PORT:3306 \
                         --name $DOCKER_CONTAINER_NAME \
-                        -e MYSQL_ROOT_PASSWORD=$MOANY_POC_DB_ADMIN_CREDENTIALS_PSW \
-                        -e MYSQL_DATABASE=test \
-                        -e MYSQL_USER=$MOANY_POC_DB_APP_CREDENTIALS_USR \
-                        -e MYSQL_PASSWORD=$MOANY_POC_DB_APP_CREDENTIALS_PSW \
+                        -v ${DB_MOUNT_POINT}:/var/lib/mysql \
+                        --restart unless-stopped \
+                        -e MYSQL_ROOT_PASSWORD=$DB_ADMIN_CREDENTIALS_PSW \
+                        -e MYSQL_DATABASE=$DB_APP_CREDENTIALS_USR \
+                        -e MYSQL_USER=$DB_APP_CREDENTIALS_USR \
+                        -e MYSQL_PASSWORD=$DB_APP_CREDENTIALS_PSW \
                         $DOCKER_IMAGE
 
                     # wait for startup before continuing
@@ -53,24 +59,24 @@ pipeline {
         stage('restore-db') {
             steps {
                 echo "Restoring DB: backup = ${SQL_BACKUP_LOCATION}"
-                // sh '''
-                //     docker exec -i $DOCKER_CONTAINER_NAME sh \
-                //         -c "exec mysql $MOANY_DB_APP_CREDENTIALS_USR -u$MOANY_DB_ADMIN_CREDENTIALS_USR -p$MOANY_DB_ADMIN_CREDENTIALS_PSW" \
-                //         < $SQL_BACKUP_LOCATION
-                // '''
+                sh '''
+                    docker exec -i $DOCKER_CONTAINER_NAME sh \
+                        -c "exec mysql $DB_APP_CREDENTIALS_USR -u$DB_ADMIN_CREDENTIALS_USR -p$DB_ADMIN_CREDENTIALS_PSW" \
+                        < $SQL_BACKUP_LOCATION
+                '''
             }
         }
     }
     post {
         success {
-            mail to: 'alun@alunw.com',
-                subject: "Success: ${currentBuild.fullDisplayName}",
-                body: "Check it out: ${env.BUILD_URL}"
+            mail to: ${NOTIFICATION_RECIPIENTS},
+                subject: "Success: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
+                body: "Build URL: ${env.BUILD_URL}"
         }
         failure {
-            mail to: 'alun@alunw.com',
-                subject: "Failure: ${currentBuild.fullDisplayName}",
-                body: "Check it out: ${env.BUILD_URL}"
+            mail to: ${NOTIFICATION_RECIPIENTS},
+                subject: "Failure: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
+                body: "Build URL: ${env.BUILD_URL}"
         }
     }
 }
