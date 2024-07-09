@@ -43,7 +43,7 @@ pipeline {
                     docker run -d \
                         -p $MYSQL_HOST_PORT:3306 \
                         --name $DOCKER_CONTAINER_NAME \
-                        -v ${DB_MOUNT_POINT}:/var/lib/mysql \
+                        -v $DB_MOUNT_POINT:/var/lib/mysql \
                         --restart unless-stopped \
                         -e MYSQL_ROOT_PASSWORD=$DB_ADMIN_CREDENTIALS_PSW \
                         -e MYSQL_DATABASE=$DB_APP_CREDENTIALS_USR \
