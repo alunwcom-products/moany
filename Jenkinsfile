@@ -75,16 +75,16 @@ pipeline {
                     echo "Deploying to UAT (image = ${MOANY_IMAGE}:${BUILD_VERSION})"
                     currentBuild.description = "${env.DEPLOYMENT_ENVIRONMENT} deployment."
                     sh "docker rm -f ${DOCKER_UAT_APP_NAME} || true"
-                    sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
+//                     sh "docker network create ${DOCKER_UAT_NETWORK_NAME} || true"
 //                     sh "docker run -d -p ${DOCKER_UAT_PORT}:9080 --network=${DOCKER_UAT_NETWORK_NAME} --name ${DOCKER_UAT_APP_NAME} --env DB_URL=jdbc:mysql://moany-db-uat:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true --env DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR} --env DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW} --env DB_PLATFORM=${DB_PLATFORM} ${MOANY_IMAGE}:${BUILD_VERSION}"
                     sh '''
                         BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
                         echo "BUILD_VERSION = ${BUILD_VERSION}"
-                        echo "DB_URL=jdbc:mysql://moany-db-uat:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true" > temp.env
+                        echo "DB_URL=jdbc:mysql://moany-uat-db:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true" > temp.env
                         echo "DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR}" >> temp.env
                         echo "DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW}" >> temp.env
                         echo "DB_PLATFORM=${DB_PLATFORM}" >> temp.env
-                        docker run -d -p ${DOCKER_UAT_PORT}:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file temp.env --name ${DOCKER_UAT_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
+                        docker run -d -p ${DOCKER_UAT_PORT}:9080 --env-file temp.env --name ${DOCKER_UAT_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
                         rm temp.env || true
                     '''
                 }

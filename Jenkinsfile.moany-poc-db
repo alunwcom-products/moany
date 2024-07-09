@@ -6,9 +6,9 @@
  * Can choose database by setting Docker image:tag (e.g. mariadb or mysql)
  *
  * Requires username/password credentials for root and moany accounts:
- * MOANY_UAT_DB_ADMIN_CREDENTIALS (username/password)
- * MOANY_UAT_DB_APP_CREDENTIALS   (username/password)
- * MOANY_UAT_DB_MOUNT_POINT       (envvar)
+ * MOANY_POC_DB_ADMIN_CREDENTIALS (username/password)
+ * MOANY_POC_DB_APP_CREDENTIALS   (username/password)
+ * MOANY_POC_DB_MOUNT_POINT       (envvar)
  * MOANY_SQL_BACKUP_LOCATION      (envvar)
  * NOTIFICATION_RECIPIENTS        (envvar)
  *
@@ -21,8 +21,8 @@ pipeline {
         MYSQL_HOST_PORT = 3336
         DB_ADMIN_CREDENTIALS = credentials('MOANY_UAT_DB_ADMIN_CREDENTIALS')
         DB_APP_CREDENTIALS = credentials('MOANY_UAT_DB_APP_CREDENTIALS')
-        DB_MOUNT_POINT = '${MOANY_UAT_DB_MOUNT_POINT}'
-        SQL_BACKUP_LOCATION = '${MOANY_SQL_BACKUP_LOCATION}'
+        DB_MOUNT_POINT = "${MOANY_UAT_DB_MOUNT_POINT}"
+        SQL_BACKUP_LOCATION = "${MOANY_SQL_BACKUP_LOCATION}"
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
@@ -32,6 +32,7 @@ pipeline {
         stage('replace-container') {
             steps {
                 echo "Replacing container: ${DOCKER_CONTAINER_NAME} image = ${DOCKER_IMAGE};"
+                echo "MYSQL_HOST_PORT = ${MYSQL_HOST_PORT}; DB_MOUNT_POINT = ${DB_MOUNT_POINT}; SQL_BACKUP_LOCATION = ${SQL_BACKUP_LOCATION}"
                 sh '''
                     # remove container if exists
                     docker rm -f $DOCKER_CONTAINER_NAME || true
@@ -61,7 +62,7 @@ pipeline {
                 echo "Restoring DB: backup = ${SQL_BACKUP_LOCATION}"
                 sh '''
                     docker exec -i $DOCKER_CONTAINER_NAME sh \
-                        -c "exec mysql $DB_APP_CREDENTIALS_USR -u$DB_ADMIN_CREDENTIALS_USR -p$DB_ADMIN_CREDENTIALS_PSW" \
+                        -c "exec mariadb $DB_APP_CREDENTIALS_USR -u$DB_ADMIN_CREDENTIALS_USR -p$DB_ADMIN_CREDENTIALS_PSW" \
                         < $SQL_BACKUP_LOCATION
                 '''
             }
