@@ -6,9 +6,9 @@
  * Can choose database by setting Docker image:tag (e.g. mariadb or mysql)
  *
  * Requires username/password credentials for root and moany accounts:
- * MOANY_UAT_DB_ADMIN_CREDENTIALS (username/password)
- * MOANY_UAT_DB_APP_CREDENTIALS   (username/password)
- * MOANY_UAT_DB_MOUNT_POINT       (envvar)
+ * MOANY_POC_DB_ADMIN_CREDENTIALS (username/password)
+ * MOANY_POC_DB_APP_CREDENTIALS   (username/password)
+ * MOANY_POC_DB_MOUNT_POINT       (envvar)
  * MOANY_SQL_BACKUP_LOCATION      (envvar)
  * NOTIFICATION_RECIPIENTS        (envvar)
  *
