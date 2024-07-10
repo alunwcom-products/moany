@@ -32,7 +32,7 @@ pipeline {
     stages {
         stage('replace-container') {
             steps {
-                echo "Replacing container: ${DOCKER_CONTAINER_NAME} image = ${DOCKER_IMAGE}; network = ${DOCKER_NETWORK_NAME}
+                echo "Replacing container: ${DOCKER_CONTAINER_NAME} image = ${DOCKER_IMAGE}; network = ${DOCKER_NETWORK_NAME}"
                 echo "MYSQL_HOST_PORT = ${MYSQL_HOST_PORT}; DB_MOUNT_POINT = ${DB_MOUNT_POINT}; SQL_BACKUP_LOCATION = ${SQL_BACKUP_LOCATION}"
                 sh '''
                     # remove container if exists
