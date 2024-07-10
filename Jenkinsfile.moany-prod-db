@@ -53,6 +53,8 @@ pipeline {
                         -e MYSQL_DATABASE=$DB_APP_CREDENTIALS_USR \
                         -e MYSQL_USER=$DB_APP_CREDENTIALS_USR \
                         -e MYSQL_PASSWORD=$DB_APP_CREDENTIALS_PSW \
+                        --health-cmd='healthcheck.sh --connect --innodb_initialized || exit 1' \
+                        --health-start-period=120s \
                         $DOCKER_IMAGE
 
                     # wait for startup before continuing
