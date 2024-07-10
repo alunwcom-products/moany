@@ -43,7 +43,6 @@ ENV SPRING_PROFILES_ACTIVE=datasource
 ENV DB_URL=jdbc:h2:mem:moany
 ENV DB_USER=sa
 ENV DB_PASSWORD=password
-ENV DB_PLATFORM=H2
 EXPOSE 9080
 #ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 ARG BUILD_VERSION=SNAPSHOT

@@ -18,6 +18,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'mariadb:11.2'
         DOCKER_CONTAINER_NAME = 'moany-uat-db'
+        DOCKER_NETWORK_NAME = 'moany-uat'
         MYSQL_HOST_PORT = 3326
         DB_ADMIN_CREDENTIALS = credentials('MOANY_UAT_DB_ADMIN_CREDENTIALS')
         DB_APP_CREDENTIALS = credentials('MOANY_UAT_DB_APP_CREDENTIALS')
@@ -31,11 +32,14 @@ pipeline {
     stages {
         stage('replace-container') {
             steps {
-                echo "Replacing container: ${DOCKER_CONTAINER_NAME} image = ${DOCKER_IMAGE};"
+                echo "Replacing container: ${DOCKER_CONTAINER_NAME} image = ${DOCKER_IMAGE}; network = ${DOCKER_NETWORK_NAME}
                 echo "MYSQL_HOST_PORT = ${MYSQL_HOST_PORT}; DB_MOUNT_POINT = ${DB_MOUNT_POINT}; SQL_BACKUP_LOCATION = ${SQL_BACKUP_LOCATION}"
                 sh '''
                     # remove container if exists
                     docker rm -f $DOCKER_CONTAINER_NAME || true
+
+                    # ensure network created
+                    docker network create $DOCKER_NETWORK_NAME || true
 
                     # update image
                     docker pull -q $DOCKER_IMAGE
@@ -43,6 +47,7 @@ pipeline {
                     # start container
                     docker run -d \
                         -p $MYSQL_HOST_PORT:3306 \
+                        --network=$DOCKER_NETWORK_NAME \
                         --name $DOCKER_CONTAINER_NAME \
                         -v $DB_MOUNT_POINT:/var/lib/mysql \
                         --restart unless-stopped \
