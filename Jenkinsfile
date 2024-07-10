@@ -81,6 +81,7 @@ pipeline {
                         echo "DB_URL=jdbc:mysql://moany-uat-db:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true" > temp.env
                         echo "DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR}" >> temp.env
                         echo "DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW}" >> temp.env
+                        echo "DB_PLATFORM=${DB_PLATFORM}" >> temp.env
                         docker run -d -p ${DOCKER_UAT_PORT}:9080 --network=${DOCKER_UAT_NETWORK_NAME} --env-file temp.env --name ${DOCKER_UAT_APP_NAME} ${MOANY_IMAGE}:${BUILD_VERSION}
                         rm temp.env || true
                     '''
