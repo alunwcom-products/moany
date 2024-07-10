@@ -43,6 +43,7 @@ ENV SPRING_PROFILES_ACTIVE=datasource
 ENV DB_URL=jdbc:h2:mem:moany
 ENV DB_USER=sa
 ENV DB_PASSWORD=password
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD curl -f http://localhost:9080/status || exit 1
 EXPOSE 9080
 #ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 ARG BUILD_VERSION=SNAPSHOT
