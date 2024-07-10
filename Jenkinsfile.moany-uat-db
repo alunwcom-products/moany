@@ -1,8 +1,6 @@
 /*
  * Deploys the latest moany database backup.
  *
- * NOTE: this version uses the default docker network.
- *
  * Can choose database by setting Docker image:tag (e.g. mariadb or mysql)
  *
  * Requires username/password credentials for root and moany accounts:
@@ -17,7 +15,7 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = 'mariadb:11.2'
-        DOCKER_CONTAINER_NAME = 'moany-uat-db'
+        DOCKER_CONTAINER_NAME = 'moany-db-uat'
         DOCKER_NETWORK_NAME = 'moany-uat'
         MYSQL_HOST_PORT = 3326
         DB_ADMIN_CREDENTIALS = credentials('MOANY_UAT_DB_ADMIN_CREDENTIALS')

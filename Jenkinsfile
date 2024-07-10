@@ -1,6 +1,8 @@
 /*
+ * Requires username/password credentials for root and moany accounts:
+ * MOANY_PROD_DB_ADMIN_CREDENTIALS (username/password)
  * MOANY_PROD_DB_APP_CREDENTIALS   (username/password)
- * MOANY_UAT_DB_APP_CREDENTIALS   (username/password)
+ * NOTIFICATION_RECIPIENTS         (envvar)
  */
 pipeline {
     agent any
@@ -8,9 +10,13 @@ pipeline {
         MOANY_IMAGE = 'alunwcom/moany'
         DOCKER_UAT_NETWORK_NAME = 'moany-uat'
         DOCKER_UAT_APP_NAME = 'moany-app-uat'
+        DOCKER_UAT_DB_NAME = 'moany-db-uat'
+        DOCKER_UAT_DB_PORT = '3306'
         DOCKER_UAT_PORT = '9280'
         DOCKER_PROD_NETWORK_NAME = 'moany-prod'
         DOCKER_PROD_APP_NAME = 'moany-app-prod'
+        DOCKER_PROD_DB_NAME = 'moany-db-prod'
+        DOCKER_PROD_DB_PORT = '3306'
         DOCKER_PROD_PORT = '9180'
         DB_PLATFORM='MySQL8'
         MOANY_PROD_DB_APP_CREDENTIALS = credentials('MOANY_PROD_DB_APP_CREDENTIALS')
@@ -26,8 +32,8 @@ pipeline {
     parameters {
         choice(
             name: 'DEPLOYMENT_ENVIRONMENT',
-            description: 'Environment to deploy branch/tag build. (Defaults to no deploy - build only. Main branch deploys to PROD)',
-            choices: ['<none>', 'UAT']
+            description: 'Environment to deploy branch/tag build. (Defaults to no deploy - build only.)',
+            choices: ['<none>', 'UAT', 'PROD']
         )
     }
     stages {
@@ -42,7 +48,7 @@ pipeline {
         }
         stage('deploy-to-prod') {
             when {
-                branch 'main'
+                expression { env.DEPLOYMENT_ENVIRONMENT != null && env.DEPLOYMENT_ENVIRONMENT == 'PROD' }
             }
             steps {
                 script {
@@ -54,7 +60,7 @@ pipeline {
                     sh '''
                         BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
                         echo "BUILD_VERSION = ${BUILD_VERSION}"
-                        echo "DB_URL=jdbc:mysql://moany-db-prod:3306/${MOANY_PROD_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true" > temp.env
+                        echo "DB_URL=jdbc:mysql://${DOCKER_PROD_DB_NAME}:${DOCKER_PROD_DB_PORT}/${MOANY_PROD_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true" > temp.env
                         echo "DB_USER=${MOANY_PROD_DB_APP_CREDENTIALS_USR}" >> temp.env
                         echo "DB_PASSWORD=${MOANY_PROD_DB_APP_CREDENTIALS_PSW}" >> temp.env
                         echo "DB_PLATFORM=${DB_PLATFORM}" >> temp.env
@@ -78,7 +84,7 @@ pipeline {
                     sh '''
                         BUILD_VERSION=$(git describe --dirty --tags --first-parent --always)
                         echo "BUILD_VERSION = ${BUILD_VERSION}"
-                        echo "DB_URL=jdbc:mysql://moany-uat-db:3306/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true" > temp.env
+                        echo "DB_URL=jdbc:mysql://${DOCKER_UAT_DB_NAME}:${DOCKER_UAT_DB_PORT}/${MOANY_UAT_DB_APP_CREDENTIALS_USR}?verifyServerCertificate=false&useSSL=true" > temp.env
                         echo "DB_USER=${MOANY_UAT_DB_APP_CREDENTIALS_USR}" >> temp.env
                         echo "DB_PASSWORD=${MOANY_UAT_DB_APP_CREDENTIALS_PSW}" >> temp.env
                         echo "DB_PLATFORM=${DB_PLATFORM}" >> temp.env
@@ -99,6 +105,18 @@ pipeline {
                 '''
                 archiveArtifacts artifacts: "**/moany-*.jar"
             }
+        }
+    }
+    post {
+        success {
+            mail to: "${NOTIFICATION_RECIPIENTS}",
+                subject: "Success: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
+                body: "Build URL: ${env.BUILD_URL}"
+        }
+        failure {
+            mail to: "${NOTIFICATION_RECIPIENTS}",
+                subject: "Failure: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
+                body: "Build URL: ${env.BUILD_URL}"
         }
     }
 }
