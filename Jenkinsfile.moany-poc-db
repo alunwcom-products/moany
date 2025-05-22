@@ -42,7 +42,7 @@ pipeline {
 
                     # start container
                     docker run -d \
-                        -p $MYSQL_HOST_PORT:3306 \
+                        -p 127.0.0.1:$MYSQL_HOST_PORT:3306 \
                         --name $DOCKER_CONTAINER_NAME \
                         -v $DB_MOUNT_POINT:/var/lib/mysql \
                         --restart unless-stopped \
