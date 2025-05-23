@@ -35,21 +35,21 @@ import java.util.Map;
 @RestController
 @RequestMapping("/rest/transactions/v2/")
 public class RestTransactionController {
-	
+
 	@Autowired
 	private TransactionRepository transactionRepo;
-	
+
 	@Autowired
 	private BudgetItemService budgetService;
-	
+
 	@Autowired
 	private AccountService accountService;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(RestTransactionController.class);
-	
+
 	/**
 	 * TODO Returns 'real' transactions (as stored in database).
-	 * 
+	 *
 	 * @param accountNumbers
 	 * @param startDateStr
 	 * @param endDateStr
@@ -61,25 +61,25 @@ public class RestTransactionController {
 			@RequestParam(name="acc", required=false) String accountNumbers,
 			@RequestParam(value="startDate", required = false) String startDateStr,
 			@RequestParam(value="endDate", required = false) String endDateStr) {
-		
+
 		logger.info("getTransactions({}, {}, {})", accountNumbers, startDateStr, endDateStr);
-		
+
 		LocalDate startDate = Utilities.getDateFromString(startDateStr);
 		if (startDate == null) {
 			startDate = Utilities.getEarliestDate();
 		}
-		
+
 		LocalDate endDate = Utilities.getDateFromString(endDateStr);
 		if (endDate == null) {
 			endDate = Utilities.getLatestDate();
 		}
-		
+
 		return transactionRepo.findTransactionsByAccount(accountService.findByIdIn(accountNumbers), startDate, endDate);
 	}
-	
+
 	/**
 	 * TODO Returns 'virtual' budgeting transactions (not stored in database).
-	 * 
+	 *
 	 * @param accountNumbers
 	 * @param startDateStr
 	 * @param endDateStr
@@ -91,25 +91,25 @@ public class RestTransactionController {
 			@RequestParam(name="acc", required=false) String accountNumbers,
 			@RequestParam(value="startDate", required = false) String startDateStr,
 			@RequestParam(value="endDate", required = false) String endDateStr) {
-		
+
 		logger.info("getBudgetTransactions({}, {}, {})", accountNumbers, startDateStr, endDateStr);
-		
+
 		LocalDate startDate = Utilities.getDateFromString(startDateStr);
 		if (startDate == null) {
 			startDate = Utilities.getEarliestDate();
 		}
-		
+
 		LocalDate endDate = Utilities.getDateFromString(endDateStr);
 		if (endDate == null) {
 			endDate = Utilities.getLatestDate();
 		}
-		
+
 		return budgetService.generateBudgetingTransactionsByAccount(accountService.findByIdIn(accountNumbers), startDate, endDate);
 	}
-	
+
 	/**
 	 * TODO Returns merged and sorted real and virtual transactions.
-	 * 
+	 *
 	 * @param monthStr
 	 * @param accountNumbersStr
 	 * @param excludeBudgetItemsStr
@@ -121,11 +121,11 @@ public class RestTransactionController {
 			@PathVariable(name="month", required=true) String monthStr,
 			@RequestParam(name="acc", required = false) String accountNumbersStr,
 			@RequestParam(name="excludeBudgetItems", required = false) String excludeBudgetItemsStr) {
-		
+
 		logger.info("getTransactionsByMonth({}, {}, {})", monthStr, accountNumbersStr, excludeBudgetItemsStr);
-		
+
 		boolean excludeBudgetItems = Boolean.parseBoolean(excludeBudgetItemsStr);
-		
+
 		YearMonth month = null;
 		try {
 			month = YearMonth.parse(monthStr);
@@ -133,69 +133,69 @@ public class RestTransactionController {
 			logger.error("Unable to parse month ({}), using current month.", monthStr);
 			month = YearMonth.now();
 		}
-		
+
 		// get real transactions
 		// TODO add service methods to access results directly with YearMonth
 		List<Transaction> results = transactionRepo.findTransactionsByAccount(accountService.findByIdIn(accountNumbersStr),
-				LocalDate.of(month.getYear(), month.getMonth(), 1), 
+				LocalDate.of(month.getYear(), month.getMonth(), 1),
 				LocalDate.of(month.getYear(), month.getMonth(), month.getMonth().length(month.isLeapYear())));
-		
+
 		// merge virtual transactions
 		if (!excludeBudgetItems) {
 			results.addAll(budgetService.generateBudgetingTransactionsByAccount(
-				accountService.findByIdIn(accountNumbersStr), 
+				accountService.findByIdIn(accountNumbersStr),
 				LocalDate.of(month.getYear(), month.getMonth(), 1),
 				LocalDate.of(month.getYear(), month.getMonth(), month.getMonth().length(month.isLeapYear()))));
 		}
-		
+
 		Collections.sort(results, new Comparator<Transaction>() {
 			@Override
 			public int compare(Transaction t1, Transaction t2) {
-				
+
 				if (t1.getTransactionDate().isBefore(t2.getTransactionDate())) {
 					return -1;
 				}
-				
+
 				if (t1.getTransactionDate().isAfter(t2.getTransactionDate())) {
 					return 1;
 				}
-				
+
 				// transaction date is the same - use secondary sort key
-				
+
 				if (t1.getSourceRow() < t2.getSourceRow()) {
 					return -1;
 				}
-				
+
 				if (t1.getSourceRow() > t2.getSourceRow()) {
 					return 1;
 				}
-				
+
 				// last ditch comparison - description
 				if (t1.getDescription() == null || t2.getDescription() == null) {
 					return 0;
 				}
-				
+
 				return t1.getDescription().compareToIgnoreCase(t2.getDescription());
 			}
 		});
-		
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("transactions", results);
 		map.put("startingBalance", accountService.findBroughtForwardBalance(accountNumbersStr, LocalDate.of(month.getYear(), month.getMonth(), 1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
-		
+
 		return ResponseEntity.ok(map);
 	}
-	
+
 	/**
-	 * PUT an transaction record in the repository, returning the transaction. If the id is blank, then a new 
-	 * transaction record is created, and the id is included in the returned transaction. If the id is specified, then 
-	 * this transaction will be updated and the transaction returned. If the specified id does not exist, then the 
+	 * PUT an transaction record in the repository, returning the transaction. If the id is blank, then a new
+	 * transaction record is created, and the id is included in the returned transaction. If the id is specified, then
+	 * this transaction will be updated and the transaction returned. If the specified id does not exist, then the
 	 * record is not stored, and an error response is returned.
-	 * 
+	 *
 	 * If there is a validation error, then the record is not stored, and an error response returned.
-	 * 
+	 *
 	 * @param transaction A transaction
-	 * @param result 
+	 * @param result
 	 * @param model
 	 * @return A transaction.
 	 */
@@ -207,7 +207,7 @@ public class RestTransactionController {
 			logger.info("errors = " + result.getErrorCount());
 			logger.info("errors = " + result.getAllErrors());
 		}
-		
+
 		// TODO Validate data
 		if (transaction != null) {
 			logger.debug("account = " + transaction);
@@ -215,21 +215,21 @@ public class RestTransactionController {
 		// Store data
 		return transactionRepo.save(transaction);
 	}
-	
+
 	@RequestMapping(value={"/id/{transactionId}"}, method = RequestMethod.DELETE)
 	public void deleteTransaction(@PathVariable String transactionId) {
-		
+
 		logger.info("deleting transaction id = {}", transactionId);
 		transactionRepo.deleteById(transactionId);
 	}
-	
+
 	@RequestMapping(value={"/types"}, method = RequestMethod.GET)
 	public List<TransactionType> getTransactionTypes() {
-		
+
 		logger.info("getTransactionTypes()");
-		
+
 		return Arrays.asList(TransactionType.values());
 	}
-	
+
 
 }

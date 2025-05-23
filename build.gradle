@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.18'
+	id 'org.springframework.boot' version '3.3.1'
 	id 'io.spring.dependency-management' version '1.1.5'
     id 'java'
     id 'checkstyle'
@@ -50,14 +50,14 @@ dependencies {
     implementation 'com.h2database:h2:2.2.224'
 	implementation 'org.apache.poi:poi-ooxml:5.3.0'
 
-	implementation 'ch.qos.logback:logback-core:1.2.11'
-	implementation 'ch.qos.logback:logback-classic:1.2.11'
+	implementation 'ch.qos.logback:logback-core:1.5.6'
+	implementation 'ch.qos.logback:logback-classic:1.5.6'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation 'org.springframework.security:spring-security-web:5.6.10'
-	implementation 'org.springframework.security:spring-security-config:5.6.10'
-	implementation 'org.springframework.security:spring-security-test:5.6.10'
+	implementation 'org.springframework.security:spring-security-web:6.3.1'
+	implementation 'org.springframework.security:spring-security-config:6.3.1'
+	implementation 'org.springframework.security:spring-security-test:6.3.1'
 
 	implementation 'org.apache.commons:commons-lang3:3.14.0'
 

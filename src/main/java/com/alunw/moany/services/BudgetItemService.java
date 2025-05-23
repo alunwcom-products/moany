@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+//import javax.persistence.TypedQuery;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,58 +32,58 @@ import com.alunw.moany.repository.BudgetItemRepository;
  */
 @Component
 public class BudgetItemService {
-	
+
 	// TODO should this be configurable in application.properties?
 	public final static int MAXIMUM_MONTH_RANGE = 120;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(BudgetItemService.class);
-	
+
 	@Autowired
 	private BudgetItemRepository budgetItemRepo;
-	
+
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	@Transactional
 	public void updateBudgetItemStartDate(String budgetItemId, LocalDate afterDate) {
-		
+
 		logger.info("updateBudgetItemStartDate({}, {})", budgetItemId, afterDate);
-		
+
 		// check parameters specified
 		if (budgetItemId == null || afterDate == null) {
 			logger.warn("One or more parameters missing - no action.");
 			return;
 		}
-		
+
 		Optional<BudgetItem> result = budgetItemRepo.findById(budgetItemId);
-		
+
 		if (!result.isPresent()) {
 			logger.warn("No matching budget item found ({}) - no action.", budgetItemId);
 			return;
 		}
-		
+
 		BudgetItem budgetItem = result.get();
 		// Increment date by 1 day
 		LocalDate newStartDate = afterDate.plus(1, ChronoUnit.DAYS);
 		logger.debug("Setting new budget item start date of {}", newStartDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
 		budgetItem.setStartDate(newStartDate);
-		
+
 		budgetItemRepo.save(budgetItem);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<Transaction> generateBudgetingTransactionsByAccount(List<Account> accounts, LocalDate startDate, LocalDate endDate) {
-		
+
 		logger.info("generateBudgetingTransactionsByAccount({}, {}, {})", accounts, startDate, endDate);
-		
+
 		List<Transaction> results = new ArrayList<>();
-		
+
 		// check parameters specified
 		if (startDate == null || endDate == null || accounts == null || accounts.isEmpty()) {
 			logger.info("One or more parameters missing - returning empty list.");
 			return results;
 		}
-		
+
 		// find budget items in date range
 		TypedQuery<BudgetItem> typedQuery = em.createQuery("from BudgetItem "
 				+ "where account in :acc "
@@ -91,7 +94,7 @@ public class BudgetItemService {
 		typedQuery.setParameter("startDate", startDate);
 		typedQuery.setParameter("endDate", endDate);
 		List<BudgetItem> budgets = typedQuery.getResultList();
-		
+
 		// generate virtual transactions
 		List<YearMonth> monthRange = getMonthRange(startDate, endDate);
 		for (BudgetItem item : budgets) {
@@ -103,16 +106,16 @@ public class BudgetItemService {
 				logger.error("Unexpected budget item period value [{}]. Skipping.", item.getPeriodType());
 			}
 		}
-		
+
 		logger.debug("Generated {} budget transaction(s)", results.size());
 		return results;
 	}
-	
+
 	private void processMonthlyBudgetItem(BudgetItem item, List<YearMonth> monthRange, List<Transaction> results) {
 		for (YearMonth period : monthRange) {
-			
+
 			// TODO is in budget item range?
-			
+
 			LocalDate transactionDate = null;
 			// Get budget item day of month for this month range
 			int dayOfMonth = item.getDayOfPeriod();
@@ -126,7 +129,7 @@ public class BudgetItemService {
 				// else use last day of month
 				transactionDate = LocalDate.of(period.getYear(), period.getMonth(), period.getMonth().length(period.isLeapYear()));
 			}
-			
+
 			// check date is within budget item range
 			if (!transactionDate.isBefore(item.getStartDate())) {
 				if (item.getEndDate() == null || !transactionDate.isAfter(item.getEndDate())) {
@@ -144,16 +147,16 @@ public class BudgetItemService {
 			}
 		}
 	}
-	
+
 	private void processWeeklyBudgetItem(BudgetItem item, List<YearMonth> monthRange, List<Transaction> results) {
 		for (YearMonth month : monthRange) {
-			
+
 			logger.debug("processWeeklyBudgetItem(month = {}, item start = {})", month, item.getStartDate());
-			
+
 			// start and end of month being processed
 			LocalDate firstDayOfMonth = LocalDate.of(month.getYear(), month.getMonth(), 1);
 			LocalDate lastDayOfMonth = LocalDate.of(month.getYear(), month.getMonth(), month.getMonth().length(month.isLeapYear()));
-			
+
 			// adjusted day of week for budget item
 			int dayOfWeek = item.getDayOfPeriod();
 			if (dayOfWeek < 1) {
@@ -164,15 +167,15 @@ public class BudgetItemService {
 				dayOfWeek = 7;
 			}
 			logger.debug("day of week = {}", dayOfWeek);
-			
+
 			// Calculate first transaction
-			
+
 			LocalDate transactionDate = firstDayOfMonth;
 			if (item.getStartDate().isAfter(transactionDate)) {
 				transactionDate = item.getStartDate();
 			}
 			logger.debug("start = {} [{}]", transactionDate, transactionDate.getDayOfWeek().getValue());
-			
+
 			if (dayOfWeek > transactionDate.getDayOfWeek().getValue()) {
 				transactionDate = transactionDate.plusDays(dayOfWeek - transactionDate.getDayOfWeek().getValue());
 				logger.debug("adjusted start #1 = {} [{}]", transactionDate, transactionDate.getDayOfWeek().getValue());
@@ -180,7 +183,7 @@ public class BudgetItemService {
 				transactionDate = transactionDate.minusDays(transactionDate.getDayOfWeek().getValue() - dayOfWeek).plusWeeks(1);
 				logger.debug("adjusted start #2 = {} [{}]", transactionDate, transactionDate.getDayOfWeek().getValue());
 			}
-			
+
 			while (!transactionDate.isAfter(lastDayOfMonth)) {
 				logger.debug("new = {}", transactionDate);
 				// create budget transaction
@@ -193,16 +196,16 @@ public class BudgetItemService {
 				t.setTransactionDate(transactionDate);
 				t.setBudgetItem(item);
 				results.add(t);
-				
+
 				// increment transaction date
 				transactionDate = transactionDate.plusWeeks(1);
 				logger.debug("next = {}", transactionDate);
 			}
 		}
 	}
-	
+
 	private List<YearMonth> getMonthRange(LocalDate startDate, LocalDate endDate) {
-		
+
 		// Create list of months in date range
 		List<YearMonth> monthRange = new ArrayList<>();
 		YearMonth yearMonth = YearMonth.from(startDate);

@@ -2,25 +2,27 @@ package com.alunw.moany.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+//import javax.persistence.Column;
+//import javax.persistence.Entity;
+//import javax.persistence.EntityListeners;
+//import javax.persistence.EnumType;
+//import javax.persistence.Enumerated;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.Id;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.ManyToOne;
+//import javax.persistence.Table;
+//import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
@@ -29,8 +31,8 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.UUID)
+//    @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @Column(name = "uuid", nullable = false, unique = true)
     private String id;
 
@@ -44,11 +46,11 @@ public class Transaction {
     private LocalDateTime entryDate;
 
     @Column(name = "type")
-    @Type(type = "string")
+//    @Type(type = "string")
     private String type;
 
     @Column(name = "description")
-    @Type(type = "string")
+//    @Type(type = "string")
     private String description;
 
     @Column(name = "source_type", nullable = false)
@@ -56,11 +58,11 @@ public class Transaction {
     private TransactionType sourceType;
 
     @Column(name = "source_name")
-    @Type(type = "string")
+//    @Type(type = "string")
     private String sourceName;
 
     @Column(name = "source_row")
-    @Type(type = "long")
+//    @Type(type = "long")
     private long sourceRow;
 
     @Column(name = "statement_amount")
@@ -90,7 +92,7 @@ public class Transaction {
     private BudgetItem budgetItem;
 
     @Column(name = "comment")
-    @Type(type = "string")
+//    @Type(type = "string")
     private String comment;
 
     public Transaction() {

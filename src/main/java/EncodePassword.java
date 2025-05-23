@@ -7,7 +7,7 @@ public class EncodePassword {
 		if (args.length != 1) {
 			System.err.println("EncodePassword requires single argument <plaintext-password>, and outputs encoded password!");
 		}
-		
+
 		PasswordEncoder encoder = new BCryptPasswordEncoder(11);
 		System.out.println(encoder.encode(args[0]));
 	}

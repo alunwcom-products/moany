@@ -19,9 +19,9 @@ public class RestUserController {
 
 	/**
 	 * Returns the current authenticated user name as a JSON object
-	 * 
+	 *
 	 * @param auth
-	 * @return 
+	 * @return
 	 */
 	@RequestMapping(value={"/"}, method = RequestMethod.GET)
 	@CrossOrigin("*")
@@ -31,7 +31,7 @@ public class RestUserController {
 		} else {
 			logger.warn("No authentication token found.");
 		}
-		
+
 		Map<String, Object> result = new HashMap<>();
 		result.put("name", auth.getName());
 		return result;
