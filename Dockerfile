@@ -3,13 +3,13 @@
 # build image
 #
 
-FROM docker.io/library/eclipse-temurin:21 as build
+FROM docker.io/library/eclipse-temurin:21 AS build
 WORKDIR /workspace
 
 # copy gradle wrapper assets to create layer that should only change on gradle version/wrapper change 
 COPY gradlew ./
 COPY gradle/ ./gradle/
-RUN sh gradlew init
+# RUN sh gradlew init # init is failing since Gradle 8.x?
 
 # copy all project assets for application build/test
 COPY ./src/ ./src/
@@ -17,7 +17,7 @@ COPY ./*.gradle ./*.env ./
 
 ARG BUILD_VERSION=SNAPSHOT
 RUN echo "version=${BUILD_VERSION}" > gradle.properties
-RUN sh gradlew build
+RUN sh /workspace/gradlew build
 RUN ls -lR build/reports || true
 
 # extract spring boot layered jars for deployment image
