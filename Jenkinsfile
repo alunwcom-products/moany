@@ -117,17 +117,17 @@ pipeline {
             }
         }
     }
-    post {
-        success {
-            mail to: "${NOTIFICATION_RECIPIENTS}",
-                subject: "Success: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
-                body: "Build URL: ${env.BUILD_URL}"
-        }
-        failure {
-            mail to: "${NOTIFICATION_RECIPIENTS}",
-                subject: "Failure: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
-                body: "Build URL: ${env.BUILD_URL}"
-        }
-    }
+//     post {
+//         success {
+//             mail to: "${NOTIFICATION_RECIPIENTS}",
+//                 subject: "Success: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
+//                 body: "Build URL: ${env.BUILD_URL}"
+//         }
+//         failure {
+//             mail to: "${NOTIFICATION_RECIPIENTS}",
+//                 subject: "Failure: ${currentBuild.fullDisplayName} [${JOB_NAME}.${BUILD_NUMBER}]",
+//                 body: "Build URL: ${env.BUILD_URL}"
+//         }
+//     }
 }
 
