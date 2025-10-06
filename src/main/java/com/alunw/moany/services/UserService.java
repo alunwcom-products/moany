@@ -30,19 +30,19 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
-		
+
 		logger.debug("Find user {}", username);
-		
+
 		User user = userRepo.findByUsername(username);
 		if (user == null) {
 			logger.warn("Username '{}' not found", username);
 			throw new UsernameNotFoundException(username);
 		}
-		
+
 		Set<UserAuthority> authorities = authorityRepo.findByUser(user);
-		
+
 		logger.debug("user: username = {}, password = {}, enabled = {}, authorities = {}", user.getUsername(), user.getPassword(), user.isEnabled(), authorities);
-		
+
 		return new Principal(user, authorities);
 	}
 
@@ -100,5 +100,5 @@ public class UserService implements UserDetailsService {
 			return user.isEnabled();
 		}
 	}
-	
+
 }

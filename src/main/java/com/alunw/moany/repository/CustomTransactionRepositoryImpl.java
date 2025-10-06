@@ -2,13 +2,16 @@ package com.alunw.moany.repository;
 
 import com.alunw.moany.model.Account;
 import com.alunw.moany.model.Transaction;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+//import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;

@@ -26,24 +26,24 @@ import com.alunw.moany.services.CategoryService;
 @RestController
 @RequestMapping("/rest/categories/v2/")
 public class RestCategoryController {
-	
+
 	@Autowired
 	private CategoryService categoryService;
-	
+
 	@Autowired
 	private CategoryRepository categoryRepo;
-	
+
 	@Autowired
 	private CategoryBudgetRepository categoryBudgetRepo;
-	
+
 	@Autowired
 	private AccountService accountService;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(RestCategoryController.class);
-	
+
 	/**
 	 * GET a list of all categories.
-	 * 
+	 *
 	 * @return A list of all categories.
 	 */
 	@RequestMapping(value={"/"}, method = RequestMethod.GET)
@@ -51,13 +51,13 @@ public class RestCategoryController {
 		logger.info("getCategories()");
 		return categoryRepo.findAll();
 	}
-	
+
 	/**
-	 * TODO 
-	 * 
+	 * TODO
+	 *
 	 * Return 12 (whole) months of category data
-	 * 
-	 * 
+	 *
+	 *
 	 * @param accountIdsStr
 	 *     Comma-delimited list of account IDs
 	 * @param monthStr
@@ -68,9 +68,9 @@ public class RestCategoryController {
 	public List<Map<String, Object>> getCategorySummary(
 			@RequestParam(name="acc", required=false) String accountIdsStr,
 			@RequestParam(value="month", required = false) String monthStr) {
-		
+
 		logger.info("getCategorySummary({}, {})", accountIdsStr, monthStr);
-		
+
 		YearMonth startMonth = null;
 		try {
 			// TODO hack to parse date - remove day! YYYY-MM-DD
@@ -79,14 +79,14 @@ public class RestCategoryController {
 		} catch (Exception e) {
 			logger.error("Unable to parse start month [{}]", monthStr);
 		}
-		
+
 		if (startMonth == null) {
 			startMonth = YearMonth.now().withMonth(1); // default to first month of current year
 		}
-		
+
 		return categoryService.getCategorySummary(accountService.findByIdIn(accountIdsStr), startMonth);
 	}
-	
+
 	@RequestMapping(value={"/"}, method = RequestMethod.PUT)
 	public Category putCategory(@RequestBody Category category, BindingResult result) {
 		logger.info("putCategory()");
@@ -95,7 +95,7 @@ public class RestCategoryController {
 			logger.info("errors = " + result.getErrorCount());
 			logger.info("errors = " + result.getAllErrors());
 		}
-		
+
 		// TODO Validate data
 		if (category != null) {
 			logger.debug("category = {}", category);
@@ -108,67 +108,67 @@ public class RestCategoryController {
 			return null;
 		}
 	}
-	
+
 	@RequestMapping(value={"/id","/id/{categoryId}"}, method = RequestMethod.DELETE)
 	public void deleteCategoryById(@PathVariable(name="categoryId", required=false) String categoryId) {
-		
+
 		logger.info("deleteCategoryById(" + categoryId + ")");
-		
+
 		if (categoryId == null) {
 			throw new BadRequestException();
 		}
-		
+
 		categoryRepo.deleteById(categoryId);
 	}
-	
+
 	@RequestMapping(value={"/categoryBudget/{categoryId}"}, method = RequestMethod.PUT)
 	public CategoryBudget addCategoryBudget(@PathVariable(name="categoryId") String categoryId, @RequestBody CategoryBudget categoryBudget) {
-		
+
 		logger.info("addCategoryBudget(): {}; {}", categoryId, categoryBudget);
-		
+
 		Optional<Category> catResult = categoryRepo.findById(categoryId);
 		if (catResult.isPresent()) {
-			
+
 			// TODO validation
-			
+
 			logger.debug("adding budget");
-			
+
 			Category category = catResult.get();
 			category.addCategoryBudget(categoryBudget);
-			
+
 			logger.debug("category {}", category);
-			
+
 			categoryRepo.save(category);
-			
+
 		} else {
 			logger.warn("No matching category found [id = {}], category budget cannot be added.", categoryId);
 		}
-		
+
 		return null;
 	}
-	
+
 	@RequestMapping(value={"/categoryBudget/{categoryBudgetId}"}, method = RequestMethod.DELETE)
 	public void removeCategoryBudget(@PathVariable(name="categoryBudgetId") String categoryBudgetId) {
-		
+
 		logger.info("removeCategoryBudget(): {}", categoryBudgetId);
-		
+
 		Optional<CategoryBudget> categoryBudgetResult = categoryBudgetRepo.findById(categoryBudgetId);
 		if (!categoryBudgetResult.isPresent()) {
 			logger.error("Can't fetch CategoryBudget: id = {}", categoryBudgetId);
-			throw new BadRequestException(); // TODO 
+			throw new BadRequestException(); // TODO
 		}
-		
+
 		CategoryBudget budget = categoryBudgetResult.get();
 		if (budget.getCategoryId() == null) {
 			// This should not be possible ;)
 			logger.error("CategoryBudget has no Category id defined.");
 			throw new BadRequestException();
 		}
-		
+
 		Optional<Category> categoryResult = categoryRepo.findById(budget.getCategoryId());
 		if (!categoryResult.isPresent()) {
 			logger.error("Can't fetch Category: id = {}", budget.getCategoryId());
-			throw new BadRequestException(); // TODO 
+			throw new BadRequestException(); // TODO
 		}
 		Category category = categoryResult.get();
 		boolean removed = category.removeCategoryBudget(budget);

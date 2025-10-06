@@ -24,9 +24,9 @@ public class RestStatusController {
 
 	/**
 	 * Returns the current authenticated user name as a JSON object
-	 * 
+	 *
 	 * @param auth
-	 * @return 
+	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@CrossOrigin("*")
@@ -36,7 +36,7 @@ public class RestStatusController {
 		} else {
 			logger.warn("No authentication token found.");
 		}
-		
+
 		Map<String, Object> result = new HashMap<>();
 		result.put("status", "OK");
 		return result;

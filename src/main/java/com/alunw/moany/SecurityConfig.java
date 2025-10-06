@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,29 +25,35 @@ import com.alunw.moany.services.UserService;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
 	@Autowired
 	private UserService userService;
 
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/status");
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.ignoring().requestMatchers("/status");
 	}
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and().authenticationProvider(authenticationProvider()).cors()
-			.and().httpBasic()
-			.and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-			.and().authorizeRequests().antMatchers("/**").hasAuthority("USER");
+				.cors(Customizer.withDefaults())
+				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authenticationProvider(authenticationProvider())
+//				.httpBasic(Customizer.withDefaults())
+
+				.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+						.requestMatchers("/rest/**").hasAuthority("USER")
+						.anyRequest().authenticated()
+				)
+				.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+		return http.build();
 	}
 
 	/**
 	 * Configure the authentication provider - using the application UserService and defined password encoder.
-	 * 
+	 *
 	 * @return
 	 */
 	@Bean
@@ -57,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	/**
 	 * Configure the password encoder.
-	 * 
+	 *
 	 * @return
 	 */
 	@Bean
@@ -67,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	/**
 	 * Configure CORS to allow cross-origin requests from clients.
-	 * 
+	 *
 	 * @return
 	 */
 	@Bean

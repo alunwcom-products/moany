@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 
 /**
  * TODO Refactor/simplify for my usage
- * 
+ *
  * Tool to run database scripts
  */
 public class ScriptRunner {
