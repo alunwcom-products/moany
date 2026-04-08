@@ -14,7 +14,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'mariadb:11.2'
+        DOCKER_IMAGE = 'mariadb:lts'
         DOCKER_CONTAINER_NAME = 'moany-db-prod'
         DOCKER_NETWORK_NAME = 'moany-prod'
         MYSQL_HOST_PORT = 3316
