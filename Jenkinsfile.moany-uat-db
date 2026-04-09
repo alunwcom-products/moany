@@ -55,7 +55,7 @@ pipeline {
                         -e MYSQL_PASSWORD=$DB_APP_CREDENTIALS_PSW \
                         --health-cmd='healthcheck.sh --connect --innodb_initialized || exit 1' \
                         --health-start-period=120s \
-                        $DOCKER_IMAGE  --innodb-buffer-pool-size=2G
+                        $DOCKER_IMAGE
 
                     # wait for startup before continuing
                     sleep 120
