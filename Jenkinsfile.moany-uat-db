@@ -49,14 +49,13 @@ pipeline {
                         --name $DOCKER_CONTAINER_NAME \
                         -v $DB_MOUNT_POINT:/var/lib/mysql \
                         --restart unless-stopped \
-                        --innodb-buffer-pool-size=2G \
                         -e MYSQL_ROOT_PASSWORD=$DB_ADMIN_CREDENTIALS_PSW \
                         -e MYSQL_DATABASE=$DB_APP_CREDENTIALS_USR \
                         -e MYSQL_USER=$DB_APP_CREDENTIALS_USR \
                         -e MYSQL_PASSWORD=$DB_APP_CREDENTIALS_PSW \
                         --health-cmd='healthcheck.sh --connect --innodb_initialized || exit 1' \
                         --health-start-period=120s \
-                        $DOCKER_IMAGE
+                        $DOCKER_IMAGE  --innodb-buffer-pool-size=2G
 
                     # wait for startup before continuing
                     sleep 120
