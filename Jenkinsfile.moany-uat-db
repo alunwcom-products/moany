@@ -49,6 +49,7 @@ pipeline {
                         --name $DOCKER_CONTAINER_NAME \
                         -v $DB_MOUNT_POINT:/var/lib/mysql \
                         --restart unless-stopped \
+                        --innodb-buffer-pool-size=2G \
                         -e MYSQL_ROOT_PASSWORD=$DB_ADMIN_CREDENTIALS_PSW \
                         -e MYSQL_DATABASE=$DB_APP_CREDENTIALS_USR \
                         -e MYSQL_USER=$DB_APP_CREDENTIALS_USR \
