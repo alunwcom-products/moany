@@ -1,0 +1,55 @@
+services:
+  moany-db:
+    image: mariadb:lts
+    container_name: moany-java-db
+    restart: unless-stopped
+    env_file:
+      - .env.compose
+    environment:
+      #MARIADB_ROOT_PASSWORD: <env_file>
+      MARIADB_DATABASE: moany
+      MARIADB_USER: moany
+      #MARIADB_PASSWORD: <env_file>
+      MARIADB_AUTO_UPGRADE: true
+      MARIADB_DISABLE_UPGRADE_BACKUP: true
+    ports:
+      # Format: [HOST_IP]:[HOST_PORT]:[CONTAINER_PORT]
+      - "127.0.0.1:3326:3306"
+    networks:
+      - moany-net
+    volumes:
+      - /srv/apps/moany-java-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  moany-app:
+    image: alunwcom/moany:579f629
+    container_name: moany-java-prod
+    ports:
+      # Format: [HOST_IP]:[HOST_PORT]:[CONTAINER_PORT]
+      - "127.0.0.1:9280:9080"
+    networks:
+      - moany-net
+    env_file:
+      - .env.compose
+    environment:
+      DB_URL: "jdbc:mysql://moany-db:3306/moany?verifyServerCertificate=false&useSSL=true"
+      DB_USER: moany
+      #DB_PASSWORD: <env_file>
+      DB_PLATFORM: MySQL8
+    restart: unless-stopped
+      #volumes:
+      #- /srv/apps/java-moany-prod:/opt/software
+    depends_on:
+      moany-db:
+        condition: service_healthy
+
+networks:
+  moany-net:
+    driver: bridge
+    name: moany-java-net
+

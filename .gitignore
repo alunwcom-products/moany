@@ -7,6 +7,9 @@
 /.idea
 /moany*.log*
 
+.env*
+!.env*.sample
+
 /*.upload
 /*.loaded
 
