@@ -28,7 +28,7 @@ services:
 
   moany-app:
     image: alunwcom/moany:579f629
-    container_name: moany-java-prod
+    container_name: moany-java-app
     ports:
       # Format: [HOST_IP]:[HOST_PORT]:[CONTAINER_PORT]
       - "127.0.0.1:9280:9080"
@@ -42,8 +42,8 @@ services:
       #DB_PASSWORD: <env_file>
       DB_PLATFORM: MySQL8
     restart: unless-stopped
-      #volumes:
-      #- /srv/apps/java-moany-prod:/opt/software
+    #volumes:
+    #  - /srv/apps/moany-java-app:/opt/software
     depends_on:
       moany-db:
         condition: service_healthy
