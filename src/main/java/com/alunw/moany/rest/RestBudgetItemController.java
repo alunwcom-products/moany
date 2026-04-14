@@ -20,31 +20,31 @@ import com.alunw.moany.repository.BudgetItemRepository;
 @RestController
 @RequestMapping("/rest/budgeting/v2/")
 public class RestBudgetItemController {
-	
+
 	@Autowired
 	private BudgetItemRepository budgetRepo;
-	
+
 	private static Logger logger = LoggerFactory.getLogger(RestBudgetItemController.class);
-	
+
 	@RequestMapping(value={"/"}, method = RequestMethod.GET)
 	public List<BudgetItem> getBudgetItems() {
-		
+
 		logger.info("getBudgetItems()");
-		
+
 		return budgetRepo.findAll();
 	}
-	
+
 	@RequestMapping(value={"/"}, method = RequestMethod.PUT)
 	public BudgetItem putBudgetItem(@Validated @RequestBody BudgetItem item, BindingResult result, Model model) {
-		
+
 		logger.info("putBudgetItem()");
-		
+
 		// TODO testing/validation
 		if (result != null) {
 			logger.info("errors = " + result.getErrorCount());
 			logger.info("errors = " + result.getAllErrors());
 		}
-		
+
 		// TODO Validate data
 		if (item != null) {
 			logger.debug("item = " + item);
@@ -52,16 +52,16 @@ public class RestBudgetItemController {
 		// Store data
 		return budgetRepo.save(item);
 	}
-	
+
 	@RequestMapping(value={"/id","/id/{itemId}"}, method = RequestMethod.DELETE)
 	public void deleteBudgetItem(@PathVariable(name="itemId", required=false) String itemId) {
-		
+
 		logger.info("deleteBudgetItem({})", itemId);
-		
+
 		if (itemId == null) {
 			throw new BadRequestException();
 		}
-		
+
 		budgetRepo.deleteById(itemId);
 	}
 }

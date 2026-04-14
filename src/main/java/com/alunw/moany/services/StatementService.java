@@ -2,11 +2,15 @@ package com.alunw.moany.services;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.transaction.Transactional;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+//import javax.persistence.TypedQuery;
+//import javax.transaction.Transactional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +25,23 @@ import com.alunw.moany.repository.TransactionRepository;
 
 @Component
 public class StatementService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(StatementService.class);
-	
+
 	@Autowired
 	private AccountRepository accountRepo;
-	
+
 	@Autowired
 	private TransactionRepository transactionRepo;
-	
+
 	@PersistenceContext
 	private EntityManager em;
-	
-	
+
+
 	/**
 	 * Saves (persists) statement transactions, and optionally accounts, returning the number of saved/persisted
 	 * transactions.
-	 * 
+	 *
 	 * @param statement Statement object to be saved/persisted.
 	 * @param sourceName Statement source file name, used as a label against transactions.
 	 * @param autoAccountCreation Create undefined accounts automatically?
@@ -48,9 +52,9 @@ public class StatementService {
 	 */
 	@Transactional // TODO check
 	public int save(Statement statement, String sourceName, boolean autoAccountCreation, boolean failOnDuplicateTransaction) throws Exception {
-		
+
 		int transactionCount = 0;
-		
+
 		try {
 			// Save accounts if 'auto create', else fail if they don't exist.
 			for (Account acc : statement.getAccounts()) {
@@ -71,7 +75,7 @@ public class StatementService {
 					logger.debug("Using existing account record: " + storedAcc.getId());
 				}
 			}
-			
+
 			// Save transactions - checking for duplicates.
 			for (Transaction tran : statement.getTransactions()) {
 				// Check if transaction exists on database.
@@ -83,7 +87,7 @@ public class StatementService {
 					if (tran.getStatementAmount() != null) {
 						tran.setNetAmount(tran.getStatementAmount().multiply(tran.getAccount().getType().getMultiplier()));
 					}
-					
+
 					transactionRepo.save(tran);
 					transactionCount++;
 					logger.debug("Saved transaction record: " + tran.getId());
@@ -102,17 +106,17 @@ public class StatementService {
 					}
 				}
 			}
-			
+
 		} catch (Exception e) {
 			logger.error("Unable to save statement, rolling back... " + e.getMessage());
 			transactionCount = 0;
 			// Re-throw exception
 			throw e;
 		}
-		
+
 		return transactionCount;
 	}
-	
+
 	private void updateAccount(Account parsedAccount, Account persistedAccount, List<Transaction> transactions) {
 		for (Transaction t : transactions) {
 			if (t.getAccount().getAccNum().equals(persistedAccount.getAccNum())) {
@@ -120,9 +124,9 @@ public class StatementService {
 			}
 		}
 	}
-	
+
 	private List<Transaction> getMatchingTransaction(Transaction transaction) {
-		
+
 		TypedQuery<Transaction> typedQuery = em.createQuery("from Transaction where transactionDate = :transactionDate "
 				+ "and type = :type and description = :description and statementAmount = :statementAmount "
 				+ "and stmtBalance = :stmtBalance and account = :account order by entryDate desc", Transaction.class);
@@ -132,10 +136,10 @@ public class StatementService {
 		typedQuery.setParameter("statementAmount", transaction.getStatementAmount());
 		typedQuery.setParameter("stmtBalance", transaction.getStmtBalance());
 		typedQuery.setParameter("account", transaction.getAccount());
-		
+
 		List<Transaction> results = typedQuery.getResultList();
 		logger.debug(String.format("Retrieved %d transaction(s)", results.size()));
-		
+
 		return results;
 	}
 

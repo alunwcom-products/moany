@@ -5,12 +5,12 @@ package com.alunw.moany.services.validators;
  *
  */
 public class JsonResponse {
-	
+
 	/**
 	 * User-friendly message.
 	 */
 	private String message = null;
-	
+
 	/**
 	 * JSON result data
 	 */

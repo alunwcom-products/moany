@@ -2,11 +2,15 @@ package com.alunw.moany.web;
 
 import java.security.Principal;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import javax.annotation.PostConstruct;
+//import javax.servlet.RequestDispatcher;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -22,17 +26,17 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class DefaultController implements ErrorController {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(DefaultController.class);
-	
+
 	@PostConstruct
 	public void init() {
 		logger.info("init()");
 	}
-	
+
 	/**
 	 * Application home/index page.
-	 * 
+	 *
 	 * @param request
 	 * @param response
 	 * @return
@@ -42,13 +46,13 @@ public class DefaultController implements ErrorController {
 		logger.info("status() [user={}, remote={}]", getPrincipalName(principal), request.getRemoteAddr());
 		return new ModelAndView("index");
 	}
-	
+
 	@RequestMapping("/error")
 	public String handleError(HttpServletRequest request, HttpServletResponse response, Model model) {
-		
+
 		Object statusCode = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR; // Default to internal server error
-		
+
 		if (statusCode != null && statusCode instanceof Integer) {
 			try {
 				int value = Integer.parseInt(statusCode.toString());
@@ -62,9 +66,9 @@ public class DefaultController implements ErrorController {
 		} else {
 			logger.error("ERROR_STATUS_CODE is null or not Integer: {}", statusCode);
 		}
-		
+
 		logger.info("handleError() [remote={}, uri = {}, statusCode = {})", request.getRemoteAddr(), request.getRequestURI(), statusCode);
-		
+
 		if (httpStatus == HttpStatus.UNAUTHORIZED) {
 			// pass authentication header back to client
 			String headerName = "WWW-Authenticate";
@@ -72,7 +76,7 @@ public class DefaultController implements ErrorController {
 			logger.info("unauthorized header [{}: {}]", headerName, headerValue);
 			response.setHeader(headerName, headerValue);
 		}
-		
+
 		model.addAttribute("value", httpStatus.value());
 		model.addAttribute("reason", httpStatus.getReasonPhrase());
 		return "error";

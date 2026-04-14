@@ -13,21 +13,21 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.jdbc.support.DatabaseStartupValidator;
 
-import javax.persistence.EntityManagerFactory;
+//import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.stream.Stream;
 
 @SpringBootApplication
-@EnableJpaAuditing
-@EnableAutoConfiguration
-@Import({ SecurityConfig.class })
+//@EnableJpaAuditing
+//@EnableAutoConfiguration
+//@Import({ SecurityConfig.class })
 public class Application {
 
-    @Value("${moany.databaseStartupInterval:5}")
-    private int databaseStartupInterval;
+//    @Value("${moany.databaseStartupInterval:5}")
+//    private int databaseStartupInterval;
 
-    @Value("${moany.databaseStartupTimeout:120}")
-    private int databaseStartupTimeout;
+//    @Value("${moany.databaseStartupTimeout:120}")
+//    private int databaseStartupTimeout;
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
@@ -42,21 +42,21 @@ public class Application {
         };
     }
 
-    @Bean
-    public DatabaseStartupValidator databaseStartupValidator(DataSource dataSource) {
-        DatabaseStartupValidator validator = new DatabaseStartupValidator();
-        validator.setDataSource(dataSource);
-        validator.setInterval(databaseStartupInterval);
-        validator.setTimeout(databaseStartupTimeout);
-        validator.setValidationQuery("SELECT 1");
-        return validator;
-    }
+//    @Bean
+//    public DatabaseStartupValidator databaseStartupValidator(DataSource dataSource) {
+//        DatabaseStartupValidator validator = new DatabaseStartupValidator();
+//        validator.setDataSource(dataSource);
+//        validator.setInterval(databaseStartupInterval);
+//        validator.setTimeout(databaseStartupTimeout);
+//        validator.setValidationQuery("SELECT 1");
+//        return validator;
+//    }
 
-    @Bean
-    public static BeanFactoryPostProcessor dependsOnPostProcessor() {
-        return bf -> {
-            String[] jpa = bf.getBeanNamesForType(EntityManagerFactory.class);
-            Stream.of(jpa).map(bf::getBeanDefinition).forEach(it -> it.setDependsOn("databaseStartupValidator"));
-        };
-    }
+//    @Bean
+//    public static BeanFactoryPostProcessor dependsOnPostProcessor() {
+//        return bf -> {
+//            String[] jpa = bf.getBeanNamesForType(EntityManagerFactory.class);
+//            Stream.of(jpa).map(bf::getBeanDefinition).forEach(it -> it.setDependsOn("databaseStartupValidator"));
+//        };
+//    }
 }

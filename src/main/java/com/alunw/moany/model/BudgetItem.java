@@ -5,18 +5,19 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+//import javax.persistence.Column;
+//import javax.persistence.Entity;
+//import javax.persistence.EntityListeners;
+//import javax.persistence.EnumType;
+//import javax.persistence.Enumerated;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.Id;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.ManyToOne;
+//import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
+//import org.hibernate.annotations.GenericGenerator;
+import jakarta.persistence.*;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -25,10 +26,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * TODO EXP Budget item - as parent to (virtual) budget transactions. This defines the budget transactions.
- * 
+ *
  * NOTES:
- * 
- * 
+ *
+ *
  * @author aluwilliam
  *
  */
@@ -37,16 +38,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "budgetitems")
 public class BudgetItem {
-	
+
 	/**
 	 * UUID primary key.
 	 */
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.UUID)
+//	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	@Column(name = "uuid", nullable = false, unique = true)
 	private String id;
-	
+
 	/**
 	 * TODO Last modified date. Not really necessary - currently - but trying out.
 	 */
@@ -54,13 +55,13 @@ public class BudgetItem {
 	@LastModifiedDate
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	private LocalDateTime lastModifiedDate;
-	
+
 	/**
 	 * Description to appear on budgeting transactions
 	 */
 	@Column(name = "description")
 	private String description;
-	
+
 	/**
 	 * A budget item must have a startDate. This defines when the budget transactions will be generated from.
 	 * This will be modified over time, as the start date moves into the past, and the user marks a transaction as
@@ -69,20 +70,20 @@ public class BudgetItem {
 	@Column(name = "start_date", nullable = false)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate startDate;
-	
+
 	/**
 	 * The budget item end date is optional. If null, the budget item will continue indefinitely.
 	 */
 	@Column(name = "end_date")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate endDate;
-	
+
 	/**
 	 * The budget item amount.
 	 */
 	@Column(name = "amount", nullable = false)
 	private BigDecimal amount;
-	
+
 	/**
 	 * Currently, budget items can only have monthly frequency. This defines which day of the month.
 	 * If the value is less than 1, or greater than the available days of a given month, then the last day of the month
@@ -92,14 +93,14 @@ public class BudgetItem {
 	@Column(name = "day_of_month", nullable = false)
 	private int dayOfMonth = 0;
 	*/
-	
+
 	/**
 	 * Either WEEKS or MONTHS. Default MONTHS
 	 */
 	@Column(name = "period_type", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ChronoUnit periodType = ChronoUnit.MONTHS;
-	
+
 	/**
 	 * The day within the selected period type (WEEKS or MONTHS).
 	 * If the value is less than 1, 1 will be used.
@@ -107,14 +108,14 @@ public class BudgetItem {
 	 */
 	@Column(name = "day_of_period", nullable = false)
 	private int dayOfPeriod = 1;
-	
+
 	/**
 	 * The account for these budget transactions.
 	 */
 	@ManyToOne
 	@JoinColumn(name = "account", nullable = false)
 	private Account account;
-	
+
 	/**
 	 * The (optional) category for these budget transactions.
 	 */
@@ -205,7 +206,7 @@ public class BudgetItem {
 	public String getId() {
 		return id;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "BudgetItem[id=" + id + ", description=" + description + ", startDate=" + startDate + ", amount=" + amount + ", account=" + account + "]";

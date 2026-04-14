@@ -1,12 +1,13 @@
 package com.alunw.moany.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+//import javax.persistence.Column;
+//import javax.persistence.Entity;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.Id;
+//import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
+//import org.hibernate.annotations.GenericGenerator;
+import jakarta.persistence.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -15,8 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class User {
 
 	@Id
-	@GeneratedValue(generator = "system-uuid")
-	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.UUID)
+//	@GenericGenerator(name = "system-uuid", strategy = "uuid2")
 	private String id;
 
 	@Column(nullable = false, unique = true)
@@ -26,7 +27,7 @@ public class User {
 
 	@Column(nullable = false)
 	private boolean enabled;
-	
+
 	public User() {
 		this.enabled = true;
 	}
